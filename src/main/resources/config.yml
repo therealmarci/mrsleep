@@ -336,8 +336,6 @@ messages:
   gui-title-main: "<dark_gray>MRsleep <gray>» <dark_aqua>Übersicht"
   gui-title-player: "<dark_gray>MRsleep <gray>» <dark_aqua><player>"
   gui-no-permission: "<red>✘ Keine Berechtigung"
-  gui-yes: "<green>✔"
-  gui-no: "<red>✘"
 
   # Spielerkopf (Übersicht und Spieler-Menü)
   gui-head-name: "<white><player>"

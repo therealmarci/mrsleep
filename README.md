@@ -1,15 +1,21 @@
 # MRsleep
 
+[![Build](https://github.com/therealmarci/mrsleep/actions/workflows/build.yml/badge.svg)](https://github.com/therealmarci/mrsleep/actions/workflows/build.yml)
+[![Neueste Version](https://img.shields.io/github/v/release/therealmarci/mrsleep?include_prereleases&label=Version)](https://github.com/therealmarci/mrsleep/releases)
+![Paper](https://img.shields.io/badge/Paper-26.3-blue)
+![Java](https://img.shields.io/badge/Java-25-orange)
+
 Schlaf-Plugin für **Paper 26.3** (Java 25).
 
 > 🧪 **Pre-Release (0.x):** MRsleep befindet sich in der Testphase. Bis zum Release 1.0.0 können sich Config,
 > Befehle und Permissions noch ändern. Fehler bitte als [Issue](https://github.com/therealmarci/mrsleep/issues) melden.
 
 - **Schlafquote mit Ausnahmen**: Cam- und Bot-Accounts zählen nicht mit.
-- **`/nosleep [nächte]`**: Spieler blockieren das Schlafen für eine oder mehrere Nächte, mit Cooldown.
+- **`/nosleep [nächte]`**: Spieler blockieren das Schlafen für eine oder mehrere Nächte, mit Cooldown. `/nosleep info` zeigt den eigenen Status.
+- **Bossbar** mit dem Schlaf-Fortschritt, die vom Chat im Bett nicht verdeckt wird.
 - **Admin-Menü**: Spielerköpfe mit Live-Status, Sperren, Bypass und Cooldown per Klick.
 - **Sperren**: Admins schließen einzelne Spieler von `/nosleep` aus, auf Zeit oder dauerhaft.
-- **Discord-Logs**, **Chat-Hinweise** und eine **Update-Prüfung** über Modrinth oder GitHub.
+- **Discord-Logs**, **Chat-Hinweise** und eine **Update-Prüfung** über GitHub Releases (alternativ Modrinth).
 - **Alles einstellbar** in einer `config.yml`. Für jede Funktion gibt es eine Permission.
 
 ---

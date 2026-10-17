@@ -1,5 +1,6 @@
 package at.marcelr.mrsleep;
 
+import at.marcelr.mrsleep.util.Versions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -153,7 +154,7 @@ public final class UpdateChecker {
         }
         // Whoever runs a pre-release (0.x, -rc...) must also be told about newer pre-releases,
         // otherwise 0.9.2 would never learn about 0.9.3.
-        boolean prereleases = settings.includePrereleases() || isPrerelease(currentVersion);
+        boolean prereleases = settings.includePrereleases() || Versions.isPrerelease(currentVersion);
         try {
             Release release = settings.source().equals("github")
                     ? fetchGithub(prereleases)
@@ -165,7 +166,7 @@ public final class UpdateChecker {
             latestVersion = release.version();
             downloadUrl = release.url();
             error = null;
-            if (compare(release.version(), currentVersion) > 0) {
+            if (Versions.compare(release.version(), currentVersion) > 0) {
                 state = State.OUTDATED;
                 announce(release);
             } else {
@@ -202,7 +203,7 @@ public final class UpdateChecker {
                 continue;
             }
             String number = version.get("version_number").getAsString();
-            if (best == null || compare(number, best.version()) > 0) {
+            if (best == null || Versions.compare(number, best.version()) > 0) {
                 best = new Release(number, modrinthPage() + "/version/" + number);
             }
         }
@@ -221,8 +222,8 @@ public final class UpdateChecker {
             if (release.get("draft").getAsBoolean() || (!prereleases && release.get("prerelease").getAsBoolean())) {
                 continue;
             }
-            String number = stripV(release.get("tag_name").getAsString());
-            if (best == null || compare(number, best.version()) > 0) {
+            String number = release.get("tag_name").getAsString().replaceFirst("^[vV]", "");
+            if (best == null || Versions.compare(number, best.version()) > 0) {
                 best = new Release(number, release.get("html_url").getAsString());
             }
         }
@@ -263,49 +264,5 @@ public final class UpdateChecker {
                 notifyIfOutdated(player);
             }
         });
-    }
-
-    // ------------------------------------------------------------ versions
-
-    /** 0.x versions and versions with a suffix ("1.0.0-rc.1") are pre-releases. */
-    public static boolean isPrerelease(String version) {
-        String v = stripV(version);
-        return v.startsWith("0.") || v.contains("-");
-    }
-
-    private static String stripV(String version) {
-        return version.startsWith("v") || version.startsWith("V") ? version.substring(1) : version;
-    }
-
-    /**
-     * Compares versions like "1.2.0", "v1.10.1" or "1.3.0-beta.2" numerically.
-     * With equal numbers a release is newer than a pre-release ("1.3.0" > "1.3.0-beta").
-     */
-    public static int compare(String a, String b) {
-        String[] partsA = stripV(a).split("-", 2);
-        String[] partsB = stripV(b).split("-", 2);
-        String[] numsA = partsA[0].split("\\.");
-        String[] numsB = partsB[0].split("\\.");
-        for (int i = 0; i < Math.max(numsA.length, numsB.length); i++) {
-            int x = i < numsA.length ? parse(numsA[i]) : 0;
-            int y = i < numsB.length ? parse(numsB[i]) : 0;
-            if (x != y) {
-                return Integer.compare(x, y);
-            }
-        }
-        boolean preA = partsA.length > 1;
-        boolean preB = partsB.length > 1;
-        if (preA != preB) {
-            return preA ? -1 : 1;
-        }
-        return preA ? partsA[1].compareTo(partsB[1]) : 0;
-    }
-
-    private static int parse(String number) {
-        try {
-            return Integer.parseInt(number.replaceAll("\\D", ""));
-        } catch (NumberFormatException e) {
-            return 0;
-        }
     }
 }

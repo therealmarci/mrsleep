@@ -18,6 +18,15 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.3.build.200-stable")
+
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+// Unit-Tests für die server-unabhängige Logik (src/test/java). Laufen bei jedem "build".
+tasks.test {
+    useJUnitPlatform()
 }
 
 java {

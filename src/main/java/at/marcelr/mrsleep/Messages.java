@@ -79,12 +79,6 @@ public final class Messages {
         }
     }
 
-    public void actionBar(Player target, String key, TagResolver... resolvers) {
-        if (raw(key) != null) {
-            target.sendActionBar(get(key, resolvers));
-        }
-    }
-
     public void broadcast(World world, String key, TagResolver... resolvers) {
         if (raw(key) == null) {
             return;

@@ -2,6 +2,21 @@
 
 Diese Dokumentation richtet sich an alle, die am Code von MRsleep arbeiten. Was das Plugin für Server-Admins kann und wie man es einrichtet, steht in der [README](../README.md).
 
+**Inhalt:**
+[1. Überblick](#1-überblick) ·
+[2. Projektstruktur](#2-projektstruktur) ·
+[3. Architektur](#3-architektur) ·
+[4. Schlaflogik](#4-schlaflogik-sleepmanager) ·
+[5. /nosleep](#5-nosleep-nosleepmanager-nosleepcommand) ·
+[6. Config](#6-konfiguration-laden--migrieren-configupdater) ·
+[7. Admin-Menü](#7-admin-menü-gui) ·
+[8. Update-Checker](#8-update-checker-updatechecker) ·
+[9. Nachrichten](#9-nachrichten-messages) ·
+[10. Discord](#10-discord-webhook-discordwebhook) ·
+[11. Permissions](#11-permissions-design) ·
+[12. Entwicklung](#12-entwicklung) ·
+[13. Ideen](#13-erweiterungsideen)
+
 ---
 
 ## 1. Überblick
@@ -24,26 +39,31 @@ mrsleep/
 ├─ settings.gradle.kts
 ├─ gradlew / gradlew.bat       Gradle-Wrapper (lädt Gradle 9.8.1 selbst)
 ├─ CHANGELOG.md                Änderungen pro Version (Quelle für Release-Notes)
-├─ .github/workflows/
-│  ├─ build.yml                Build bei jedem Push/PR, JAR als Artefakt
-│  └─ release.yml              Bei Tag v*: GitHub-Release + Modrinth-Upload
+├─ LICENSE                     MRsleep Lizenz (source-available)
+├─ .editorconfig               Formatierung; hält das BOM der config.yml
+├─ .github/
+│  ├─ workflows/build.yml      Build + Tests bei jedem Push/PR, JAR als Artefakt
+│  ├─ workflows/release.yml    Bei Tag v*: GitHub-Release + Modrinth-Upload
+│  ├─ ISSUE_TEMPLATE/          Vorlagen für Fehlermeldungen und Wünsche
+│  └─ dependabot.yml           monatliche Updates der GitHub-Actions
 ├─ docs/DOKUMENTATION.md       diese Datei
 ├─ README.md                   Doku für Server-Admins
-└─ src/main/
-   ├─ java/at/marcelr/mrsleep/
+└─ src/
+   ├─ main/java/at/marcelr/mrsleep/
    │  ├─ MRSleep.java              Hauptklasse: Lebenszyklus, verbindet alle Komponenten
    │  ├─ Settings.java             unveränderlicher Record mit allen Werten aus config.yml
    │  ├─ ConfigUpdater.java        Config-Migration, Laden mit BOM-Unterstützung
    │  ├─ Messages.java             MiniMessage (Chat, Broadcast, Item-Namen/Lore)
+   │  ├─ StatusTexts.java          Status-Texte eines Spielers (für GUI und /nosleep info)
    │  ├─ SleepDisplay.java         Fortschrittsanzeige: Bossbar / Actionbar / Titel
    │  ├─ SleepManager.java         eigene Schlaflogik (Quote, Nacht überspringen)
    │  ├─ NoSleepManager.java       Blockaden, Cooldowns, Bypässe, Sperren, data.yml
    │  ├─ AdminActions.java         Admin-Aktionen, gemeinsam für Befehle und Menü
    │  ├─ DiscordWebhook.java       asynchrone Discord-Logs
-   │  ├─ UpdateChecker.java        Update-Prüfung über Modrinth oder GitHub
+   │  ├─ UpdateChecker.java        Update-Prüfung (Standard: GitHub Releases, alternativ Modrinth)
    │  ├─ SleepListener.java        Events (Bett, Join/Quit, TimeSkip, WorldLoad)
    │  ├─ command/
-   │  │  ├─ NoSleepCommand.java    /nosleep
+   │  │  ├─ NoSleepCommand.java    /nosleep [nächte|off|info]
    │  │  └─ MRSleepCommand.java    /mrsleep …
    │  ├─ gui/
    │  │  ├─ Menu.java              Basisklasse (InventoryHolder, Klick-Aktionen, render())
@@ -52,11 +72,14 @@ mrsleep/
    │  │  ├─ PlayerMenu.java        Aktionen für einen Spieler
    │  │  ├─ PlayerHead.java        Kopf mit Status-Lore, Sortierung
    │  │  └─ Items.java             Item-Builder
-   │  └─ util/DurationUtil.java    "1h30m" ⇄ Millisekunden
-   └─ resources/
-      ├─ plugin.yml                Befehle und Permissions (${version} wird ersetzt)
-      ├─ config.yml                Standard-Config (UTF-8 mit BOM!)
-      └─ build-info.properties     Version und Projekt-IDs für den Update-Checker (wird ersetzt)
+   │  └─ util/
+   │     ├─ DurationUtil.java      "1h30m" ⇄ Millisekunden
+   │     └─ Versions.java          SemVer-Vergleich, Erkennung von Vorabversionen
+   ├─ main/resources/
+   │  ├─ plugin.yml                Befehle und Permissions (${version} wird ersetzt)
+   │  ├─ config.yml                Standard-Config (UTF-8 mit BOM!)
+   │  └─ build-info.properties     Version und Projekt-IDs für den Update-Checker (wird ersetzt)
+   └─ test/java/…/util/            JUnit-Tests für DurationUtil und Versions
 ```
 
 ## 3. Architektur
@@ -186,7 +209,7 @@ blocks:
 ```
 Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) und zusätzlich in `onDisable`. Abgelaufene Einträge werden beim Speichern entfernt.
 
-## 5b. Konfiguration laden & migrieren (`ConfigUpdater`)
+## 6. Konfiguration laden & migrieren (`ConfigUpdater`)
 - **Laden:** `MRSleep#getConfig()` und `reloadConfig()` sind überschrieben und nutzen `ConfigUpdater.load()`. Dort wird ein UTF-8-**BOM** am Dateianfang entfernt, bevor SnakeYAML die Datei liest. Als Defaults dient die mitgelieferte `config.yml`, fehlende Schlüssel greifen also auf sie zurück.
 - **BOM:** Die mitgelieferte `config.yml` beginnt mit `EF BB BF`. Daran erkennen Windows-Editoren und FTP-Clients die Kodierung, statt Windows-1252 zu raten. Sonst werden Umlaute zu „Ã¤“.
   ⚠️ Beim Bearbeiten von `src/main/resources/config.yml` darauf achten, dass das BOM erhalten bleibt (in VS Code unten rechts „UTF-8 with BOM“).
@@ -196,22 +219,22 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
   3. Die alte Datei wird als `config.v<N>.backup.yml` gesichert, die neue mit BOM geschrieben.
 - **Wenn sich die Config-Struktur ändert:** `CURRENT_VERSION` und `config-version` in der Vorlage erhöhen. Bei umbenannten Schlüsseln die Werte vor dem Übernehmen umschreiben, bei geänderten Standardtexten den Schlüssel in `REPLACED_KEYS` aufnehmen.
 
-## 5c. Admin-Menü (`gui/*`)
+## 7. Admin-Menü (`gui/*`)
 - **`Menu`** ist selbst der `InventoryHolder`. `MenuListener` erkennt Menüs über `getTopInventory().getHolder(false) instanceof Menu`. Jeder Klick in ein Menü wird abgebrochen, ebenso jeder Drag, damit sich keine Items herausnehmen lassen. Danach wird die Aktion des angeklickten Slots ausgeführt.
 - **`render()`** leert das Inventar und ruft `draw()` neu auf. `MenuListener` macht das alle `gui.refresh-ticks` Ticks für jedes offene Menü. Da Bukkit Inventaränderungen erst am Tick-Ende synchronisiert, flackert dabei nichts.
 - **`MainMenu`**: Oben die Welt (eine Uhr, nachts ein Recovery-Kompass, Klick wechselt die Welt), das Info-Buch (Version und Update-Status) und „Blockaden entfernen“. In der Mitte bis zu 36 Köpfe pro Seite, sortiert nach `PlayerHead.rank` (Blockierer → Schlafende → Zählende → Ausgenommene, danach alphabetisch) und gefiltert nach `Filter`. Unten Seiten, Filter, Schließen und Reload.
 - **`PlayerMenu`**: Aktionen für einen Spieler. Jede Taste läuft über `button(...)`: Sie prüft die Permission (sonst Lore-Hinweis, Ablehnungs-Sound und `no-permission`), ruft die Methode in `AdminActions` auf, spielt den Erfolgs-Sound und zeichnet neu. Geht der Spieler offline, springt das Menü zur Übersicht zurück.
 - Alle Texte kommen aus `messages.gui-*`. `Messages#item` und `Messages#lore` entfernen die Kursivschrift, die Minecraft standardmäßig für Item-Texte nutzt. Werte in der Kopf-Lore (z.B. `<counts>`) sind formatierte Komponenten (`Messages.tag(name, Component)`).
 
-## 5d. Update-Checker (`UpdateChecker`)
+## 8. Update-Checker (`UpdateChecker`)
 - Die Projekt-IDs stehen in `gradle.properties` und landen beim Build in `build-info.properties`.
-- **Modrinth:** `GET /v2/project/{id}/version?loaders=["paper"]&include_changelog=false`. **GitHub:** `GET /repos/{repo}/releases`. Entwürfe werden ignoriert. Vorabversionen werden berücksichtigt, wenn `include-prereleases` an ist oder die installierte Version selbst eine Vorabversion ist (`UpdateChecker.isPrerelease`: 0.x oder Suffix).
-- Die höchste Version wird mit `UpdateChecker.compare` bestimmt: numerischer Vergleich, ein führendes `v` wird ignoriert, eine Release-Version gilt als neuer als eine Vorabversion mit gleicher Nummer.
+- **Modrinth:** `GET /v2/project/{id}/version?loaders=["paper"]&include_changelog=false`. **GitHub:** `GET /repos/{repo}/releases`. Entwürfe werden ignoriert. Vorabversionen werden berücksichtigt, wenn `include-prereleases` an ist oder die installierte Version selbst eine Vorabversion ist (`Versions.isPrerelease`: 0.x oder Suffix).
+- Die höchste Version wird mit `Versions.compare` bestimmt (SemVer): Zahlen werden numerisch verglichen (`0.10.0 > 0.9.2`), ein führendes `v` und Build-Metadaten (`+…`) werden ignoriert, eine Release-Version gilt als neuer als ihre Vorabversion (`1.0.0 > 1.0.0-rc.1`), und Vorabversionen werden je Teil verglichen (`rc.10 > rc.2`).
 - Der Check läuft beim Start (nach 5 s) und danach alle `interval-hours` Stunden als Async-Task, außerdem bei `/mrsleep version`. Ist eine neuere Version verfügbar, erscheint einmal pro Version ein Hinweisblock in der Konsole, und online-Admins (`mrsleep.admin.update`) bekommen eine Nachricht. Beim Join kommt der Hinweis nach 3 s.
 - Fehler wie 404 (Projekt noch nicht veröffentlicht) werden einmal als INFO geloggt, danach erst wieder, wenn sich der Grund ändert.
 - Der User-Agent lautet `MRsleep/<version> (<github-url>)`. Modrinth verlangt einen eindeutigen User-Agent.
 
-## 6. Nachrichten (`Messages`)
+## 9. Nachrichten (`Messages`)
 - Alle Texte stehen unter `messages.*` in der Config und werden mit **MiniMessage** dargestellt.
 - `<prefix>` wird als *parsed* Placeholder eingesetzt, darf also selbst Formatierung enthalten. Alle anderen Platzhalter sind *unparsed*, damit Spielernamen keine Tags einschleusen können.
 - Eine leere Nachricht (`""`) wird nicht gesendet. Damit lässt sich jeder Hinweis abschalten. Ein **fehlender** Schlüssel erzeugt sichtbar `Fehlende Nachricht: <key>`.
@@ -236,7 +259,7 @@ Wo welche Nachricht ausgelöst wird:
 | `update-*` | `UpdateChecker` |
 | `gui-*` | `gui/*` |
 
-## 7. Discord-Webhook (`DiscordWebhook`)
+## 10. Discord-Webhook (`DiscordWebhook`)
 - `load(section)` liest `discord.*` und prüft, ob die URL wie eine Discord-Webhook-URL aussieht. Ist sie ungültig, gibt es eine Warnung in der Konsole und Discord bleibt aus.
 - `log(eventKey, key1, value1, key2, value2, …)` ersetzt `{key}` im Event-Text. Die Werte werden für Discord-Markdown escaped (`_ * ~ \` | > \\`), damit z.B. `Mr_Steve` nicht kursiv wird.
 - Das JSON entsteht mit Gson: ein Embed mit `description`, `color`, `timestamp` und optional `footer`, oder einfacher `content`. Zusätzlich wird immer `allowed_mentions: {parse: []}` gesetzt, damit nie jemand gepingt wird.
@@ -245,13 +268,13 @@ Wo welche Nachricht ausgelöst wird:
 - `shutdown()` wartet in `onDisable` bis zu 5 Sekunden, damit letzte Logs noch rausgehen.
 - `bed-blocked` wird über `SleepListener#loggedBedAttempts` pro Welt, Spieler und Nacht nur einmal gesendet. Das Set wird bei jedem `TimeSkipEvent` geleert.
 
-## 8. Permissions-Design
+## 11. Permissions-Design
 - `mrsleep.exempt` hat `default: false`, damit OPs nicht automatisch aus der Quote fallen.
 - `mrsleep.admin` enthält alle `mrsleep.admin.*` als Kinder, aber **nicht** `mrsleep.exempt`.
 - Bei `/mrsleep` steht in der `plugin.yml` bewusst keine Permission. Sonst würde ein Moderator, der nur `mrsleep.admin.clear` hat, den Befehl gar nicht sehen. Die Prüfung passiert pro Unterbefehl in `MRSleepCommand#check`.
 - Bekannte Einschränkung: Die LuckPerms-Wildcards `*` und `mrsleep.*` schließen `mrsleep.exempt` mit ein. Abhilfe steht in der README.
 
-## 9. Entwicklung
+## 12. Entwicklung
 
 ### Voraussetzungen (bereits eingerichtet)
 - Eclipse Temurin **JDK 25** (`C:\Program Files\Eclipse Adoptium\jdk-25…`, `JAVA_HOME` ist systemweit gesetzt)
@@ -266,6 +289,16 @@ gradlew.bat build
 → build/libs/MRsleep-<version>.jar
 ```
 Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml` (`${version}`) und in die `build-info.properties` übernommen.
+
+### Tests
+```text
+gradlew.bat test        nur die Tests
+gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test fehlschlägt)
+```
+- JUnit 6 (`src/test/java`). Getestet wird die Logik, die ohne laufenden Server auskommt: `DurationUtil` (Parsen und Formatieren von Zeitangaben) und `Versions` (SemVer-Vergleich, Vorabversionen).
+- Alles, was Bukkit braucht (Schlafen, Events, GUI), prüft die manuelle Testcheckliste weiter unten auf dem Testserver.
+- Die Ergebnisse stehen in `build/reports/tests/test/index.html`. Auf GitHub laufen die Tests bei jedem Push (`build.yml`) und vor jedem Release.
+- **Neue Logik ohne Server-Bezug** am besten nach `util/` legen und dort testen.
 
 ### Versionierung & Release
 - **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (aktuelle Testphase) sowie Versionen mit Suffix wie `1.0.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Ab `1.0.0` werden Versionen als normale Releases veröffentlicht.
@@ -306,7 +339,7 @@ Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml`
 | 16 | Spieler-Menü ohne `mrsleep.admin.ban` | Sperr-Buttons zeigen „Keine Berechtigung“, ein Klick wird abgelehnt |
 | 17 | `/mrsleep version` | Version, Links und Update-Status (vor dem ersten Release: „Projekt nicht gefunden“) |
 
-## 10. Erweiterungsideen
+## 13. Erweiterungsideen
 - Eine Permission pro Nächtezahl (z.B. `mrsleep.nosleep.nights.5`), um `max-nights` je Gruppe zu staffeln
 - PlaceholderAPI-Expansion (`%mrsleep_needed%`, `%mrsleep_blocked%`)
 - Sanftes Vorspulen der Zeit statt eines Sprungs

@@ -7,6 +7,12 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 > Befehle und Permissions noch ändern.
 
 ## [Unveröffentlicht]
+### Intern
+- Repo aufgeräumt: ungenutzten Code und Texte entfernt (`gui-yes`, `gui-no`), Versionslogik nach `util/Versions`
+  ausgelagert. Vorabversionen werden jetzt je Teil verglichen (`rc.10` > `rc.2`).
+- Unit-Tests (JUnit 6) für Zeitangaben und Versionsvergleich, laufen bei jedem Build und auf GitHub.
+- `.editorconfig` (hält das BOM der `config.yml`), Issue-Vorlagen, Dependabot für GitHub-Actions.
+- Doku: Inhaltsverzeichnis, durchnummerierte Abschnitte, Badges in der README.
 
 ## [0.9.4] - 2026-10-17
 ### Geändert
