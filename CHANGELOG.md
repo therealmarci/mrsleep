@@ -13,6 +13,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - Unit-Tests (JUnit 6) für Zeitangaben und Versionsvergleich, laufen bei jedem Build und auf GitHub.
 - `.editorconfig` (hält das BOM der `config.yml`), Issue-Vorlagen, Dependabot für GitHub-Actions.
 - Doku: Inhaltsverzeichnis, durchnummerierte Abschnitte, Badges in der README.
+- Branch-Modell: Entwicklung auf `beta`, stabile Versionen auf `main`. Der Release-Workflow lässt stabile
+  Versionen nur von `main` zu. Dazu eine Vorlage für Pull Requests.
 
 ## [0.9.4] - 2026-10-17
 ### Geändert

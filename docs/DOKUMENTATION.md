@@ -302,11 +302,25 @@ gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test 
 
 ### Versionierung & Release
 - **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (aktuelle Testphase) sowie Versionen mit Suffix wie `1.0.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Ab `1.0.0` werden Versionen als normale Releases veröffentlicht.
-- **Ablauf:**
-  1. `version` in `gradle.properties` erhöhen.
-  2. In `CHANGELOG.md` einen Abschnitt `## [<version>] - <datum>` ergänzen.
-  3. Committen und pushen.
-  4. `git tag v<version>` und `git push origin v<version>`.
+- **Branches:**
+
+  | Branch | Zweck | Tags / Releases |
+  |---|---|---|
+  | `beta` | Entwicklung. Hier wird gearbeitet, Pull Requests und Dependabot zielen hierhin. | Vorabversionen (`1.0.0-rc.1`, `1.1.0-beta.2`) |
+  | `main` | Stabiler Stand. Bekommt nur Merges aus `beta`, wenn eine Version fertig ist. | Stabile Versionen (`1.0.0`, `1.0.1`) |
+
+  Beide Branches werden bei jedem Push gebaut und getestet (`build.yml`). `release.yml` bricht ab, wenn eine **stabile** Version nicht auf einem Commit aus `main` getaggt wurde (`git merge-base --is-ancestor`).
+
+- **Vorabversion (von `beta`):**
+  1. Auf `beta`: `version` in `gradle.properties` setzen (z.B. `1.1.0-rc.1`).
+  2. In `CHANGELOG.md` einen Abschnitt `## [<version>] - <datum>` anlegen. Dorthin kommt, was bisher unter „Unveröffentlicht“ stand.
+  3. Committen, pushen, dann `git tag v<version>` und `git push origin v<version>`.
+- **Stabile Version (von `main`):**
+  1. Auf `beta`: `version` auf die finale Nummer setzen (z.B. `1.1.0`) und den Changelog-Abschnitt anlegen, dann committen und pushen.
+  2. `git checkout main`, `git merge --no-ff beta`, `git push`.
+  3. `git tag v<version>` und `git push origin v<version>`.
+  4. Wieder `git checkout beta`, dann die nächste Version vorbereiten.
+- **Hotfix für eine stabile Version:** Auf `main` beheben, als PATCH-Version taggen (z.B. `1.0.1`) und `main` anschließend nach `beta` mergen, damit der Fix nicht verloren geht.
 - **`release.yml`** prüft, dass Tag und `gradle.properties` übereinstimmen, baut die JAR, liest den passenden Abschnitt aus `CHANGELOG.md` und erstellt damit das GitHub-Release mit der JAR. Ist das Repository-Secret `MODRINTH_TOKEN` gesetzt, folgt `./gradlew modrinth` (Minotaur). Der Changelog-Text kommt über die Umgebungsvariable `CHANGELOG`.
 - **Einmalig einrichten:**
   - GitHub-Repository anlegen (Name wie `githubRepository` in `gradle.properties`) und pushen.

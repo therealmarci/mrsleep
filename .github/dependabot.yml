@@ -5,3 +5,5 @@ updates:
     directory: /
     schedule:
       interval: monthly
+    # Updates landen im Entwicklungs-Branch, nicht direkt auf main.
+    target-branch: beta

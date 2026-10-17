@@ -245,10 +245,13 @@ gradlew.bat build     (Windows)   ./gradlew build   (Linux/macOS)
 ```
 Die JAR liegt danach in `build/libs/`. In VS Code reicht **Strg+Shift+B**.
 
+**Branches:** Entwickelt wird auf **`beta`**, und Pull Requests bitte auch gegen `beta` stellen. **`main`** enthält nur fertige, stabile Versionen.
+
 **Release** (GitHub und Modrinth):
 1. In `gradle.properties` die `version` erhöhen.
 2. In `CHANGELOG.md` einen Abschnitt `## [<version>]` anlegen.
-3. Committen, dann den Tag erstellen und pushen: `git tag v<version>` und `git push origin main --tags`.
+3. Committen, dann den Tag erstellen und pushen: `git tag v<version>` und `git push origin v<version>`.
+   Vorabversionen werden von `beta` getaggt, stabile Versionen von `main` (nach dem Merge von `beta`). Den genauen Ablauf beschreibt die [Projektdoku](docs/DOKUMENTATION.md#versionierung--release).
 
 Alle `0.x`-Versionen und Versionen mit Suffix (z.B. `1.0.0-rc.1`) werden automatisch als **Vorabversion** veröffentlicht: auf Modrinth als „Beta“, auf GitHub als „Pre-release“.
 

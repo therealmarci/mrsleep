@@ -16,6 +16,8 @@ jobs:
       MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # nötig, um zu prüfen, auf welchem Branch der Tag liegt
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -35,6 +37,14 @@ jobs:
             0.*|*-*) echo "PRERELEASE=true" >> "$GITHUB_ENV" ;;
             *)       echo "PRERELEASE=false" >> "$GITHUB_ENV" ;;
           esac
+
+      - name: Stabile Versionen nur von main
+        if: ${{ env.PRERELEASE == 'false' }}
+        run: |
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" origin/main; then
+            echo "::error::Stabile Version $VERSION muss auf main getaggt werden (Vorabversionen wie 1.0.0-rc.1 dürfen von beta kommen)."
+            exit 1
+          fi
 
       - name: Bauen
         run: chmod +x gradlew && ./gradlew build
