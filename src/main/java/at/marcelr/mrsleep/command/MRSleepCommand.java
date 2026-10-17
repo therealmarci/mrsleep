@@ -1,6 +1,7 @@
 package at.marcelr.mrsleep.command;
 
 import at.marcelr.mrsleep.AdminActions;
+import at.marcelr.mrsleep.DiscordWebhook;
 import at.marcelr.mrsleep.MRSleep;
 import at.marcelr.mrsleep.Messages;
 import at.marcelr.mrsleep.NoSleepManager;
@@ -39,6 +40,7 @@ public final class MRSleepCommand implements TabExecutor {
     private static final String PERM_CLEAR = "mrsleep.admin.clear";
     private static final String PERM_BYPASS = "mrsleep.admin.bypass";
     private static final String PERM_BAN = "mrsleep.admin.ban";
+    private static final String PERM_DISCORD = "mrsleep.admin.discord";
 
     private static final List<String> PERMANENT_WORDS = List.of("permanent", "perm", "dauerhaft", "forever");
 
@@ -120,6 +122,11 @@ public final class MRSleepCommand implements TabExecutor {
             case "bans" -> {
                 if (check(sender, PERM_BAN)) {
                     bans(sender);
+                }
+            }
+            case "discord" -> {
+                if (check(sender, PERM_DISCORD)) {
+                    discord(sender, args);
                 }
             }
             default -> messages().send(sender, "admin-usage");
@@ -329,6 +336,40 @@ public final class MRSleepCommand implements TabExecutor {
                 tag("by", ban.by())));
     }
 
+    // -------------------------------------------------------------- discord
+
+    /** /mrsleep discord - status; /mrsleep discord test - sends a test message and reports Discord's answer. */
+    private void discord(CommandSender sender, String[] args) {
+        DiscordWebhook discord = plugin.discord();
+        if (discord.enabled()) {
+            int[] counts = discord.eventCounts();
+            messages().send(sender, "discord-status-active", tag("events", counts[0]), tag("total", counts[1]));
+        } else {
+            messages().send(sender, "discord-status-inactive", tag("reason", discord.disabledReason()));
+        }
+        String last = discord.lastResult();
+        messages().send(sender, "discord-status-last", tag("result", last == null ? messages().plain("discord-status-never") : last));
+
+        if (args.length < 2 || !args[1].equalsIgnoreCase("test")) {
+            if (discord.enabled()) {
+                messages().send(sender, "discord-test-hint");
+            }
+            return;
+        }
+        if (!discord.enabled()) {
+            return;
+        }
+        messages().send(sender, "discord-test-sending");
+        discord.test().whenComplete((error, throwable) -> Bukkit.getScheduler().runTask(plugin, () -> {
+            String problem = throwable != null ? throwable.getMessage() : error;
+            if (problem == null) {
+                messages().send(sender, "discord-test-ok");
+            } else {
+                messages().send(sender, "discord-test-failed", tag("reason", problem));
+            }
+        }));
+    }
+
     // ------------------------------------------------------------- helpers
 
     private interface PlayerAction {
@@ -361,7 +402,7 @@ public final class MRSleepCommand implements TabExecutor {
     }
 
     private static boolean hasAnyAdminPermission(CommandSender sender) {
-        for (String permission : List.of(PERM_GUI, PERM_RELOAD, PERM_STATUS, PERM_CLEAR, PERM_BYPASS, PERM_BAN)) {
+        for (String permission : List.of(PERM_GUI, PERM_RELOAD, PERM_STATUS, PERM_CLEAR, PERM_BYPASS, PERM_BAN, PERM_DISCORD)) {
             if (sender.hasPermission(permission)) {
                 return true;
             }
@@ -390,6 +431,7 @@ public final class MRSleepCommand implements TabExecutor {
             addIf(sender, PERM_CLEAR, options, "clear", "release");
             addIf(sender, PERM_BYPASS, options, "bypass", "resetcooldown");
             addIf(sender, PERM_BAN, options, "ban", "unban", "bans");
+            addIf(sender, PERM_DISCORD, options, "discord");
             addIf(sender, PERM_RELOAD, options, "reload");
         } else {
             String sub = args[0].toLowerCase(Locale.ROOT);
@@ -401,6 +443,11 @@ public final class MRSleepCommand implements TabExecutor {
                                 options.add(world.getName());
                             }
                         }
+                    }
+                }
+                case "discord" -> {
+                    if (args.length == 2) {
+                        options.add("test");
                     }
                 }
                 case "release", "resetcooldown" -> {

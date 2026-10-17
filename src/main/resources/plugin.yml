@@ -40,6 +40,10 @@ permissions:
       mrsleep.admin.ban: true
       mrsleep.admin.teleport: true
       mrsleep.admin.update: true
+      mrsleep.admin.discord: true
+  mrsleep.admin.discord:
+    description: /mrsleep discord [test] - Status des Discord-Webhooks und Testnachricht.
+    default: op
   mrsleep.admin.gui:
     description: /mrsleep gui - Admin-Menü öffnen (Aktionen darin brauchen zusätzlich ihre eigene Permission).
     default: op

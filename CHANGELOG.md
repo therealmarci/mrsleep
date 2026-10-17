@@ -3,10 +3,34 @@
 Alle wichtigen Änderungen an MRsleep. Format nach [Keep a Changelog](https://keepachangelog.com/de/1.1.0/),
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
-> **Pre-Release:** Alle 0.x-Versionen sind Testversionen. Bis zum Release 1.0.0 können sich Config,
-> Befehle und Permissions noch ändern.
-
 ## [Unveröffentlicht]
+
+## [1.0.0] - 2026-10-17
+**Erste stabile Version.** Ab hier gilt Semantic Versioning: Config, Befehle und Permissions ändern sich
+nur noch mit einer neuen Hauptversion (2.0.0) inkompatibel. Bestehende Configs aus 0.9.x werden automatisch migriert.
+
+Funktionsumfang:
+- Schlafquote mit Ausnahmen (`mrsleep.exempt`), eigene Schlaflogik statt Vanilla-Gamerule
+- `/nosleep [nächte|off|info]` mit Cooldown ab Nachtbeginn, Admin-Bypass und Sperren
+- Admin-Menü (`/mrsleep gui`) mit Live-Status und Aktionen pro Spieler
+- Bossbar-Anzeige, Chat-Hinweise, Discord-Logs, Update-Prüfung über GitHub Releases
+- Alles in einer `config.yml` (UTF-8 mit BOM) einstellbar, Permission für jede Funktion
+
+Änderungen gegenüber 0.9.4:
+
+### Neu
+- **`/mrsleep discord`** zeigt den Status des Discord-Webhooks (aktiv/inaktiv mit Grund, eingeschaltete Events,
+  Ergebnis des letzten Versands). **`/mrsleep discord test`** schickt eine Testnachricht und meldet die Antwort
+  von Discord. Permission `mrsleep.admin.discord`.
+- Konsole beim Start und Reload: „Discord-Webhook aktiv (x/y Events eingeschaltet)“ bzw. der Grund für „deaktiviert“.
+
+### Behoben
+- Discord-Events, die in der eigenen `config.yml` fehlen, werden jetzt aus dem Standard ergänzt, statt still
+  übersprungen zu werden.
+- Fehler beim Versand nennen die Ursache (z.B. „HTTP 404 - Webhook existiert nicht“) statt nur den Statuscode.
+- Leere oder ungültige Webhook-URL wird mit genauer Meldung abgelehnt.
+- Config-Version 5 (neue Texte, wird automatisch migriert).
+
 ### Intern
 - Repo aufgeräumt: ungenutzten Code und Texte entfernt (`gui-yes`, `gui-no`), Versionslogik nach `util/Versions`
   ausgelagert. Vorabversionen werden jetzt je Teil verglichen (`rc.10` > `rc.2`).

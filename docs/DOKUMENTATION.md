@@ -260,12 +260,14 @@ Wo welche Nachricht ausgelöst wird:
 | `gui-*` | `gui/*` |
 
 ## 10. Discord-Webhook (`DiscordWebhook`)
-- `load(section)` liest `discord.*` und prüft, ob die URL wie eine Discord-Webhook-URL aussieht. Ist sie ungültig, gibt es eine Warnung in der Konsole und Discord bleibt aus.
+- `load(section)` liest `discord.*` und prüft die URL. Ist sie leer oder ungültig, bleibt Discord aus. Der Grund wird in der Konsole gewarnt und in `disabledReason` gehalten. Bei Erfolg steht „Discord-Webhook aktiv (x/y Events eingeschaltet)“ in der Konsole.
+- **Events:** Die Einträge aus `discord.events` der eigenen Datei, ergänzt um alle Events aus der mitgelieferten Config, die dort fehlen. Bukkit würde für fehlende Abschnitte sonst stillschweigend leere Sektionen liefern. Ruft der Code ein Event auf, das es trotzdem nicht gibt, kommt einmalig eine Warnung.
 - `log(eventKey, key1, value1, key2, value2, …)` ersetzt `{key}` im Event-Text. Die Werte werden für Discord-Markdown escaped (`_ * ~ \` | > \\`), damit z.B. `Mr_Steve` nicht kursiv wird.
 - Das JSON entsteht mit Gson: ein Embed mit `description`, `color`, `timestamp` und optional `footer`, oder einfacher `content`. Zusätzlich wird immer `allowed_mentions: {parse: []}` gesetzt, damit nie jemand gepingt wird.
 - Gesendet wird über `java.net.http.HttpClient` auf **einem** Single-Thread-Executor. Dadurch bleibt die Reihenfolge erhalten, und bei HTTP 429 kann der Thread `retry_after` abwarten (höchstens 3 Versuche).
 - Der Zustand (`Config`-Record) ist `volatile` und wird beim Reload atomar ersetzt.
 - `shutdown()` wartet in `onDisable` bis zu 5 Sekunden, damit letzte Logs noch rausgehen.
+- **Diagnose:** `send()` gibt `null` (Erfolg) oder eine Fehlerbeschreibung zurück und merkt sich das Ergebnis in `lastResult`. Bekannte Statuscodes werden erklärt (400 abgelehnt, 401/403 Token ungültig, 404 Webhook gelöscht). `/mrsleep discord test` nutzt `test()`, das mit `?wait=true` sendet, damit Discord die Zustellung bestätigt.
 - `bed-blocked` wird über `SleepListener#loggedBedAttempts` pro Welt, Spieler und Nacht nur einmal gesendet. Das Set wird bei jedem `TimeSkipEvent` geleert.
 
 ## 11. Permissions-Design
@@ -301,7 +303,7 @@ gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test 
 - **Neue Logik ohne Server-Bezug** am besten nach `util/` legen und dort testen.
 
 ### Versionierung & Release
-- **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (aktuelle Testphase) sowie Versionen mit Suffix wie `1.0.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Ab `1.0.0` werden Versionen als normale Releases veröffentlicht.
+- **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (Testphase bis 1.0.0) sowie Versionen mit Suffix wie `1.1.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Seit `1.0.0` werden Versionen ohne Suffix als normale Releases veröffentlicht.
 - **Branches:**
 
   | Branch | Zweck | Tags / Releases |
