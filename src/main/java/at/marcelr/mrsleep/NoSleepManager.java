@@ -49,7 +49,15 @@ public final class NoSleepManager {
     }
 
     /** Blocks all nights with a key in [startKey, endKey]. */
-    private record Block(long startKey, long endKey) {
+    /**
+     * @param charged whether the /nosleep cooldown was already started for this block. A block set during the day
+     *                is "pending" until sleeping becomes possible; lifting it before that costs no cooldown.
+     */
+    private record Block(long startKey, long endKey, boolean charged) {
+
+        Block charge() {
+            return new Block(startKey, endKey, true);
+        }
 
         boolean expired(long currentKey) {
             return currentKey > endKey;
@@ -113,11 +121,62 @@ public final class NoSleepManager {
     }
 
     /** Blocks the current/upcoming night and the following {@code nights - 1} nights, replacing an existing block. */
+    /**
+     * Blocks the current/upcoming night and the following {@code nights - 1} nights, replacing an existing block.
+     * If sleeping is already possible the cooldown starts right away, otherwise when the night begins.
+     */
     public void setBlock(World world, UUID player, int nights) {
         long key = nightKey(world);
+        boolean chargeNow = SleepManager.sleepPossible(world);
         blocks.computeIfAbsent(world.getUID(), k -> new LinkedHashMap<>())
-                .put(player, new Block(key, key + Math.max(1, nights) - 1));
-        save();
+                .put(player, new Block(key, key + Math.max(1, nights) - 1, chargeNow));
+        if (chargeNow) {
+            markUsed(player);
+        } else {
+            save();
+        }
+    }
+
+    /** @return true if the player's block in this world waits for the night, i.e. its cooldown has not started */
+    public boolean isPending(World world, UUID player) {
+        Map<UUID, Block> worldBlocks = blocks.get(world.getUID());
+        Block block = worldBlocks == null ? null : worldBlocks.get(player);
+        return block != null && !block.expired(nightKey(world)) && !block.charged();
+    }
+
+    /** @return true if the player has a pending block in any world */
+    public boolean isPendingAnywhere(UUID player) {
+        for (World world : Bukkit.getWorlds()) {
+            if (isPending(world, player)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Starts the cooldown of all pending blocks once sleeping is possible in the world.
+     * @return players whose cooldown started now
+     */
+    public List<UUID> chargePending(World world) {
+        Map<UUID, Block> worldBlocks = blocks.get(world.getUID());
+        if (worldBlocks == null || worldBlocks.isEmpty() || !SleepManager.sleepPossible(world)) {
+            return List.of();
+        }
+        long key = nightKey(world);
+        List<UUID> charged = new ArrayList<>();
+        for (Map.Entry<UUID, Block> entry : worldBlocks.entrySet()) {
+            Block block = entry.getValue();
+            if (!block.charged() && !block.expired(key) && key >= block.startKey()) {
+                entry.setValue(block.charge());
+                lastUse.put(entry.getKey(), System.currentTimeMillis());
+                charged.add(entry.getKey());
+            }
+        }
+        if (!charged.isEmpty()) {
+            save();
+        }
+        return charged;
     }
 
     public boolean removeBlock(World world, UUID player) {
@@ -332,7 +391,9 @@ public final class NoSleepManager {
                 if (playerId != null) {
                     worldBlocks.put(playerId, new Block(
                             players.getLong(playerKey + ".start"),
-                            players.getLong(playerKey + ".end")));
+                            players.getLong(playerKey + ".end"),
+                            // blocks saved before 0.9.4 had their cooldown charged on creation
+                            players.getBoolean(playerKey + ".charged", true)));
                 }
             }
             blocks.put(worldId, worldBlocks);
@@ -377,6 +438,7 @@ public final class NoSleepManager {
         blocks.forEach((world, worldBlocks) -> worldBlocks.forEach((player, block) -> {
             data.set("blocks." + world + "." + player + ".start", block.startKey());
             data.set("blocks." + world + "." + player + ".end", block.endKey());
+            data.set("blocks." + world + "." + player + ".charged", block.charged());
         }));
         try {
             data.save(dataFile);

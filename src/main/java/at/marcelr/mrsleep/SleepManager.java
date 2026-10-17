@@ -1,5 +1,6 @@
 package at.marcelr.mrsleep;
 
+import at.marcelr.mrsleep.util.DurationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRules;
@@ -120,6 +121,11 @@ public final class SleepManager {
         }
     }
 
+    /** Sleeping is possible at night and during thunderstorms - that is when a /nosleep block takes effect. */
+    public static boolean sleepPossible(World world) {
+        return isNight(world) || world.isThundering();
+    }
+
     public static boolean isNight(World world) {
         long time = world.getTime() % 24_000L;
         return time >= NoSleepManager.NIGHT_START && time < NoSleepManager.NIGHT_END;
@@ -168,6 +174,16 @@ public final class SleepManager {
             String name = NoSleepManager.name(expired);
             messages.broadcast(world, "nosleep-expired", tag("player", name));
             plugin.discord().log("nosleep-expired", "player", name, "world", world.getName());
+        }
+
+        // Blocks set during the day: the cooldown starts once they take effect.
+        String cooldown = DurationUtil.format(plugin.settings().cooldownMillis());
+        for (UUID charged : plugin.noSleep().chargePending(world)) {
+            Player player = Bukkit.getPlayer(charged);
+            if (player != null && !player.hasPermission(NoSleepManager.PERM_NO_COOLDOWN)
+                    && plugin.noSleep().bypassRemaining(charged) <= 0) {
+                messages.send(player, "nosleep-cooldown-started", tag("time", cooldown));
+            }
         }
 
         if (!isNight(world)) {

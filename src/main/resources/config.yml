@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Nicht ändern - wird für automatische Config-Updates verwendet.
-config-version: 3
+config-version: 4
 
 
 # ------------------------------------------------------------------------------
@@ -64,7 +64,10 @@ sleep:
 #   2) /NOSLEEP
 # ------------------------------------------------------------------------------
 nosleep:
-  # Cooldown zwischen zwei Blockaden pro Spieler. Das Aufheben kostet keinen Cooldown.
+  # Cooldown zwischen zwei Blockaden pro Spieler.
+  # Er startet erst, wenn die blockierte Nacht anbricht (ab da kann man schlafen, auch bei Gewitter).
+  # Wird tagsüber blockiert und vor Nachtbeginn wieder aufgehoben, entsteht kein Cooldown.
+  # Aufheben in der Nacht ist jederzeit möglich, der Cooldown läuft dann aber weiter.
   # Ausgenommen: Permission "mrsleep.nosleep.nocooldown" oder ein Admin-Bypass.
   cooldown: 15m
 
@@ -235,6 +238,10 @@ messages:
   nosleep-activated: "<prefix><green>Du blockierst das Schlafen für <white><nights></white>. Nutze <white>/nosleep</white> erneut, um es aufzuheben."
   nosleep-updated: "<prefix><green>Deine Schlafblockade gilt jetzt für <white><nights></white>."
   nosleep-deactivated: "<prefix><green>Du hast deine Schlafblockade aufgehoben."
+  nosleep-deactivated-free: "<prefix><green>Du hast deine Schlafblockade aufgehoben. <gray>Die Nacht hatte noch nicht begonnen - es entsteht kein Cooldown."
+  nosleep-deactivated-cooldown: "<prefix><green>Du hast deine Schlafblockade aufgehoben. <gray>Dein Cooldown läuft weiter (noch <white><time></white>)."
+  nosleep-pending-info: "<prefix><gray>Der Cooldown (<white><time></white>) startet erst, wenn die Nacht anbricht. Hebst du die Blockade vorher auf, entsteht keiner."
+  nosleep-cooldown-started: "<prefix><gray>Die Nacht bricht an - deine Blockade ist aktiv, dein <white>/nosleep</white>-Cooldown (<white><time></white>) läuft ab jetzt."
   nosleep-not-active: "<prefix><gray>Du hast gerade keine Schlafblockade aktiv."
   nosleep-invalid-nights: "<prefix><red>Bitte gib eine Anzahl zwischen <white>1</white> und <white><max></white> Nächten an: <white>/nosleep [anzahl]"
   nosleep-cooldown: "<prefix><red>Du kannst <white>/nosleep</white> erst wieder in <white><time></white> nutzen."
@@ -302,6 +309,7 @@ messages:
   debug-cooldown-permission: "keiner (Permission mrsleep.nosleep.nocooldown)"
   debug-cooldown-bypass: "keiner (Bypass, noch <time>)"
   debug-cooldown-remaining: "noch <time>"
+  debug-cooldown-pending: "startet bei Nachtbeginn"
 
   # --- Version & Updates -------------------------------------------------------
   version: "<prefix><gray>MRsleep <white>v<version></white> von <white><author></white>"
@@ -341,6 +349,7 @@ messages:
   gui-value-cooldown-remaining: "<yellow>noch <time>"
   gui-value-cooldown-bypass: "<light_purple>Bypass (noch <time>)"
   gui-value-cooldown-permission: "<light_purple>keiner (Permission)"
+  gui-value-cooldown-pending: "<aqua>startet bei Nachtbeginn"
   gui-value-ban-none: "<green>erlaubt"
   gui-value-ban-active: "<red>gesperrt, <duration> <dark_gray>(<reason>)"
 

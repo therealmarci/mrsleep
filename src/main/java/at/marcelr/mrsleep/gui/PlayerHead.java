@@ -54,6 +54,8 @@ final class PlayerHead {
             cooldown = messages.get("gui-value-cooldown-permission");
         } else if (bypass > 0) {
             cooldown = messages.get("gui-value-cooldown-bypass", tag("time", DurationUtil.format(bypass)));
+        } else if (noSleep.isPendingAnywhere(target.getUniqueId())) {
+            cooldown = messages.get("gui-value-cooldown-pending");
         } else {
             long remaining = noSleep.remainingCooldown(target);
             cooldown = remaining > 0

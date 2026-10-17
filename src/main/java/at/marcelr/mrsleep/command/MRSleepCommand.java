@@ -235,6 +235,9 @@ public final class MRSleepCommand implements TabExecutor {
         if (bypass > 0) {
             return messages.plain("debug-cooldown-bypass").replace("<time>", DurationUtil.format(bypass));
         }
+        if (noSleep.isPendingAnywhere(player.getUniqueId())) {
+            return messages.plain("debug-cooldown-pending");
+        }
         long remaining = noSleep.remainingCooldown(player);
         return remaining > 0
                 ? messages.plain("debug-cooldown-remaining").replace("<time>", DurationUtil.format(remaining))

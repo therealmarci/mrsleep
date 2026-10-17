@@ -8,6 +8,15 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [0.9.4] - 2026-10-17
+### Geändert
+- **/nosleep-Cooldown startet erst bei Nachtbeginn** (ab dem Zeitpunkt, an dem man schlafen kann, auch bei Gewitter).
+  Wer tagsüber blockiert und vor Nachtbeginn wieder aufhebt, bekommt keinen Cooldown. Aufheben in der Nacht
+  bleibt möglich, der Cooldown läuft dann weiter. Blockieren in der Nacht startet den Cooldown sofort.
+- Neue Hinweise: Cooldown startet bei Nachtbeginn, Cooldown läuft ab jetzt, Aufheben ohne Cooldown bzw. mit Restzeit.
+- `/mrsleep debug` und das Admin-Menü zeigen „startet bei Nachtbeginn“ für wartende Blockaden.
+- Config-Version 4 (neue Nachrichten, wird automatisch migriert).
+
 ## [0.9.3] - 2026-10-17
 ### Neu
 - **Bossbar** für den Schlaf-Fortschritt (`sleep.display: bossbar`, Standard). Sie sitzt oben am Bildschirm und wird

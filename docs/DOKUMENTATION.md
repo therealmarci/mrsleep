@@ -153,9 +153,15 @@ Gespeichert als `world → (player → Block(startKey, endKey))`, mit erhaltener
 ```text
 /nosleep off|aus|cancel  → eigene Blockade aufheben (kein Cooldown)
 /nosleep  (aktiv)        → eigene Blockade aufheben (kein Cooldown)
-/nosleep  (nicht aktiv)  → 1 Nacht blockieren            ┐ prüft Cooldown,
-/nosleep N               → N Nächte (1..max-nights)      ┘ startet Cooldown
+/nosleep  (nicht aktiv)  → 1 Nacht blockieren            ┐ prüft Cooldown; startet ihn sofort, wenn
+/nosleep N               → N Nächte (1..max-nights)      ┘ man schlafen kann, sonst bei Nachtbeginn
 ```
+**Cooldown erst bei Nachtbeginn:**
+- Jeder `Block` hat ein Flag `charged`. `setBlock` setzt es sofort (und ruft `markUsed` auf), wenn `SleepManager.sleepPossible(world)` gilt (`isNight` oder Gewitter). Sonst bleibt der Block „pending“.
+- `SleepManager#housekeeping` ruft alle 10 Ticks `NoSleepManager#chargePending` auf. Sobald man in der Welt schlafen kann, startet bei allen wartenden Blöcken der Cooldown (`lastUse = jetzt`), und die Spieler bekommen `nosleep-cooldown-started`.
+- Hebt der Spieler einen wartenden Block selbst auf (`NoSleepCommand#lift`), wurde nie ein Cooldown gesetzt (`nosleep-deactivated-free`). Bei einem schon belasteten Block läuft der Cooldown weiter (`nosleep-deactivated-cooldown`).
+- Blöcke aus `data.yml` vor 0.9.4 haben kein Flag und gelten als belastet.
+
 Der Cooldown entfällt bei `mrsleep.nosleep.nocooldown` (`default: false`, gilt also auch nicht automatisch für OPs) oder bei einem aktiven Bypass (`bypassUntil > now`). Vor der Cooldown-Prüfung wird geprüft, ob eine **Sperre** besteht. Das Aufheben einer eigenen Blockade bleibt auch gesperrten Spielern möglich.
 
 ### Sperren
@@ -287,7 +293,9 @@ Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml`
 | 5 | `/nosleep` erneut | Blockade aufgehoben, kein neuer Cooldown |
 | 6 | `/nosleep 3`, dann 3 Nächte per `/time set` durchspielen | „noch 3/2/1 Nächte“, danach `nosleep-expired` |
 | 7 | `/nosleep 4` bei `max-nights: 3` | `nosleep-invalid-nights` |
-| 8 | Zweimal `/nosleep 1` innerhalb von 15 min (mit Aufheben dazwischen) | Cooldown-Meldung |
+| 8 | Nachts `/nosleep`, aufheben, erneut `/nosleep` | `nosleep-deactivated-cooldown`, danach Cooldown-Meldung |
+| 8b | Tagsüber `/nosleep` (Hinweis `nosleep-pending-info`), vor Nachtbeginn aufheben, erneut `/nosleep` | `nosleep-deactivated-free`, erneutes Blockieren klappt sofort |
+| 8c | Tagsüber `/nosleep`, dann `/time set 13000` | `nosleep-cooldown-started`; `/mrsleep debug` zeigt vorher „startet bei Nachtbeginn“, danach „noch 15m“ |
 | 9 | `/mrsleep bypass <spieler> 10m`, dann wie 8 | kein Cooldown, Spieler wird benachrichtigt |
 | 10 | Blockierender Spieler geht offline | `nosleep-broadcast-quit`, Schlafen wieder möglich |
 | 11 | Discord-URL eintragen, `/mrsleep reload` | Event `admin-reload` erscheint im Kanal |

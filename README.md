@@ -66,7 +66,11 @@ Verwaltet werden alle normalen Oberwelten. Nether und End sind ausgenommen, weit
 | `/nosleep off` | Hebt die eigene Blockade auf (auch `aus` oder `cancel`). |
 
 - Solange **irgendein** Spieler blockiert, wird die Nacht nicht übersprungen.
-- **Cooldown** (`nosleep.cooldown`, Standard `15m`): Er gilt nur für das Blockieren, nicht für das Aufheben. Auch OPs haben ihn, außer man vergibt `mrsleep.nosleep.nocooldown` ausdrücklich.
+- **Cooldown** (`nosleep.cooldown`, Standard `15m`): Er **startet erst, wenn die blockierte Nacht anbricht**, also ab dem Zeitpunkt, an dem man schlafen kann (auch bei Gewitter).
+  - Wer tagsüber blockiert und vor Nachtbeginn wieder aufhebt, bekommt **keinen** Cooldown.
+  - In der Nacht lässt sich jederzeit aufheben, der Cooldown läuft dann aber weiter.
+  - Wer nachts blockiert, startet den Cooldown sofort.
+  - Auch OPs haben den Cooldown, außer man vergibt `mrsleep.nosleep.nocooldown` ausdrücklich.
 - **Bypass:** Ein Admin kann den Cooldown eines Spielers für eine bestimmte Zeit aufheben.
 - **Sperre:** Ein Admin kann einen Spieler auf Zeit oder dauerhaft von `/nosleep` ausschließen. Seine laufenden Blockaden werden dabei sofort aufgehoben.
 - Geht der blockierende Spieler offline, endet seine Blockade (`nosleep.release-on-quit`).

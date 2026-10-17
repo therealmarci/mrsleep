@@ -92,11 +92,15 @@ public final class NoSleepCommand implements TabExecutor {
             return true;
         }
 
+        // Starts the cooldown right away at night, otherwise once the night begins (SleepManager#housekeeping).
         noSleep.setBlock(world, player.getUniqueId(), nights);
-        noSleep.markUsed(player.getUniqueId());
 
         String nightsText = messages.nights(nights);
         messages.send(player, active ? "nosleep-updated" : "nosleep-activated", tag("nights", nightsText));
+        if (noSleep.isPending(world, player.getUniqueId()) && noSleep.remainingCooldown(player) == 0
+                && !player.hasPermission(NoSleepManager.PERM_NO_COOLDOWN) && noSleep.bypassRemaining(player.getUniqueId()) <= 0) {
+            messages.send(player, "nosleep-pending-info", tag("time", DurationUtil.format(plugin.settings().cooldownMillis())));
+        }
         if (plugin.settings().broadcast()) {
             messages.broadcast(world, "nosleep-broadcast-activated",
                     tag("player", player.getName()), tag("nights", nightsText));
@@ -107,8 +111,16 @@ public final class NoSleepCommand implements TabExecutor {
     }
 
     private void lift(Player player, World world) {
-        plugin.noSleep().removeBlock(world, player.getUniqueId());
-        plugin.messages().send(player, "nosleep-deactivated");
+        NoSleepManager noSleep = plugin.noSleep();
+        // Before the night began the cooldown never started, so lifting is free.
+        boolean free = noSleep.isPending(world, player.getUniqueId());
+        noSleep.removeBlock(world, player.getUniqueId());
+        long remaining = noSleep.remainingCooldown(player);
+        if (free || remaining == 0) {
+            plugin.messages().send(player, free ? "nosleep-deactivated-free" : "nosleep-deactivated");
+        } else {
+            plugin.messages().send(player, "nosleep-deactivated-cooldown", tag("time", DurationUtil.format(remaining)));
+        }
         if (plugin.settings().broadcast()) {
             plugin.messages().broadcast(world, "nosleep-broadcast-deactivated", tag("player", player.getName()));
         }
