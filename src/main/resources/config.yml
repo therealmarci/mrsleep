@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Nicht ändern - wird für automatische Config-Updates verwendet.
-config-version: 4
+config-version: 5
 
 
 # ------------------------------------------------------------------------------
@@ -94,8 +94,10 @@ nosleep:
 # Platzhalter: {player} {world} {nights} {players} {admin} {time} {reason}
 #              {sleeping} {needed} {counted}
 # Ein Event mit "enabled: false" oder leerer Nachricht wird nicht gesendet.
+# Funktioniert es nicht? -> /mrsleep discord zeigt den Status, /mrsleep discord test schickt eine Testnachricht.
 discord:
   enabled: false
+  # Komplette URL in Anführungszeichen, z.B. "https://discord.com/api/webhooks/123456/abcdef"
   webhook-url: ""
   # Name und Avatar des Webhooks (leer = Einstellungen aus Discord).
   username: "MRsleep"
@@ -104,6 +106,8 @@ discord:
   use-embeds: true
   # Fußzeile der Embeds, z.B. der Servername (leer = keine).
   footer: "Minecraft-Server"
+  # Text für /mrsleep discord test
+  test-message: "🔧 Testnachricht von MRsleep - der Webhook funktioniert!"
   events:
     nosleep-activated:
       enabled: true
@@ -277,6 +281,7 @@ messages:
     <aqua>/mrsleep ban <spieler> [dauer] [grund]</aqua> <dark_gray>- <gray>Von /nosleep ausschließen
     <aqua>/mrsleep unban <spieler></aqua> <dark_gray>- <gray>Sperre aufheben
     <aqua>/mrsleep bans</aqua> <dark_gray>- <gray>Alle Sperren anzeigen
+    <aqua>/mrsleep discord [test]</aqua> <dark_gray>- <gray>Discord-Status / Testnachricht
     <aqua>/mrsleep reload</aqua> <dark_gray>- <gray>Konfiguration neu laden
     <aqua>/mrsleep version</aqua> <dark_gray>- <gray>Version & Update-Status
   reloaded: "<prefix><green>Konfiguration neu geladen."
@@ -321,6 +326,16 @@ messages:
   debug-cooldown-bypass: "keiner (Bypass, noch <time>)"
   debug-cooldown-remaining: "noch <time>"
   debug-cooldown-pending: "startet bei Nachtbeginn"
+
+  # --- Discord ----------------------------------------------------------------
+  discord-status-active: "<prefix><green>Discord-Webhook aktiv <gray>(<white><events></white>/<white><total></white> Events eingeschaltet)"
+  discord-status-inactive: "<prefix><red>Discord-Webhook inaktiv: <white><reason>"
+  discord-status-last: "<prefix><gray>Letzter Versand: <white><result>"
+  discord-status-never: "seit dem Start noch nichts gesendet"
+  discord-test-hint: "<prefix><gray>Mit <white>/mrsleep discord test</white> eine Testnachricht schicken."
+  discord-test-sending: "<prefix><gray>Sende Testnachricht an Discord ..."
+  discord-test-ok: "<prefix><green>✔ Testnachricht ist in Discord angekommen."
+  discord-test-failed: "<prefix><red>✘ Testnachricht fehlgeschlagen: <white><reason>"
 
   # --- Version & Updates -------------------------------------------------------
   version: "<prefix><gray>MRsleep <white>v<version></white> von <white><author></white>"

@@ -127,6 +127,7 @@ Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, ste
 | `/mrsleep ban <spieler> [dauer\|permanent] [grund]` | Von `/nosleep` ausschließen (ohne Dauer: dauerhaft) | `mrsleep.admin.ban` |
 | `/mrsleep unban <spieler>` | Sperre aufheben | `mrsleep.admin.ban` |
 | `/mrsleep bans` | Alle Sperren anzeigen | `mrsleep.admin.ban` |
+| `/mrsleep discord [test]` | Discord-Status und Testnachricht | `mrsleep.admin.discord` |
 | `/mrsleep reload` | `config.yml` neu laden | `mrsleep.admin.reload` |
 | `/mrsleep version` | Version, Links und Update-Status | – (alle) |
 
@@ -151,6 +152,7 @@ Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset fu
 | `mrsleep.admin.teleport` | OP | Teleport-Button im Menü |
 | `mrsleep.admin.reload` | OP | `reload` und der Reload-Button im Menü |
 | `mrsleep.admin.update` | OP | Update-Hinweis beim Betreten des Servers |
+| `mrsleep.admin.discord` | OP | `/mrsleep discord [test]` |
 
 > ⚠️ **Wildcards:** Gruppen mit `*` oder `mrsleep.*` bekommen in LuckPerms auch `mrsleep.exempt` und zählen dann nicht zur Quote. Setz dort `mrsleep.exempt` ausdrücklich auf `false` (siehe unten).
 
@@ -178,6 +180,8 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 1. In Discord den Kanal öffnen und über **Kanal bearbeiten → Integrationen → Webhooks → Neuer Webhook** einen Webhook anlegen, dann die **Webhook-URL kopieren**.
 2. In der Config `discord.enabled: true` setzen und die `webhook-url` eintragen.
 3. `/mrsleep reload` ausführen.
+
+Testen mit **`/mrsleep discord test`**: Das schickt eine Testnachricht und meldet, ob sie angekommen ist oder warum nicht. **`/mrsleep discord`** zeigt, ob der Webhook aktiv ist, wie viele Events eingeschaltet sind und wie der letzte Versand ausging.
 
 Unter `discord.events` legst du für jedes Ereignis fest, ob es gesendet wird, welche Farbe es hat und welchen Text es bekommt:
 - `nosleep-activated`, `nosleep-deactivated`, `nosleep-quit`, `nosleep-expired`

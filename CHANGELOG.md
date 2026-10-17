@@ -7,6 +7,21 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 > Befehle und Permissions noch ändern.
 
 ## [Unveröffentlicht]
+
+## [0.9.5] - 2026-10-17
+### Neu
+- **`/mrsleep discord`** zeigt den Status des Discord-Webhooks (aktiv/inaktiv mit Grund, eingeschaltete Events,
+  Ergebnis des letzten Versands). **`/mrsleep discord test`** schickt eine Testnachricht und meldet die Antwort
+  von Discord. Permission `mrsleep.admin.discord`.
+- Konsole beim Start und Reload: „Discord-Webhook aktiv (x/y Events eingeschaltet)“ bzw. der Grund für „deaktiviert“.
+
+### Behoben
+- Discord-Events, die in der eigenen `config.yml` fehlen, werden jetzt aus dem Standard ergänzt, statt still
+  übersprungen zu werden.
+- Fehler beim Versand nennen die Ursache (z.B. „HTTP 404 - Webhook existiert nicht“) statt nur den Statuscode.
+- Leere oder ungültige Webhook-URL wird mit genauer Meldung abgelehnt.
+- Config-Version 5 (neue Texte, wird automatisch migriert).
+
 ### Intern
 - Repo aufgeräumt: ungenutzten Code und Texte entfernt (`gui-yes`, `gui-no`), Versionslogik nach `util/Versions`
   ausgelagert. Vorabversionen werden jetzt je Teil verglichen (`rc.10` > `rc.2`).
