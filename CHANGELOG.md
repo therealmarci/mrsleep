@@ -17,6 +17,10 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - `/mrsleep debug` und das Admin-Menü zeigen „startet bei Nachtbeginn“ für wartende Blockaden.
 - Config-Version 4 (neue Nachrichten, wird automatisch migriert).
 
+### Neu
+- **`/nosleep info`** für alle Spieler: Welt und Tag/Nacht, Schlafstand und ob man selbst zählt, wer blockiert,
+  eigene Blockade, eigener Cooldown und Sperr-Status. Permission `mrsleep.nosleep.info` (Standard: alle).
+
 ## [0.9.3] - 2026-10-17
 ### Neu
 - **Bossbar** für den Schlaf-Fortschritt (`sleep.display: bossbar`, Standard). Sie sitzt oben am Bildschirm und wird

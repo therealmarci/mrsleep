@@ -64,6 +64,7 @@ Verwaltet werden alle normalen Oberwelten. Nether und End sind ausgenommen, weit
 | `/nosleep` | Blockiert die laufende (oder, wenn es Tag ist, die kommende) Nacht. Ist schon eine eigene Blockade aktiv, wird sie **aufgehoben**. |
 | `/nosleep 3` | Blockiert die nächsten 3 Nächte (höchstens `nosleep.max-nights`) und ersetzt eine eigene Blockade. |
 | `/nosleep off` | Hebt die eigene Blockade auf (auch `aus` oder `cancel`). |
+| `/nosleep info` | Zeigt den eigenen Status: Schlafstand, ob man zählt, wer blockiert, eigene Blockade, Cooldown, Sperre. |
 
 - Solange **irgendein** Spieler blockiert, wird die Nacht nicht übersprungen.
 - **Cooldown** (`nosleep.cooldown`, Standard `15m`): Er **startet erst, wenn die blockierte Nacht anbricht**, also ab dem Zeitpunkt, an dem man schlafen kann (auch bei Gewitter).
@@ -121,6 +122,7 @@ Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, ste
 | Befehl | Beschreibung | Permission |
 |---|---|---|
 | `/nosleep [nächte\|off]` | Schlafen blockieren oder die eigene Blockade aufheben | `mrsleep.nosleep` |
+| `/nosleep info` | Eigener Status: Schlafstand, ob man zählt, wer blockiert, eigene Blockade, Cooldown, Sperre | `mrsleep.nosleep.info` |
 | `/mrsleep` | Übersicht der Admin-Befehle | eine der `mrsleep.admin.*` |
 | `/mrsleep gui` | Admin-Menü öffnen | `mrsleep.admin.gui` |
 | `/mrsleep status [welt]` | Kurzer Schlafstatus | `mrsleep.admin.status` |
@@ -146,6 +148,7 @@ Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset fu
 |---|---|---|
 | `mrsleep.exempt` | niemand | Zählt **nicht** zur Schlafquote (Cam- und Bot-Accounts) |
 | `mrsleep.nosleep` | alle | `/nosleep` benutzen |
+| `mrsleep.nosleep.info` | alle | `/nosleep info` benutzen |
 | `mrsleep.nosleep.nocooldown` | niemand | `/nosleep` ohne Cooldown (auch OPs haben das nicht automatisch) |
 | `mrsleep.admin` | OP | Enthält alle `mrsleep.admin.*` |
 | `mrsleep.admin.gui` | OP | Admin-Menü öffnen |

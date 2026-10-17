@@ -9,7 +9,7 @@ description: Verbesserte Schlafquote mit Ausnahmen, /nosleep, Admin-Menü und Di
 commands:
   nosleep:
     description: Blockiert das Schlafen für eine oder mehrere Nächte (erneut ausführen zum Aufheben).
-    usage: /nosleep [nächte|off]
+    usage: /nosleep [nächte|off|info]
     permission: mrsleep.nosleep
   mrsleep:
     description: Verwaltung von MRsleep.
@@ -21,6 +21,9 @@ permissions:
     default: false
   mrsleep.nosleep:
     description: Erlaubt /nosleep.
+    default: true
+  mrsleep.nosleep.info:
+    description: /nosleep info - eigenen Schlaf- und /nosleep-Status anzeigen.
     default: true
   mrsleep.nosleep.nocooldown:
     description: /nosleep dauerhaft ohne Cooldown nutzen (muss explizit vergeben werden, auch OPs haben sie nicht automatisch).

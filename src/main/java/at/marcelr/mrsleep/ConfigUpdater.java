@@ -33,7 +33,9 @@ public final class ConfigUpdater {
             "messages.gui-info-lore",
             "messages.gui-update-ok",
             "messages.gui-update-outdated",
-            "messages.gui-update-unknown");
+            "messages.gui-update-unknown",
+            // v4
+            "messages.nosleep-invalid-nights");
     /** Keys that were renamed: old path -> new path (the value is carried over). */
     private static final Map<String, String> RENAMED_KEYS = Map.of(
             "messages.actionbar-sleeping", "messages.display-sleeping",

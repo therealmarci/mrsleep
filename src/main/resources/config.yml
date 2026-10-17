@@ -243,9 +243,20 @@ messages:
   nosleep-pending-info: "<prefix><gray>Der Cooldown (<white><time></white>) startet erst, wenn die Nacht anbricht. Hebst du die Blockade vorher auf, entsteht keiner."
   nosleep-cooldown-started: "<prefix><gray>Die Nacht bricht an - deine Blockade ist aktiv, dein <white>/nosleep</white>-Cooldown (<white><time></white>) läuft ab jetzt."
   nosleep-not-active: "<prefix><gray>Du hast gerade keine Schlafblockade aktiv."
-  nosleep-invalid-nights: "<prefix><red>Bitte gib eine Anzahl zwischen <white>1</white> und <white><max></white> Nächten an: <white>/nosleep [anzahl]"
+  nosleep-invalid-nights: "<prefix><red>Bitte gib eine Anzahl zwischen <white>1</white> und <white><max></white> Nächten an: <white>/nosleep [anzahl]</white><red>, oder <white>/nosleep info</white><red> für deinen Status."
   nosleep-cooldown: "<prefix><red>Du kannst <white>/nosleep</white> erst wieder in <white><time></white> nutzen."
   nosleep-banned: "<prefix><red>Du bist von <white>/nosleep</white> ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)<red>."
+  # /nosleep info - Werte wie <counts>, <own>, <cooldown>, <ban> kommen aus den gui-value-* Texten weiter unten.
+  nosleep-info: |-
+    <prefix><gray>Dein Schlaf-Status:
+    <dark_gray> » <gray>Welt: <white><world></white> <dark_gray>(<phase>)
+    <dark_gray> » <gray>Schlafen: <white><sleeping></white>/<white><needed></white> <dark_gray>| <gray>du zählst: <counts>
+    <dark_gray> » <gray>Blockiert von: <blockers>
+    <dark_gray> » <gray>Deine Blockade: <own>
+    <dark_gray> » <gray>Dein Cooldown: <cooldown>
+    <dark_gray> » <gray>/nosleep: <ban>
+    <dark_gray> » <gray>Befehle: <white>/nosleep [1-<max>]</white><gray>, <white>/nosleep off</white><gray>, <white>/nosleep info
+  nosleep-info-blockers: "<gold><players>"
   nosleep-broadcast-activated: "<prefix><gold><player></gold> <gray>blockiert das Schlafen für <white><nights></white>."
   nosleep-broadcast-deactivated: "<prefix><gold><player></gold> <gray>hat die Schlafblockade aufgehoben."
   nosleep-broadcast-quit: "<prefix><gray>Die Schlafblockade von <gold><player></gold> wurde aufgehoben (Server verlassen)."
