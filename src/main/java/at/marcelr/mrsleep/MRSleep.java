@@ -1,0 +1,127 @@
+package at.marcelr.mrsleep;
+
+import at.marcelr.mrsleep.command.MRSleepCommand;
+import at.marcelr.mrsleep.command.NoSleepCommand;
+import at.marcelr.mrsleep.gui.MenuListener;
+import org.bukkit.Bukkit;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
+
+public final class MRSleep extends JavaPlugin {
+
+    private FileConfiguration config;
+    private Settings settings;
+    private final Messages messages = new Messages();
+    private final DiscordWebhook discord = new DiscordWebhook(this);
+    private final AdminActions adminActions = new AdminActions(this);
+    private UpdateChecker updateChecker;
+    private MenuListener menuListener;
+    private NoSleepManager noSleep;
+    private SleepManager sleep;
+
+    @Override
+    public void onEnable() {
+        ConfigUpdater.update(this);
+        loadConfiguration();
+
+        noSleep = new NoSleepManager(this);
+        noSleep.load();
+        sleep = new SleepManager(this);
+        sleep.start();
+        updateChecker = new UpdateChecker(this);
+        updateChecker.start();
+        menuListener = new MenuListener(this);
+        menuListener.start();
+
+        getServer().getPluginManager().registerEvents(new SleepListener(this), this);
+        getServer().getPluginManager().registerEvents(menuListener, this);
+        register("nosleep", new NoSleepCommand(this));
+        register("mrsleep", new MRSleepCommand(this));
+    }
+
+    @Override
+    public void onDisable() {
+        if (menuListener != null) {
+            menuListener.stop();
+            menuListener.closeAll();
+        }
+        if (updateChecker != null) {
+            updateChecker.stop();
+        }
+        if (sleep != null) {
+            sleep.stop();
+        }
+        if (noSleep != null) {
+            noSleep.save();
+        }
+        discord.shutdown();
+    }
+
+    /** Reloads config.yml (settings, messages, Discord, update check, menu refresh) and re-applies the gamerule. */
+    public void reload() {
+        ConfigUpdater.update(this);
+        loadConfiguration();
+        Bukkit.getWorlds().forEach(sleep::applyGameRule);
+        updateChecker.start();
+        menuListener.start();
+    }
+
+    private void loadConfiguration() {
+        config = ConfigUpdater.load(this);
+        settings = Settings.from(config, getLogger());
+        messages.load(config);
+        discord.load(config.getConfigurationSection("discord"));
+    }
+
+    /** config.yml is read by {@link ConfigUpdater#load}, which also tolerates the UTF-8 BOM. */
+    @Override
+    public FileConfiguration getConfig() {
+        if (config == null) {
+            config = ConfigUpdater.load(this);
+        }
+        return config;
+    }
+
+    @Override
+    public void reloadConfig() {
+        config = ConfigUpdater.load(this);
+    }
+
+    private void register(String name, TabExecutor executor) {
+        PluginCommand command = Objects.requireNonNull(getCommand(name), name);
+        command.setExecutor(executor);
+        command.setTabCompleter(executor);
+    }
+
+    public Settings settings() {
+        return settings;
+    }
+
+    public Messages messages() {
+        return messages;
+    }
+
+    public DiscordWebhook discord() {
+        return discord;
+    }
+
+    public AdminActions adminActions() {
+        return adminActions;
+    }
+
+    public UpdateChecker updateChecker() {
+        return updateChecker;
+    }
+
+    public NoSleepManager noSleep() {
+        return noSleep;
+    }
+
+    public SleepManager sleep() {
+        return sleep;
+    }
+}

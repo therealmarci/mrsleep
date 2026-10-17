@@ -1,0 +1,63 @@
+name: MRsleep
+version: '${version}'
+main: at.marcelr.mrsleep.MRSleep
+api-version: '26.3'
+author: _therealmarci
+website: https://modrinth.com/plugin/${modrinthProjectId}
+description: Verbesserte Schlafquote mit Ausnahmen, /nosleep, Admin-Menü und Discord-Logs.
+
+commands:
+  nosleep:
+    description: Blockiert das Schlafen für eine oder mehrere Nächte (erneut ausführen zum Aufheben).
+    usage: /nosleep [nächte|off]
+    permission: mrsleep.nosleep
+  mrsleep:
+    description: Verwaltung von MRsleep.
+    usage: /mrsleep <gui|status|debug|clear|release|bypass|resetcooldown|ban|unban|bans|reload|version>
+
+permissions:
+  mrsleep.exempt:
+    description: Spieler wird bei der Schlafquote nicht mitgezählt (z.B. Cam- oder Bot-Accounts).
+    default: false
+  mrsleep.nosleep:
+    description: Erlaubt /nosleep.
+    default: true
+  mrsleep.nosleep.nocooldown:
+    description: /nosleep dauerhaft ohne Cooldown nutzen (muss explizit vergeben werden, auch OPs haben sie nicht automatisch).
+    default: false
+  mrsleep.admin:
+    description: Alle Admin-Befehle von MRsleep.
+    default: op
+    children:
+      mrsleep.admin.gui: true
+      mrsleep.admin.reload: true
+      mrsleep.admin.status: true
+      mrsleep.admin.clear: true
+      mrsleep.admin.bypass: true
+      mrsleep.admin.ban: true
+      mrsleep.admin.teleport: true
+      mrsleep.admin.update: true
+  mrsleep.admin.gui:
+    description: /mrsleep gui - Admin-Menü öffnen (Aktionen darin brauchen zusätzlich ihre eigene Permission).
+    default: op
+  mrsleep.admin.reload:
+    description: /mrsleep reload
+    default: op
+  mrsleep.admin.status:
+    description: /mrsleep status und /mrsleep debug
+    default: op
+  mrsleep.admin.clear:
+    description: /mrsleep clear und /mrsleep release - /nosleep-Blockaden entfernen.
+    default: op
+  mrsleep.admin.bypass:
+    description: /mrsleep bypass und /mrsleep resetcooldown - Cooldowns von Spielern verwalten.
+    default: op
+  mrsleep.admin.ban:
+    description: /mrsleep ban, unban und bans - Spieler von /nosleep ausschließen.
+    default: op
+  mrsleep.admin.teleport:
+    description: Im Admin-Menü zu Spielern teleportieren.
+    default: op
+  mrsleep.admin.update:
+    description: Hinweis beim Betreten des Servers, wenn ein MRsleep-Update verfügbar ist.
+    default: op
