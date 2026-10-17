@@ -34,7 +34,8 @@ mrsleep/
    │  ├─ MRSleep.java              Hauptklasse: Lebenszyklus, verbindet alle Komponenten
    │  ├─ Settings.java             unveränderlicher Record mit allen Werten aus config.yml
    │  ├─ ConfigUpdater.java        Config-Migration, Laden mit BOM-Unterstützung
-   │  ├─ Messages.java             MiniMessage (Chat, Actionbar, Broadcast, Item-Namen/Lore)
+   │  ├─ Messages.java             MiniMessage (Chat, Broadcast, Item-Namen/Lore)
+   │  ├─ SleepDisplay.java         Fortschrittsanzeige: Bossbar / Actionbar / Titel
    │  ├─ SleepManager.java         eigene Schlaflogik (Quote, Nacht überspringen)
    │  ├─ NoSleepManager.java       Blockaden, Cooldowns, Bypässe, Sperren, data.yml
    │  ├─ AdminActions.java         Admin-Aktionen, gemeinsam für Befehle und Menü
@@ -102,9 +103,10 @@ housekeeping(world)
 checkSleep(world)
   ├─ status(world): counted / exempt / sleeping / deepSleeping / needed
   ├─ niemand schläft → fertig
-  ├─ blockiert → Actionbar "actionbar-blocked" an Schlafende → fertig
+  ├─ blockiert → SleepDisplay#blocked ("display-blocked", nur Schlafende) → fertig
   ├─ deepSleeping ≥ needed → skipNight()
-  └─ sonst Actionbar "actionbar-sleeping" an alle Spieler der Welt
+  └─ sonst SleepDisplay#progress ("display-sleeping", alle Spieler der Welt)
+  (niemand schläft oder Nacht übersprungen → SleepDisplay#hide)
 ```
 
 ### Berechnung
@@ -219,7 +221,9 @@ Wo welche Nachricht ausgelöst wird:
 | `join-blocked-info` | `SleepListener#onJoin` |
 | `nosleep-broadcast-quit` | `SleepListener#onQuit` |
 | `night-start-blocked`, `nosleep-expired` | `SleepManager#housekeeping` |
-| `actionbar-*`, `night-skipped` | `SleepManager#checkSleep` / `skipNight` |
+| `display-*` | `SleepDisplay` (über `SleepManager#checkSleep`) |
+| `night-skipped` | `SleepManager#skipNight` |
+| `player-sleeping` (Empfänger) | `SleepListener#onBedEntered`, je nach `sleep.sleep-message` |
 | `nosleep-*` | `NoSleepCommand` |
 | `bypass-*`, `cooldown-reset*`, `cleared*`, `released`, `ban-*`, `unban-*`, `reloaded` | `AdminActions` (Befehle und Menü) |
 | `status`, `debug-*`, `bans-*`, `version*` | `MRSleepCommand` |
@@ -274,10 +278,10 @@ Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml`
 | # | Test | Erwartung |
 |---|---|---|
 | 1 | Start, `/gamerule players_sleeping_percentage` | `100` in der Oberwelt |
-| 1b | Hinlegen | **keine** Meldung „Keine noch so lange Rast …“, sofort Actionbar `1/x Spieler schlafen` |
+| 1b | Hinlegen | **keine** Meldung „Keine noch so lange Rast …“, sofort Bossbar `1/x Spieler schlafen` mit Fortschrittsbalken, auch bei offenem Bett-Chat sichtbar |
 | 1c | Spieler mit `mrsleep.exempt` legt sich hin | Hinweis `bed-excluded` mit Grund |
 | 1d | `/mrsleep debug` | Pro Welt Gamerule/Zeit/Blockade, pro Spieler „zählt“ und „schläft (Ticks)“ |
-| 2 | 4 Spieler, 1 mit `mrsleep.exempt`, 50 % | 2 von 3 müssen schlafen; Actionbar zeigt `x/2` |
+| 2 | 4 Spieler, 1 mit `mrsleep.exempt`, 50 % | 2 von 3 müssen schlafen; Bossbar zeigt `x/2` |
 | 3 | Ausgenommener Spieler schläft allein | Nacht wird **nicht** übersprungen |
 | 4 | `/nosleep` tagsüber, dann nachts hinlegen | `bed-blocked-warning`, kein Skip |
 | 5 | `/nosleep` erneut | Blockade aufgehoben, kein neuer Cooldown |

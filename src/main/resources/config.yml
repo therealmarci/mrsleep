@@ -13,7 +13,7 @@
 # ==============================================================================
 
 # Nicht ändern - wird für automatische Config-Updates verwendet.
-config-version: 2
+config-version: 3
 
 
 # ------------------------------------------------------------------------------
@@ -39,8 +39,22 @@ sleep:
   # Wetter beim Überspringen der Nacht aufklaren lassen (wie Vanilla).
   clear-weather: true
 
-  # Fortschritt ("2/4 Spieler schlafen") in der Actionbar anzeigen.
-  action-bar: true
+  # Wo der Fortschritt ("1/2 Spieler schlafen") bzw. eine Blockade angezeigt wird:
+  #   bossbar   = Leiste oben am Bildschirm mit Fortschrittsbalken (empfohlen - wird vom
+  #               Chat-Fenster, das sich im Bett öffnet, nicht verdeckt)
+  #   actionbar = über der Hotbar (wird im Bett vom Chat-Fenster verdeckt)
+  #   title     = Untertitel in der Bildschirmmitte
+  #   none      = keine Anzeige
+  display: bossbar
+  # Farben der Bossbar: pink, blue, red, green, yellow, purple, white
+  bossbar-color: yellow
+  bossbar-blocked-color: red
+
+  # Chat-Meldung "<Spieler> hat sich schlafen gelegt (1/2)":
+  #   world  = an alle Spieler in derselben Welt
+  #   server = an alle Spieler auf dem Server
+  #   none   = keine Meldung
+  sleep-message: world
 
   # Chat-Nachricht an die Welt, wenn die Nacht übersprungen wurde.
   announce-skip: true
@@ -202,8 +216,10 @@ messages:
   invalid-duration: "<prefix><red>Ungültige Dauer <white><input></white>. Beispiele: 30m, 2h, 1d12h"
 
   # --- Schlafen ----------------------------------------------------------------
-  actionbar-sleeping: "<gray><yellow><sleeping></yellow>/<yellow><needed></yellow> Spieler schlafen"
-  actionbar-blocked: "<red>Schlafen blockiert von <white><players></white> <gray>(noch <nights>)"
+  # Anzeige laut sleep.display (Bossbar / Actionbar / Titel)
+  display-sleeping: "<gray><yellow><sleeping></yellow>/<yellow><needed></yellow> Spieler schlafen"
+  display-blocked: "<red>Schlafen blockiert von <white><players></white> <gray>(noch <nights>)"
+  # Empfänger laut sleep.sleep-message. Platzhalter: <player> <world> <sleeping> <needed>
   player-sleeping: "<prefix><gray><white><player></white> hat sich schlafen gelegt <dark_gray>(<yellow><sleeping></yellow>/<yellow><needed></yellow>)"
   night-skipped: "<prefix><yellow>Guten Morgen! Die Nacht wurde übersprungen."
   night-start-blocked: "<prefix><gray>Die Nacht bricht an - Schlafen ist blockiert von <gold><players></gold> <gray>(noch <nights>)."
@@ -289,7 +305,7 @@ messages:
 
   # --- Version & Updates -------------------------------------------------------
   version: "<prefix><gray>MRsleep <white>v<version></white> von <white><author></white>"
-  version-latest: "<prefix><green>Du nutzt die aktuelle Version."
+  version-latest: "<prefix><green>Du nutzt die aktuellste Version."
   version-outdated: "<prefix><gold>Neue Version verfügbar: <white><latest></white> <gray>(installiert: <current>) <download>"
   version-unknown: "<prefix><gray>Update-Status unbekannt: <reason>"
   version-checking: "<prefix><gray>Suche nach Updates ..."
@@ -362,11 +378,11 @@ messages:
     - "<gray>Lädt die config.yml neu."
   gui-info-name: "<aqua>MRsleep <white>v<version>"
   gui-info-lore:
-    - "<gray>Update: <update>"
+    - "<gray>Version: <update>"
     - "<gray>Quote: <white><percentage>%</white> <dark_gray>| <gray>Cooldown: <white><cooldown>"
-  gui-update-ok: "<green>aktuell"
-  gui-update-outdated: "<gold>neue Version <latest>"
-  gui-update-unknown: "<gray>unbekannt"
+  gui-update-ok: "<green>Aktuell"
+  gui-update-outdated: "<red>Veraltet <dark_gray>(neu: <latest>)"
+  gui-update-unknown: "<gray>Unbekannt"
 
   # Spieler-Menü
   gui-back: "<yellow>« Zurück"

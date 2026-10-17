@@ -85,11 +85,14 @@ public final class UpdateChecker {
         }
     }
 
-    /** Checks right away and reports the result to {@code sender} (used by /mrsleep version). */
-    public void checkNow(CommandSender sender) {
+    /** Checks right away, reports the result to {@code sender} and then runs {@code after} (on the main thread). */
+    public void checkNow(CommandSender sender, Runnable after) {
         plugin.messages().send(sender, "version-checking");
         CompletableFuture.runAsync(this::check).whenComplete((ignored, throwable) ->
-                Bukkit.getScheduler().runTask(plugin, () -> sendStatus(sender)));
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    sendStatus(sender);
+                    after.run();
+                }));
     }
 
     public void sendStatus(CommandSender sender) {

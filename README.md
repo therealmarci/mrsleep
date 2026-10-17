@@ -76,7 +76,8 @@ Verwaltet werden alle normalen Oberwelten. Nether und End sind ausgenommen, weit
 Alle Texte lassen sich in der Config ändern. Ein leerer Text (`""`) schaltet den Hinweis ab. Beispiele:
 - `Steve hat das Schlafen blockiert, du kannst nicht schlafen. Noch 2 Nächte.`
 - `Die Nacht bricht an - Schlafen ist blockiert von Steve (noch 2 Nächte).`
-- `Alex hat sich schlafen gelegt (1/2)`, dazu der Fortschritt in der Actionbar
+- `Alex hat sich schlafen gelegt (1/2)`: an die Welt, den ganzen Server oder niemanden (`sleep.sleep-message`)
+- Fortschritt als **Bossbar** oben am Bildschirm (`sleep.display`). Sie wird vom Chat im Bett nicht verdeckt, alternativ gibt es Actionbar, Titel oder keine Anzeige.
 - `Guten Morgen! Die Nacht wurde übersprungen.`
 - Hinweise, wenn eine Blockade abläuft, wenn jemand den Server während einer Blockade betritt, und wenn ein Admin einen Spieler sperrt, entsperrt oder seinen Cooldown ändert.
 
@@ -161,7 +162,7 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 
 | Abschnitt | Inhalt |
 |---|---|
-| **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer und AFK, Wetter, Actionbar |
+| **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer und AFK, Wetter, Anzeige (`display`: bossbar/actionbar/title/none), `sleep-message` |
 | **2) /nosleep** `nosleep.*` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
 | **3) Discord** `discord.*` | Webhook-URL und die einzelnen Events |
 | **4) Update-Check** `update-checker.*` | Quelle (GitHub Releases oder Modrinth), Intervall, Hinweis beim Betreten |

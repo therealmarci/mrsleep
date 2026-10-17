@@ -134,13 +134,18 @@ public final class MRSleepCommand implements TabExecutor {
         messages().send(sender, "version",
                 tag("version", updates.currentVersion()),
                 tag("author", String.join(", ", plugin.getPluginMeta().getAuthors())));
-        messages().send(sender, "version-links",
-                tag("modrinth", link("Modrinth", updates.modrinthPage())),
-                tag("github", link("GitHub", updates.githubPage())));
+        // Order: version, update check, result, empty line, links.
+        Runnable links = () -> {
+            sender.sendMessage(Component.empty());
+            messages().send(sender, "version-links",
+                    tag("modrinth", link("Modrinth", updates.modrinthPage())),
+                    tag("github", link("GitHub", updates.githubPage())));
+        };
         if (plugin.settings().update().enabled()) {
-            updates.checkNow(sender);
+            updates.checkNow(sender, links);
         } else {
             updates.sendStatus(sender);
+            links.run();
         }
     }
 

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -21,12 +22,22 @@ import java.util.logging.Level;
  */
 public final class ConfigUpdater {
 
-    public static final int CURRENT_VERSION = 2;
+    public static final int CURRENT_VERSION = 3;
     private static final String BOM = "﻿";
     /** Texts whose content changed with new features; the new default replaces the old value. */
     private static final Set<String> REPLACED_KEYS = Set.of(
             "messages.admin-usage",
-            "messages.debug-player");
+            "messages.debug-player",
+            // v3
+            "messages.version-latest",
+            "messages.gui-info-lore",
+            "messages.gui-update-ok",
+            "messages.gui-update-outdated",
+            "messages.gui-update-unknown");
+    /** Keys that were renamed: old path -> new path (the value is carried over). */
+    private static final Map<String, String> RENAMED_KEYS = Map.of(
+            "messages.actionbar-sleeping", "messages.display-sleeping",
+            "messages.actionbar-blocked", "messages.display-blocked");
 
     private ConfigUpdater() {
     }
@@ -59,15 +70,22 @@ public final class ConfigUpdater {
             }
 
             int carried = 0;
-            for (String key : existing.getKeys(true)) {
-                if (existing.isConfigurationSection(key) || key.equals("config-version")
+            for (String oldKey : existing.getKeys(true)) {
+                String key = RENAMED_KEYS.getOrDefault(oldKey, oldKey);
+                if (existing.isConfigurationSection(oldKey) || key.equals("config-version")
                         || REPLACED_KEYS.contains(key) || !template.contains(key)) {
                     continue;
                 }
-                template.set(key, existing.get(key));
+                template.set(key, existing.get(oldKey));
                 carried++;
             }
+            // v3: "sleep.action-bar: false" became "sleep.display: none".
+            if (existing.contains("sleep.action-bar") && !existing.getBoolean("sleep.action-bar")) {
+                template.set("sleep.display", "none");
+            }
             template.set("config-version", CURRENT_VERSION);
+            // Keep long messages on one line instead of folding them.
+            template.options().width(10_000);
 
             File backup = new File(plugin.getDataFolder(), "config.v" + version + ".backup.yml");
             Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);

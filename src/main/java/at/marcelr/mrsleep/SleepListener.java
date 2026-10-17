@@ -1,5 +1,6 @@
 package at.marcelr.mrsleep;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -12,7 +13,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -83,10 +86,19 @@ public final class SleepListener implements Listener {
                 return;
             }
             SleepManager.Status status = plugin.sleep().status(world);
-            plugin.messages().broadcast(world, "player-sleeping",
+            Component message = plugin.messages().get("player-sleeping",
                     tag("player", player.getName()),
+                    tag("world", world.getName()),
                     tag("sleeping", status.sleeping()),
                     tag("needed", status.needed()));
+            Collection<? extends Player> audience = switch (plugin.settings().sleepMessage()) {
+                case WORLD -> world.getPlayers();
+                case SERVER -> Bukkit.getOnlinePlayers();
+                case NONE -> List.of();
+            };
+            if (!message.equals(Component.empty())) {
+                audience.forEach(p -> p.sendMessage(message));
+            }
             plugin.sleep().showProgress(world);
         });
     }

@@ -40,6 +40,7 @@ public final class SleepManager {
     private final Set<UUID> managedWorlds = new HashSet<>();
     /** world -> night key for which the "night begins" notice was already handled */
     private final Map<UUID, Long> nightAnnounced = new HashMap<>();
+    private final SleepDisplay display;
     private BukkitTask task;
 
     public record Status(int counted, int exempt, int sleeping, int deepSleeping, int needed) {
@@ -47,6 +48,12 @@ public final class SleepManager {
 
     public SleepManager(MRSleep plugin) {
         this.plugin = plugin;
+        this.display = new SleepDisplay(plugin);
+    }
+
+    /** Removes all boss bars, e.g. after a reload switched the display mode. */
+    public void resetDisplay() {
+        display.hideAll();
     }
 
     public void start() {
@@ -59,6 +66,7 @@ public final class SleepManager {
             task.cancel();
             task = null;
         }
+        display.hideAll();
         for (World world : Bukkit.getWorlds()) {
             if (managedWorlds.contains(world.getUID())) {
                 world.setGameRule(GameRules.PLAYERS_SLEEPING_PERCENTAGE, plugin.settings().percentage());
@@ -101,20 +109,14 @@ public final class SleepManager {
         return null;
     }
 
-    /** Sends the sleep progress to everyone in the world right away (instead of waiting for the next check). */
+    /** Updates the sleep progress display right away (instead of waiting for the next check). */
     public void showProgress(World world) {
-        if (!plugin.settings().actionBar() || plugin.noSleep().isBlocked(world)) {
+        if (plugin.noSleep().isBlocked(world)) {
             return;
         }
         Status status = status(world);
-        if (status.sleeping() == 0) {
-            return;
-        }
-        for (Player player : world.getPlayers()) {
-            plugin.messages().actionBar(player, "actionbar-sleeping",
-                    tag("sleeping", status.sleeping()),
-                    tag("needed", status.needed()),
-                    tag("counted", status.counted()));
+        if (status.sleeping() > 0) {
+            display.progress(world, status);
         }
     }
 
@@ -187,38 +189,23 @@ public final class SleepManager {
     private void checkSleep(World world) {
         Status status = status(world);
         if (status.sleeping() == 0) {
+            display.hide(world);
             return;
         }
-        Messages messages = plugin.messages();
-        boolean actionBar = plugin.settings().actionBar();
 
         Map<UUID, Integer> blockers = plugin.noSleep().activeBlockers(world);
         if (!blockers.isEmpty()) {
-            if (actionBar) {
-                String names = NoSleepManager.names(blockers.keySet());
-                String nights = messages.nights(NoSleepManager.longest(blockers));
-                for (Player player : world.getPlayers()) {
-                    if (player.isSleeping()) {
-                        messages.actionBar(player, "actionbar-blocked", tag("players", names), tag("nights", nights));
-                    }
-                }
-            }
+            display.blocked(world, NoSleepManager.names(blockers.keySet()),
+                    plugin.messages().nights(NoSleepManager.longest(blockers)));
             return;
         }
 
         if (status.deepSleeping() >= status.needed()) {
+            display.hide(world);
             skipNight(world, status);
             return;
         }
-
-        if (actionBar) {
-            for (Player player : world.getPlayers()) {
-                messages.actionBar(player, "actionbar-sleeping",
-                        tag("sleeping", status.sleeping()),
-                        tag("needed", status.needed()),
-                        tag("counted", status.counted()));
-            }
-        }
+        display.progress(world, status);
     }
 
     private void skipNight(World world, Status status) {

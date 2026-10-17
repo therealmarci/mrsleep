@@ -65,6 +65,7 @@ public final class MRSleep extends JavaPlugin {
     public void reload() {
         ConfigUpdater.update(this);
         loadConfiguration();
+        sleep.resetDisplay();
         Bukkit.getWorlds().forEach(sleep::applyGameRule);
         updateChecker.start();
         menuListener.start();

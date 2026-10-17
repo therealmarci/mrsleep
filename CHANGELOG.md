@@ -8,6 +8,21 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [0.9.3] - 2026-10-17
+### Neu
+- **Bossbar** für den Schlaf-Fortschritt (`sleep.display: bossbar`, Standard). Sie sitzt oben am Bildschirm und wird
+  vom Chat-Fenster im Bett nicht mehr verdeckt. Der Balken zeigt den Fortschritt, bei einer Blockade ist sie rot.
+  Alternativ `actionbar`, `title` oder `none`. Farben über `sleep.bossbar-color` und `sleep.bossbar-blocked-color`.
+- `sleep.sleep-message`: Die Meldung „<Spieler> hat sich schlafen gelegt“ geht wahlweise an die Welt
+  (`world`, Standard), den ganzen Server (`server`) oder an niemanden (`none`).
+
+### Geändert
+- Admin-Menü: Das Info-Buch zeigt „Version: Aktuell / Veraltet“ statt „Update: aktuell“.
+- `/mrsleep version`: neue Reihenfolge (Version, Update-Prüfung, Ergebnis, Leerzeile, Links)
+  und „Du nutzt die aktuellste Version.“
+- Config-Version 3: `sleep.action-bar` wurde durch `sleep.display` ersetzt, `messages.actionbar-*` heißt jetzt
+  `messages.display-*`. Bestehende Configs werden automatisch migriert.
+
 ## [0.9.2] - 2026-10-17
 ### Neu
 - **Admin-Menü** (`/mrsleep gui`): Spielerköpfe mit Live-Status (zählt, schläft, blockiert, Cooldown, Sperre),
