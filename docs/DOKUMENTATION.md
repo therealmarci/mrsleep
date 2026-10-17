@@ -303,7 +303,7 @@ gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test 
 - **Neue Logik ohne Server-Bezug** am besten nach `util/` legen und dort testen.
 
 ### Versionierung & Release
-- **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (aktuelle Testphase) sowie Versionen mit Suffix wie `1.0.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Ab `1.0.0` werden Versionen als normale Releases veröffentlicht.
+- **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (Testphase bis 1.0.0) sowie Versionen mit Suffix wie `1.1.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Seit `1.0.0` werden Versionen ohne Suffix als normale Releases veröffentlicht.
 - **Branches:**
 
   | Branch | Zweck | Tags / Releases |

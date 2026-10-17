@@ -2,8 +2,7 @@
 
 Schlaf-Plugin für **Paper 26.3** (Java 25).
 
-> 🧪 **Pre-Release (0.x):** MRsleep befindet sich in der Testphase. Bis zum Release 1.0.0 können sich Config,
-> Befehle und Permissions noch ändern. Fehler bitte als [Issue](https://github.com/therealmarci/mrsleep/issues) melden.
+> Fehler und Wünsche bitte als [Issue](https://github.com/therealmarci/mrsleep/issues) melden.
 
 MRsleep ist ein Minecraft Schlaf Management Plugin, dass die Schlafmechanik auf Multiplayerservern verbessert & optimiert. 
 
