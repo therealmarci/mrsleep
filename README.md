@@ -1,22 +1,16 @@
 # MRsleep
 
-[![Build](https://github.com/therealmarci/mrsleep/actions/workflows/build.yml/badge.svg)](https://github.com/therealmarci/mrsleep/actions/workflows/build.yml)
-[![Neueste Version](https://img.shields.io/github/v/release/therealmarci/mrsleep?include_prereleases&label=Version)](https://github.com/therealmarci/mrsleep/releases)
-![Paper](https://img.shields.io/badge/Paper-26.3-blue)
-![Java](https://img.shields.io/badge/Java-25-orange)
-
 Schlaf-Plugin für **Paper 26.3** (Java 25).
 
 > 🧪 **Pre-Release (0.x):** MRsleep befindet sich in der Testphase. Bis zum Release 1.0.0 können sich Config,
 > Befehle und Permissions noch ändern. Fehler bitte als [Issue](https://github.com/therealmarci/mrsleep/issues) melden.
 
-- **Schlafquote mit Ausnahmen**: Cam- und Bot-Accounts zählen nicht mit.
-- **`/nosleep [nächte]`**: Spieler blockieren das Schlafen für eine oder mehrere Nächte, mit Cooldown. `/nosleep info` zeigt den eigenen Status.
-- **Bossbar** mit dem Schlaf-Fortschritt, die vom Chat im Bett nicht verdeckt wird.
+MRsleep ist ein Minecraft Schlaf Management Plugin, dass die Schlafmechanik auf Multiplayerservern verbessert & optimiert. 
+
+- **`/nosleep [nächte]`**: Spieler können das Schlafen blockieren (/nosleep) für eine gewisse Zeit blockieren - perfekt zum bauen von Farmen
+- **Schlafquote mit Ausnahmen**: Spieler & Gruppen können mittels Permission von der Schlafquote ausgenommen werden
 - **Admin-Menü**: Spielerköpfe mit Live-Status, Sperren, Bypass und Cooldown per Klick.
-- **Sperren**: Admins schließen einzelne Spieler von `/nosleep` aus, auf Zeit oder dauerhaft.
-- **Discord-Logs**, **Chat-Hinweise** und eine **Update-Prüfung** über GitHub Releases (alternativ Modrinth).
-- **Alles einstellbar** in einer `config.yml`. Für jede Funktion gibt es eine Permission.
+- **Perfekt administrierbar** Alle Details können mittels Config File bearbeitet werden.
 
 ---
 
@@ -44,8 +38,8 @@ Schlaf-Plugin für **Paper 26.3** (Java 25).
 - Neue Optionen kommen mit Standardwerten dazu.
 - Die alte Datei bleibt als `config.v<N>.backup.yml` erhalten.
 
-**Voraussetzungen:** Paper 26.3 und Java 25. LuckPerms ist empfohlen, aber jedes Permission-Plugin funktioniert.
-
+**Voraussetzungen:** Paper 26.3, Java 25, LuckPerms
+**Empfohlen:** LuckPerms
 ---
 
 ## Funktionen
@@ -96,16 +90,6 @@ Alle Texte lassen sich in der Config ändern. Ein leerer Text (`""`) schaltet de
 
 ## Admin-Menü
 `/mrsleep gui` öffnet eine Übersicht, die sich jede Sekunde selbst aktualisiert.
-
-```text
-┌──────────────────────────── MRsleep » Übersicht ────────────────────────────┐
-│  ▒  [Welt]  ▒   ▒  [Info]  ▒   ▒  [Blockaden entfernen]  ▒                   │
-│  [Kopf] [Kopf] [Kopf] [Kopf] [Kopf] …        ← ein Kopf pro Online-Spieler     │
-│  …                                                                           │
-│  [«]  ▒  [Filter]  ▒  [Schließen]  ▒  [Reload]  ▒  [»]                        │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
-
 - **Welt** (Uhr oder Kompass): Uhrzeit, Tag/Nacht, wie viele zählen, schlafen und gebraucht werden, wer blockiert. Ein Klick wechselt zur nächsten Welt.
 - **Spielerköpfe**: Sortiert nach Blockierern, Schlafenden, normalen und ausgenommenen Spielern. Wer blockiert, leuchtet. Der Tooltip zeigt: zählt zur Quote (mit Grund), schläft (seit wie vielen Sekunden), blockiert (wie viele Nächte), Cooldown, Bypass, Sperre.
 - **Filter** (Trichter): Alle, Schlafende, Blockierer, Ausgenommene, Gesperrte.
@@ -227,34 +211,11 @@ MRsleep prüft beim Start und danach alle `update-checker.interval-hours` Stunde
 **Ich lege mich hin, aber die Nacht wird nicht übersprungen.**
 `/mrsleep debug` oder das Admin-Menü zeigt für jeden Spieler, ob er zählt (und warum nicht), ob er schläft und ob eine Blockade aktiv ist. Häufigste Ursache: Über `*` hat der Spieler auch `mrsleep.exempt`.
 
-**Der Cooldown greift nicht.**
-Prüf, ob der Spieler `mrsleep.nosleep.nocooldown` oder einen Bypass hat. Das steht in `/mrsleep debug` und im Menü.
-
 **Die Gamerule `playersSleepingPercentage` steht auf 100.**
 Das ist gewollt. Die Quote kommt aus `sleep.percentage`.
 
 **Was zählt als „eine Nacht“?**
 Wer tagsüber `/nosleep` nutzt, blockiert die kommende Nacht, wer es nachts nutzt, die laufende. Blockaden gelten pro Welt.
-
----
-
-## Selbst bauen & Releases
-Voraussetzung ist JDK 25. Gradle kommt über den Wrapper.
-```text
-gradlew.bat build     (Windows)   ./gradlew build   (Linux/macOS)
-```
-Die JAR liegt danach in `build/libs/`. In VS Code reicht **Strg+Shift+B**.
-
-**Release** (GitHub und Modrinth):
-1. In `gradle.properties` die `version` erhöhen.
-2. In `CHANGELOG.md` einen Abschnitt `## [<version>]` anlegen.
-3. Committen, dann den Tag erstellen und pushen: `git tag v<version>` und `git push origin main --tags`.
-
-Alle `0.x`-Versionen und Versionen mit Suffix (z.B. `1.0.0-rc.1`) werden automatisch als **Vorabversion** veröffentlicht: auf Modrinth als „Beta“, auf GitHub als „Pre-release“.
-
-Der Workflow `.github/workflows/release.yml` baut die JAR, erstellt das GitHub-Release mit dem Changelog-Abschnitt und lädt die Version auf Modrinth hoch. Für den Modrinth-Upload muss das Repository-Secret `MODRINTH_TOKEN` gesetzt sein.
-
-Den Code-Aufbau beschreibt die [Projektdokumentation](docs/DOKUMENTATION.md).
 
 ---
 
