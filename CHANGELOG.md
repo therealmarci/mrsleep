@@ -16,7 +16,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - **Sperren für /nosleep**: `/mrsleep ban <spieler> [dauer|permanent] [grund]`, `/mrsleep unban`, `/mrsleep bans`.
   Permission `mrsleep.admin.ban`.
 - `/mrsleep release <spieler>` hebt die Blockade eines einzelnen Spielers auf.
-- **Update-Checker** (Modrinth oder GitHub): Hinweis in der Konsole und für Spieler mit `mrsleep.admin.update`.
+- **Update-Checker** (Standard: GitHub Releases, alternativ Modrinth): Hinweis in der Konsole und für Spieler mit `mrsleep.admin.update`.
   Auf einer Vorabversion werden auch neuere Vorabversionen gemeldet.
 - `/mrsleep version` zeigt Version, Links und Update-Status.
 - Discord-Events `admin-ban`, `admin-unban`, `admin-release`.

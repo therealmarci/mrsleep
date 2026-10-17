@@ -164,7 +164,7 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 | **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer und AFK, Wetter, Actionbar |
 | **2) /nosleep** `nosleep.*` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
 | **3) Discord** `discord.*` | Webhook-URL und die einzelnen Events |
-| **4) Update-Check** `update-checker.*` | Quelle (Modrinth/GitHub), Intervall, Hinweis beim Betreten |
+| **4) Update-Check** `update-checker.*` | Quelle (GitHub Releases oder Modrinth), Intervall, Hinweis beim Betreten |
 | **5) Admin-Menü** `gui.*` | Aktualisierung, Schnellauswahl-Zeiten, Sperrgrund, Sounds |
 | **6) Nachrichten** `messages.*` | Alle Texte ([MiniMessage](https://docs.advntr.dev/minimessage/format.html)) |
 
@@ -189,7 +189,7 @@ Gesendet wird im Hintergrund. Das Rate-Limit von Discord wird eingehalten, und `
 ---
 
 ## Update-Prüfung
-MRsleep prüft beim Start und danach alle `update-checker.interval-hours` Stunden, ob es eine neue Version gibt. Die Quelle ist Modrinth oder GitHub Releases.
+MRsleep prüft beim Start und danach alle `update-checker.interval-hours` Stunden, ob es eine neue Version gibt. Standardquelle sind die **GitHub Releases** (`update-checker.source: github`). Alternativ geht `modrinth`. Weil jedes Release automatisch auf beiden Plattformen erscheint, ist das Ergebnis gleich.
 - **Konsole:** Ein auffälliger Hinweis mit installierter und neuer Version samt Download-Link.
 - **Im Spiel:** Spieler mit `mrsleep.admin.update` bekommen beim Betreten einen anklickbaren Hinweis.
 - `/mrsleep version` prüft sofort und zeigt das Ergebnis.

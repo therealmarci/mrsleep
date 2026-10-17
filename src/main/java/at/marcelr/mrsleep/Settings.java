@@ -56,10 +56,10 @@ public record Settings(
                 .map(s -> s.toLowerCase(Locale.ROOT))
                 .collect(Collectors.toUnmodifiableSet());
 
-        String source = c.getString("update-checker.source", "modrinth").toLowerCase(Locale.ROOT);
+        String source = c.getString("update-checker.source", "github").toLowerCase(Locale.ROOT);
         if (!source.equals("modrinth") && !source.equals("github")) {
-            log.warning("Ungültige update-checker.source '" + source + "', verwende modrinth.");
-            source = "modrinth";
+            log.warning("Ungültige update-checker.source '" + source + "', verwende github.");
+            source = "github";
         }
         UpdateSettings update = new UpdateSettings(
                 c.getBoolean("update-checker.enabled", true),

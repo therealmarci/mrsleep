@@ -157,8 +157,8 @@ update-checker:
   # Beim Start und danach regelmäßig nach neuen Versionen suchen.
   # Ist eine neuere Version verfügbar, erscheint ein Hinweis in der Konsole.
   enabled: true
-  # Quelle: "modrinth" oder "github"
-  source: modrinth
+  # Quelle: "github" (GitHub Releases, Standard) oder "modrinth"
+  source: github
   # Auch Beta-/Alpha-Versionen melden. Läuft selbst eine Vorabversion (0.x), werden sie immer gemeldet.
   include-prereleases: false
   # Wie oft erneut geprüft wird (in Stunden).
