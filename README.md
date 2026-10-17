@@ -236,3 +236,17 @@ Die JAR liegt danach in `build/libs/`. In VS Code reicht **Strg+Shift+B**.
 Der Workflow `.github/workflows/release.yml` baut die JAR, erstellt das GitHub-Release mit dem Changelog-Abschnitt und lädt die Version auf Modrinth hoch. Für den Modrinth-Upload muss das Repository-Secret `MODRINTH_TOKEN` gesetzt sein.
 
 Den Code-Aufbau beschreibt die [Projektdokumentation](docs/DOKUMENTATION.md).
+
+---
+
+## Lizenz
+MRsleep ist **source-available**, aber nicht Open Source. Es gilt die [MRsleep Lizenz](LICENSE), die Kurzfassung:
+
+| ✅ Erlaubt | ❌ Nicht erlaubt |
+|---|---|
+| Auf eigenen Servern nutzen, auch mit Spenden oder Rängen | Weiterveröffentlichen (auch verändert), z.B. auf Modrinth, Spigot, Hangar |
+| Für den eigenen Gebrauch verändern und neu kompilieren | Verkaufen oder gegen Geld anbieten |
+| An das eigene Server-Team oder den Hoster weitergeben | Als eigenes Werk ausgeben, Lizenzhinweis entfernen |
+| Verbesserungen per Pull Request einreichen | |
+
+Für alles andere ist eine schriftliche Erlaubnis nötig. Maßgeblich ist der vollständige Text in [LICENSE](LICENSE).
