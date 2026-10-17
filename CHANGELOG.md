@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an MRsleep. Format nach [Keep a Changelog](https://ke
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
+### Behoben
+- Fehlende Einträge in einer bestehenden `config.yml` werden jetzt mit den mitgelieferten Standardwerten aufgefüllt.
+  Vorher bekamen sie teils einen leeren oder abweichenden Ersatzwert aus dem Code.
 
 ## [1.0.0] - 2026-10-17
 **Erste stabile Version.** Ab hier gilt Semantic Versioning: Config, Befehle und Permissions ändern sich
