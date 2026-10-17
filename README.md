@@ -38,8 +38,10 @@ MRsleep ist ein Minecraft Schlaf Management Plugin, dass die Schlafmechanik auf 
 - Neue Optionen kommen mit Standardwerten dazu.
 - Die alte Datei bleibt als `config.v<N>.backup.yml` erhalten.
 
-**Voraussetzungen:** Paper 26.3, Java 25, LuckPerms
-**Empfohlen:** LuckPerms
+**Voraussetzungen:** 
+- Paper 26.3, 
+- Java 25, LuckPerms
+- LuckPerms
 ---
 
 ## Funktionen
