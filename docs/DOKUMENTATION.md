@@ -86,7 +86,7 @@ Settings  Messages  Discord  Update-  NoSleepManager  SleepManager   MenuListene
 In Vanilla bzw. Paper zählen Spieler mit `setSleepingIgnored(true)` als schlafend, bleiben aber in der Gesamtzahl. Bei 6 Spielern, 2 ignorierten und 50 % braucht Vanilla `ceil(6 × 0.5) = 3` Schlafende, von denen 2 die ignorierten sind. Es reicht also **1** echter Schläfer. Gewünscht sind aber **2 von 4**. Dafür gibt es keinen API-Hook, deshalb:
 
 1. **Vanilla zurückdrängen:** In verwalteten Welten wird `GameRules.PLAYERS_SLEEPING_PERCENTAGE = 100` gesetzt. Vanilla versucht dann nur zu überspringen, wenn wirklich alle schlafen, und dieser Versuch wird abgebrochen (Punkt 2).
-   > ⚠️ **Nicht 101 verwenden:** Bei Werten über 100 gibt `ServerLevel#canSleepThroughNights()` `false` zurück. `ServerPlayer#startSleepInBed` schickt dann jedem Spieler beim Hinlegen „Keine noch so lange Rast kann diese Nacht verkürzen“ (`sleep.not_possible`), und die Spieler stehen wieder auf. Das war der Fehler in Version 1.1.0.
+   > ⚠️ **Nicht 101 verwenden:** Bei Werten über 100 gibt `ServerLevel#canSleepThroughNights()` `false` zurück. `ServerPlayer#startSleepInBed` schickt dann jedem Spieler beim Hinlegen „Keine noch so lange Rast kann diese Nacht verkürzen“ (`sleep.not_possible`), und die Spieler stehen wieder auf. Das war der Fehler bis Version 0.9.0.
    > Nebeneffekt von 100: Liegen in einer `/nosleep`-Nacht wirklich alle im Bett, beendet Vanilla trotzdem Regen und Gewitter (`resetWeatherCycle` wird unabhängig vom abgebrochenen Event aufgerufen).
 2. **Sicherheitsnetz:** `SleepListener#onTimeSkip` bricht jedes `TimeSkipEvent` mit `SkipReason.NIGHT_SKIP` in verwalteten Welten ab.
 3. **Eigener Check:** Ein Task prüft alle 10 Ticks jede verwaltete Welt.
@@ -197,7 +197,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 
 ## 5d. Update-Checker (`UpdateChecker`)
 - Die Projekt-IDs stehen in `gradle.properties` und landen beim Build in `build-info.properties`.
-- **Modrinth:** `GET /v2/project/{id}/version?loaders=["paper"]&include_changelog=false`. **GitHub:** `GET /repos/{repo}/releases`. Entwürfe werden ignoriert, Vorabversionen nur mit `include-prereleases`.
+- **Modrinth:** `GET /v2/project/{id}/version?loaders=["paper"]&include_changelog=false`. **GitHub:** `GET /repos/{repo}/releases`. Entwürfe werden ignoriert. Vorabversionen werden berücksichtigt, wenn `include-prereleases` an ist oder die installierte Version selbst eine Vorabversion ist (`UpdateChecker.isPrerelease`: 0.x oder Suffix).
 - Die höchste Version wird mit `UpdateChecker.compare` bestimmt: numerischer Vergleich, ein führendes `v` wird ignoriert, eine Release-Version gilt als neuer als eine Vorabversion mit gleicher Nummer.
 - Der Check läuft beim Start (nach 5 s) und danach alle `interval-hours` Stunden als Async-Task, außerdem bei `/mrsleep version`. Ist eine neuere Version verfügbar, erscheint einmal pro Version ein Hinweisblock in der Konsole, und online-Admins (`mrsleep.admin.update`) bekommen eine Nachricht. Beim Join kommt der Hinweis nach 3 s.
 - Fehler wie 404 (Projekt noch nicht veröffentlicht) werden einmal als INFO geloggt, danach erst wieder, wenn sich der Grund ändert.
@@ -258,7 +258,7 @@ gradlew.bat build
 Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml` (`${version}`) und in die `build-info.properties` übernommen.
 
 ### Versionierung & Release
-- **Semantic Versioning:** `MAJOR.MINOR.PATCH`, Vorabversionen z.B. `1.3.0-beta.1`. Letztere landen auf Modrinth als „beta“ und auf GitHub als Pre-Release.
+- **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (aktuelle Testphase) sowie Versionen mit Suffix wie `1.0.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Ab `1.0.0` werden Versionen als normale Releases veröffentlicht.
 - **Ablauf:**
   1. `version` in `gradle.properties` erhöhen.
   2. In `CHANGELOG.md` einen Abschnitt `## [<version>] - <datum>` ergänzen.
@@ -288,7 +288,7 @@ Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml`
 | 10 | Blockierender Spieler geht offline | `nosleep-broadcast-quit`, Schlafen wieder möglich |
 | 11 | Discord-URL eintragen, `/mrsleep reload` | Event `admin-reload` erscheint im Kanal |
 | 12 | Plugin entfernen und Server neu starten | Gamerule steht wieder auf `sleep.percentage` |
-| 13 | Alte Config (ohne `config-version`) und Start mit 1.2.0 | Log „config.yml von Version 1 auf 2 aktualisiert“, Werte übernommen, `config.v1.backup.yml` vorhanden, Datei beginnt mit BOM |
+| 13 | Alte Config (ohne `config-version`) und Start mit 0.9.2 | Log „config.yml von Version 1 auf 2 aktualisiert“, Werte übernommen, `config.v1.backup.yml` vorhanden, Datei beginnt mit BOM |
 | 14 | `/mrsleep ban <spieler> 2h Test`, dann `/nosleep` als dieser Spieler | `nosleep-banned`, die laufende Blockade wurde aufgehoben |
 | 15 | `/mrsleep gui` | Köpfe aktualisieren sich live (Schlafsekunden zählen hoch), Filter und Seiten funktionieren, Items lassen sich nicht herausnehmen |
 | 16 | Spieler-Menü ohne `mrsleep.admin.ban` | Sperr-Buttons zeigen „Keine Berechtigung“, ein Klick wird abgelehnt |

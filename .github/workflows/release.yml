@@ -30,6 +30,11 @@ jobs:
             exit 1
           fi
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          # 0.x und Versionen mit Suffix (1.0.0-rc.1) sind Vorabversionen.
+          case "$VERSION" in
+            0.*|*-*) echo "PRERELEASE=true" >> "$GITHUB_ENV" ;;
+            *)       echo "PRERELEASE=false" >> "$GITHUB_ENV" ;;
+          esac
 
       - name: Bauen
         run: chmod +x gradlew && ./gradlew build
@@ -49,7 +54,7 @@ jobs:
           name: MRsleep ${{ env.VERSION }}
           body_path: release-notes.md
           files: build/libs/MRsleep-${{ env.VERSION }}.jar
-          prerelease: ${{ contains(env.VERSION, '-') }}
+          prerelease: ${{ env.PRERELEASE == 'true' }}
 
       - name: Auf Modrinth veröffentlichen
         if: ${{ env.MODRINTH_TOKEN != '' }}

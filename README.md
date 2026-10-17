@@ -2,6 +2,9 @@
 
 Schlaf-Plugin für **Paper 26.3** (Java 25).
 
+> 🧪 **Pre-Release (0.x):** MRsleep befindet sich in der Testphase. Bis zum Release 1.0.0 können sich Config,
+> Befehle und Permissions noch ändern. Fehler bitte als [Issue](https://github.com/therealmarci/mrsleep/issues) melden.
+
 - **Schlafquote mit Ausnahmen**: Cam- und Bot-Accounts zählen nicht mit.
 - **`/nosleep [nächte]`**: Spieler blockieren das Schlafen für eine oder mehrere Nächte, mit Cooldown.
 - **Admin-Menü**: Spielerköpfe mit Live-Status, Sperren, Bypass und Cooldown per Klick.
@@ -232,6 +235,8 @@ Die JAR liegt danach in `build/libs/`. In VS Code reicht **Strg+Shift+B**.
 1. In `gradle.properties` die `version` erhöhen.
 2. In `CHANGELOG.md` einen Abschnitt `## [<version>]` anlegen.
 3. Committen, dann den Tag erstellen und pushen: `git tag v<version>` und `git push origin main --tags`.
+
+Alle `0.x`-Versionen und Versionen mit Suffix (z.B. `1.0.0-rc.1`) werden automatisch als **Vorabversion** veröffentlicht: auf Modrinth als „Beta“, auf GitHub als „Pre-release“.
 
 Der Workflow `.github/workflows/release.yml` baut die JAR, erstellt das GitHub-Release mit dem Changelog-Abschnitt und lädt die Version auf Modrinth hoch. Für den Modrinth-Upload muss das Repository-Secret `MODRINTH_TOKEN` gesetzt sein.
 

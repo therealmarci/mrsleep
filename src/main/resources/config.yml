@@ -159,7 +159,7 @@ update-checker:
   enabled: true
   # Quelle: "modrinth" oder "github"
   source: modrinth
-  # Auch Beta-/Alpha-Versionen melden.
+  # Auch Beta-/Alpha-Versionen melden. Läuft selbst eine Vorabversion (0.x), werden sie immer gemeldet.
   include-prereleases: false
   # Wie oft erneut geprüft wird (in Stunden).
   interval-hours: 6

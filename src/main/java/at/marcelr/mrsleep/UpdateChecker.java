@@ -148,10 +148,13 @@ public final class UpdateChecker {
         if (state == State.DISABLED) {
             state = State.CHECKING;
         }
+        // Whoever runs a pre-release (0.x, -rc...) must also be told about newer pre-releases,
+        // otherwise 0.9.2 would never learn about 0.9.3.
+        boolean prereleases = settings.includePrereleases() || isPrerelease(currentVersion);
         try {
             Release release = settings.source().equals("github")
-                    ? fetchGithub(settings.includePrereleases())
-                    : fetchModrinth(settings.includePrereleases());
+                    ? fetchGithub(prereleases)
+                    : fetchModrinth(prereleases);
             if (release == null) {
                 fail("Keine veröffentlichte Version gefunden");
                 return;
@@ -260,6 +263,12 @@ public final class UpdateChecker {
     }
 
     // ------------------------------------------------------------ versions
+
+    /** 0.x versions and versions with a suffix ("1.0.0-rc.1") are pre-releases. */
+    public static boolean isPrerelease(String version) {
+        String v = stripV(version);
+        return v.startsWith("0.") || v.contains("-");
+    }
 
     private static String stripV(String version) {
         return version.startsWith("v") || version.startsWith("V") ? version.substring(1) : version;

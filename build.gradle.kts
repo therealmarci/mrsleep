@@ -9,6 +9,7 @@ group = "at.marcelr"
 val modrinthProjectId: String by project
 val githubRepository: String by project
 val supportedGameVersions: String by project
+val isPrerelease = project.version.toString().let { it.startsWith("0.") || it.contains("-") }
 
 repositories {
     mavenCentral()
@@ -49,7 +50,8 @@ modrinth {
     projectId.set(modrinthProjectId)
     versionNumber.set(project.version.toString())
     versionName.set("MRsleep ${project.version}")
-    versionType.set(if (project.version.toString().contains("-")) "beta" else "release")
+    // 0.x und Versionen mit Suffix (1.0.0-rc.1) sind Vorabversionen -> auf Modrinth als "beta".
+    versionType.set(if (isPrerelease) "beta" else "release")
     uploadFile.set(tasks.jar)
     gameVersions.addAll(supportedGameVersions.split(",").map { it.trim() })
     loaders.addAll("paper", "purpur")
