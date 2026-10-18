@@ -443,7 +443,7 @@ public final class NoSleepManager {
         try {
             data.save(dataFile);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.WARNING, "Konnte data.yml nicht speichern", e);
+            plugin.getLogger().log(Level.WARNING, "Could not save data.yml", e);
         }
     }
 }

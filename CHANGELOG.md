@@ -11,6 +11,12 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - Auch bisher fest eingebaute Texte (ja/nein, Discord- und Update-Fehlermeldungen) sind jetzt übersetzbar.
 
 ### Geändert
+- **Neues Versionsschema mit Minecraft-Version:** `mc26.3-v1.1.0` statt `v1.1.0` (Git-Tag, JAR-Name, Modrinth).
+  Im Spiel und in `/plugins` steht `1.1.0+mc26.3`. Damit können künftig mehrere Minecraft-Versionen parallel
+  versorgt werden (Wartungs-Branches `mc/<version>`, siehe `docs/RELEASES.md`). Der Update-Checker meldet nur
+  noch Versionen für dieselbe Minecraft-Version. `/mrsleep version` und das Admin-Menü zeigen die MC-Version an.
+- **Konsole immer auf Englisch:** Log-Ausgaben und Antworten auf Konsolenbefehle sind jetzt einheitlich englisch,
+  unabhängig von `language`. Spieler bekommen weiter ihre eingestellte Sprache.
 - Config-Version 6: Der Abschnitt `messages`, die Discord-Texte (`discord.events.*.message`, `discord.test-message`)
   und `gui.ban-reason` sind aus der `config.yml` in die Sprachdatei gewandert. Bestehende Texte inkl. eigener
   Anpassungen werden beim Update automatisch nach `lang/de.yml` übernommen.

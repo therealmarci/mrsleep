@@ -204,7 +204,7 @@ public final class MainMenu extends Menu {
             default -> messages.get("gui-update-unknown");
         };
         set(4, Items.of(Material.KNOWLEDGE_BOOK)
-                .name(messages.item("gui-info-name", tag("version", updates.currentVersion())))
+                .name(messages.item("gui-info-name", tag("version", updates.currentVersion()), tag("mc", updates.minecraftVersion())))
                 .lore(messages.lore("gui-info-lore",
                         tag("update", update),
                         tag("percentage", plugin.settings().percentage()),

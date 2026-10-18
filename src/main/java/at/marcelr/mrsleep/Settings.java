@@ -56,7 +56,7 @@ public record Settings(
         String rawCooldown = c.getString("nosleep.cooldown", "15m");
         long cooldown = DurationUtil.parse(rawCooldown);
         if (cooldown < 0) {
-            log.warning("Ungültiger nosleep.cooldown '" + rawCooldown + "', verwende 15m.");
+            log.warning("Invalid nosleep.cooldown '" + rawCooldown + "', using 15m.");
             cooldown = DEFAULT_COOLDOWN;
         }
 
@@ -66,7 +66,7 @@ public record Settings(
 
         String source = c.getString("update-checker.source", "github").toLowerCase(Locale.ROOT);
         if (!source.equals("modrinth") && !source.equals("github")) {
-            log.warning("Ungültige update-checker.source '" + source + "', verwende github.");
+            log.warning("Invalid update-checker.source '" + source + "', using github.");
             source = "github";
         }
         UpdateSettings update = new UpdateSettings(
@@ -113,7 +113,7 @@ public record Settings(
         try {
             return Enum.valueOf(fallback.getDeclaringClass(), raw.trim().toUpperCase(Locale.ROOT));
         } catch (IllegalArgumentException e) {
-            log.warning("Ungültiger Wert '" + raw + "' für " + path + ", verwende " + fallback.name().toLowerCase(Locale.ROOT) + ".");
+            log.warning("Invalid value '" + raw + "' for " + path + ", using " + fallback.name().toLowerCase(Locale.ROOT) + ".");
             return fallback;
         }
     }
@@ -125,7 +125,7 @@ public record Settings(
             String value = i < raw.size() ? raw.get(i) : defaults.get(i);
             long parsed = allowPermanent && value.equalsIgnoreCase("permanent") ? PERMANENT : DurationUtil.parse(value);
             if (parsed == 0 || (parsed < 0 && parsed != PERMANENT)) {
-                log.warning("Ungültige Dauer '" + value + "' im gui-Abschnitt, verwende " + defaults.get(i) + ".");
+                log.warning("Invalid duration '" + value + "' in the gui section, using " + defaults.get(i) + ".");
                 String fallback = defaults.get(i);
                 parsed = fallback.equals("permanent") ? PERMANENT : DurationUtil.parse(fallback);
             }

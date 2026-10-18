@@ -4,12 +4,18 @@ plugins {
 }
 
 group = "at.marcelr"
-// version kommt aus gradle.properties
+
+// Versionen kommen aus gradle.properties: "version" ist die Plugin-Version (SemVer), "mcVersion" die
+// Minecraft-Version dieses Branches. Veröffentlicht wird beides zusammen, z.B. "mc26.3-v1.2.0".
+val pluginVersion = project.version.toString()
+val mcVersion: String by project
+val paperApi: String by project
+version = "mc$mcVersion-v$pluginVersion"
 
 val modrinthProjectId: String by project
 val githubRepository: String by project
 val supportedGameVersions: String by project
-val isPrerelease = project.version.toString().let { it.startsWith("0.") || it.contains("-") }
+val isPrerelease = pluginVersion.let { it.startsWith("0.") || it.contains("-") }
 
 repositories {
     mavenCentral()
@@ -17,7 +23,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.3.build.200-stable")
+    compileOnly("io.papermc.paper:paper-api:$paperApi")
 
     testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -41,7 +47,10 @@ tasks.withType<JavaCompile>().configureEach {
 
 tasks.processResources {
     val props = mapOf(
-        "version" to project.version.toString(),
+        // In der plugin.yml als SemVer mit Build-Info ("1.2.0+mc26.3"), weil Paper selbst ein "v" davorsetzt.
+        "version" to "$pluginVersion+mc$mcVersion",
+        "pluginVersion" to pluginVersion,
+        "mcVersion" to mcVersion,
         "modrinthProjectId" to modrinthProjectId,
         "githubRepository" to githubRepository,
     )
@@ -58,7 +67,7 @@ modrinth {
     token.set(providers.environmentVariable("MODRINTH_TOKEN"))
     projectId.set(modrinthProjectId)
     versionNumber.set(project.version.toString())
-    versionName.set("MRsleep ${project.version}")
+    versionName.set("MRsleep $pluginVersion (MC $mcVersion)")
     // 0.x und Versionen mit Suffix (1.0.0-rc.1) sind Vorabversionen -> auf Modrinth als "beta".
     versionType.set(if (isPrerelease) "beta" else "release")
     uploadFile.set(tasks.jar)

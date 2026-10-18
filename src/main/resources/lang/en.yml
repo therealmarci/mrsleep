@@ -173,7 +173,7 @@ discord-error-rate-limit: "Discord rate limit, message dropped"
 discord-error-interrupted: "interrupted"
 
 # --- Version & updates -------------------------------------------------------
-version: "<prefix><gray>MRsleep <white>v<version></white> by <white><author></white>"
+version: "<prefix><gray>MRsleep <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> by <white><author></white>"
 version-latest: "<prefix><green>You are running the latest version."
 version-outdated: "<prefix><gold>New version available: <white><latest></white> <gray>(installed: <current>) <download>"
 version-unknown: "<prefix><gray>Update status unknown: <reason>"
@@ -248,7 +248,7 @@ gui-close: "<red>Close"
 gui-reload-name: "<aqua>Reload configuration"
 gui-reload-lore:
   - "<gray>Reloads config.yml and the language file."
-gui-info-name: "<aqua>MRsleep <white>v<version>"
+gui-info-name: "<aqua>MRsleep <white>v<version> <dark_gray>(MC <mc>)"
 gui-info-lore:
   - "<gray>Version: <update>"
   - "<gray>Quota: <white><percentage>%</white> <dark_gray>| <gray>Cooldown: <white><cooldown>"

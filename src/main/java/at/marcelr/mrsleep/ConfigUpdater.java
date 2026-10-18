@@ -99,10 +99,10 @@ public final class ConfigUpdater {
             File backup = new File(plugin.getDataFolder(), "config.v" + version + ".backup.yml");
             Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
             Files.writeString(file.toPath(), BOM + template.saveToString(), StandardCharsets.UTF_8);
-            plugin.getLogger().info("config.yml von Version " + version + " auf " + CURRENT_VERSION + " aktualisiert ("
-                    + carried + " Einstellungen übernommen, Sicherung: " + backup.getName() + ").");
+            plugin.getLogger().info("Updated config.yml from version " + version + " to " + CURRENT_VERSION + " ("
+                    + carried + " settings carried over, backup: " + backup.getName() + ").");
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.WARNING, "config.yml konnte nicht aktualisiert werden: " + e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Could not update config.yml: " + e.getMessage());
         }
     }
 
@@ -118,7 +118,7 @@ public final class ConfigUpdater {
             try {
                 lang.loadFromString(stripBom(Files.readString(file.toPath(), StandardCharsets.UTF_8)));
             } catch (InvalidConfigurationException e) {
-                plugin.getLogger().warning("lang/de.yml ist fehlerhaft, Texte aus der alten config.yml werden nicht übernommen.");
+                plugin.getLogger().warning("lang/de.yml is invalid, texts from the old config.yml are not carried over.");
                 return;
             }
         }
@@ -149,7 +149,7 @@ public final class ConfigUpdater {
         Files.createDirectories(file.getParentFile().toPath());
         lang.options().width(10_000);
         Files.writeString(file.toPath(), BOM + lang.saveToString(), StandardCharsets.UTF_8);
-        plugin.getLogger().info(carried + " Texte aus der alten config.yml nach lang/de.yml übernommen.");
+        plugin.getLogger().info("Moved " + carried + " texts from the old config.yml to lang/de.yml.");
     }
 
     /** Loads config.yml (tolerating a BOM) with the bundled config as defaults for missing keys. */
@@ -161,7 +161,7 @@ public final class ConfigUpdater {
                 config.loadFromString(stripBom(Files.readString(file.toPath(), StandardCharsets.UTF_8)));
             }
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.SEVERE, "config.yml ist fehlerhaft, verwende Standardwerte: " + e.getMessage());
+            plugin.getLogger().log(Level.SEVERE, "config.yml is invalid, using defaults: " + e.getMessage());
         }
         try (InputStream in = plugin.getResource("config.yml")) {
             if (in != null) {
@@ -177,7 +177,7 @@ public final class ConfigUpdater {
                 }
             }
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.WARNING, "Standard-Config konnte nicht gelesen werden: " + e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Could not read the bundled config: " + e.getMessage());
         }
         return config;
     }
