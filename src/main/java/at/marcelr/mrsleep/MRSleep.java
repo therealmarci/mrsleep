@@ -9,13 +9,16 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public final class MRSleep extends JavaPlugin {
 
     private FileConfiguration config;
     private Settings settings;
-    private final Messages messages = new Messages();
+    // lang-version 2: the version display got the Minecraft version.
+    private final Messages messages = new Messages(2, Map.of(2, Set.of("version", "gui-info-name")));
     private final DiscordWebhook discord = new DiscordWebhook(this);
     private final AdminActions adminActions = new AdminActions(this);
     private UpdateChecker updateChecker;

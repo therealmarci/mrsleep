@@ -5,6 +5,18 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.1.1] - 2026-10-19
+Für Minecraft **26.3** (`mc26.3-v1.1.1`). Kleines Update von 1.1.0: JAR austauschen und neu starten.
+
+### Neu
+- **MRadmin-Anbindung:** Im Admin-Kompass von MRadmin zeigt der MRsleep-Knopf live den Schlafstatus pro Welt,
+  aktive /nosleep und Sperren; im Spieler-Menü von MRadmin gibt es die MRsleep-Infos des Spielers und einen Knopf
+  zu seinem MRsleep-Menü (Zurück führt wieder zu MRadmin). Ohne MRadmin ändert sich nichts.
+
+### Behoben
+- Zu lange Fenstertitel im Admin-Menü (z.B. bei langen Spielernamen) werden automatisch mit „…“ gekürzt, statt aus
+  dem Fenster zu ragen.
+
 ## [1.1.0] - 2026-10-18
 Für Minecraft **26.3** (`mc26.3-v1.1.0`). Update von 1.0.0: JAR austauschen und neu starten, Config und Texte
 werden automatisch übernommen.
