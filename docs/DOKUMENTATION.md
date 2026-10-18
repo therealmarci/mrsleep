@@ -35,7 +35,7 @@ Diese Dokumentation richtet sich an alle, die am Code von MRsleep arbeiten. Was 
 ```text
 mrsleep/
 ├─ build.gradle.kts            Build, Paper-API, Java 25, Ressourcen-Ersetzung, Modrinth-Upload (Minotaur)
-├─ gradle.properties           version, modrinthProjectId, githubRepository, supportedGameVersions
+├─ gradle.properties           version, mcVersion, paperApi, supportedGameVersions, Projekt-IDs
 ├─ settings.gradle.kts
 ├─ gradlew / gradlew.bat       Gradle-Wrapper (lädt Gradle 9.8.1 selbst)
 ├─ CHANGELOG.md                Änderungen pro Version (Quelle für Release-Notes)
@@ -43,17 +43,18 @@ mrsleep/
 ├─ .editorconfig               Formatierung; hält das BOM der config.yml
 ├─ .github/
 │  ├─ workflows/build.yml      Build + Tests bei jedem Push/PR, JAR als Artefakt
-│  ├─ workflows/release.yml    Bei Tag v*: GitHub-Release + Modrinth-Upload
+│  ├─ workflows/release.yml    Bei Tag mc*-v*: GitHub-Release + Modrinth-Upload
 │  ├─ ISSUE_TEMPLATE/          Vorlagen für Fehlermeldungen und Wünsche
 │  └─ dependabot.yml           monatliche Updates der GitHub-Actions
 ├─ docs/DOKUMENTATION.md       diese Datei
+├─ docs/RELEASES.md            Versionsschema, Branches, mehrere Minecraft-Versionen, Release-Ablauf
 ├─ README.md                   Doku für Server-Admins
 └─ src/
    ├─ main/java/at/marcelr/mrsleep/
    │  ├─ MRSleep.java              Hauptklasse: Lebenszyklus, verbindet alle Komponenten
    │  ├─ Settings.java             unveränderlicher Record mit allen Werten aus config.yml
    │  ├─ ConfigUpdater.java        Config-Migration, Laden mit BOM-Unterstützung
-   │  ├─ Messages.java             MiniMessage (Chat, Broadcast, Item-Namen/Lore)
+   │  ├─ Messages.java             Sprachdateien laden/ergänzen, MiniMessage, Konsole immer Englisch
    │  ├─ StatusTexts.java          Status-Texte eines Spielers (für GUI und /nosleep info)
    │  ├─ SleepDisplay.java         Fortschrittsanzeige: Bossbar / Actionbar / Titel
    │  ├─ SleepManager.java         eigene Schlaflogik (Quote, Nacht überspringen)
@@ -74,12 +75,13 @@ mrsleep/
    │  │  └─ Items.java             Item-Builder
    │  └─ util/
    │     ├─ DurationUtil.java      "1h30m" ⇄ Millisekunden
-   │     └─ Versions.java          SemVer-Vergleich, Erkennung von Vorabversionen
+   │     └─ Versions.java          Versionen "mc26.3-v1.2.0": SemVer-Vergleich, MC-Version, Vorabversionen
    ├─ main/resources/
-   │  ├─ plugin.yml                Befehle und Permissions (${version} wird ersetzt)
+   │  ├─ plugin.yml                Befehle und Permissions (${version}, ${mcVersion} werden ersetzt)
    │  ├─ config.yml                Standard-Config (UTF-8 mit BOM!)
+   │  ├─ lang/de.yml, lang/en.yml   alle Texte (UTF-8 mit BOM, gleiche Schlüssel)
    │  └─ build-info.properties     Version und Projekt-IDs für den Update-Checker (wird ersetzt)
-   └─ test/java/…/util/            JUnit-Tests für DurationUtil und Versions
+   └─ test/java/…/                 JUnit-Tests: DurationUtil, Versions, LanguageFilesTest (de/en gleich)
 ```
 
 ## 3. Architektur
@@ -217,6 +219,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
   1. Die mitgelieferte `config.yml` wird als Vorlage geladen. Die Kommentare und die Reihenfolge bleiben erhalten, weil Bukkit Kommentare mitliest.
   2. Jeder Wert der alten Datei, dessen Schlüssel es in der Vorlage noch gibt, wird übernommen. Ausnahme sind die `REPLACED_KEYS`, also Texte, deren Inhalt sich mit neuen Funktionen geändert hat.
   3. Die alte Datei wird als `config.v<N>.backup.yml` gesichert, die neue mit BOM geschrieben.
+- **v6 (Sprachdateien):** `migrateTexts` überträgt vor der Migration `messages.*`, `discord.events.*.message`, `discord.test-message` und `gui.ban-reason` aus der alten Config nach `lang/de.yml` (die alten Texte waren deutsch). `REPLACED_KEYS` und `RENAMED_KEYS` gelten dabei weiter.
 - **Wenn sich die Config-Struktur ändert:** `CURRENT_VERSION` und `config-version` in der Vorlage erhöhen. Bei umbenannten Schlüsseln die Werte vor dem Übernehmen umschreiben, bei geänderten Standardtexten den Schlüssel in `REPLACED_KEYS` aufnehmen.
 
 ## 7. Admin-Menü (`gui/*`)
@@ -224,7 +227,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 - **`render()`** leert das Inventar und ruft `draw()` neu auf. `MenuListener` macht das alle `gui.refresh-ticks` Ticks für jedes offene Menü. Da Bukkit Inventaränderungen erst am Tick-Ende synchronisiert, flackert dabei nichts.
 - **`MainMenu`**: Oben die Welt (eine Uhr, nachts ein Recovery-Kompass, Klick wechselt die Welt), das Info-Buch (Version und Update-Status) und „Blockaden entfernen“. In der Mitte bis zu 36 Köpfe pro Seite, sortiert nach `PlayerHead.rank` (Blockierer → Schlafende → Zählende → Ausgenommene, danach alphabetisch) und gefiltert nach `Filter`. Unten Seiten, Filter, Schließen und Reload.
 - **`PlayerMenu`**: Aktionen für einen Spieler. Jede Taste läuft über `button(...)`: Sie prüft die Permission (sonst Lore-Hinweis, Ablehnungs-Sound und `no-permission`), ruft die Methode in `AdminActions` auf, spielt den Erfolgs-Sound und zeichnet neu. Geht der Spieler offline, springt das Menü zur Übersicht zurück.
-- Alle Texte kommen aus `messages.gui-*`. `Messages#item` und `Messages#lore` entfernen die Kursivschrift, die Minecraft standardmäßig für Item-Texte nutzt. Werte in der Kopf-Lore (z.B. `<counts>`) sind formatierte Komponenten (`Messages.tag(name, Component)`).
+- Alle Texte kommen aus `gui-*` der Sprachdatei. `Messages#item` und `Messages#lore` entfernen die Kursivschrift, die Minecraft standardmäßig für Item-Texte nutzt. Werte in der Kopf-Lore (z.B. `<counts>`) sind formatierte Komponenten (`Messages.tag(name, Component)`).
 
 ## 8. Update-Checker (`UpdateChecker`)
 - Die Projekt-IDs stehen in `gradle.properties` und landen beim Build in `build-info.properties`.
@@ -232,12 +235,19 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 - Die höchste Version wird mit `Versions.compare` bestimmt (SemVer): Zahlen werden numerisch verglichen (`0.10.0 > 0.9.2`), ein führendes `v` und Build-Metadaten (`+…`) werden ignoriert, eine Release-Version gilt als neuer als ihre Vorabversion (`1.0.0 > 1.0.0-rc.1`), und Vorabversionen werden je Teil verglichen (`rc.10 > rc.2`).
 - Der Check läuft beim Start (nach 5 s) und danach alle `interval-hours` Stunden als Async-Task, außerdem bei `/mrsleep version`. Ist eine neuere Version verfügbar, erscheint einmal pro Version ein Hinweisblock in der Konsole, und online-Admins (`mrsleep.admin.update`) bekommen eine Nachricht. Beim Join kommt der Hinweis nach 3 s.
 - Fehler wie 404 (Projekt noch nicht veröffentlicht) werden einmal als INFO geloggt, danach erst wieder, wenn sich der Grund ändert.
+- **Nur dieselbe Minecraft-Version:** Releases mit anderem `mc…`-Präfix (GitHub) bzw. ohne passende `game_versions` (Modrinth) werden übersprungen. Alte Tags ohne Präfix (`v1.0.0`) zählen mit. Die eigene MC-Version kommt aus `build-info.properties` (`mcVersion`).
 - Der User-Agent lautet `MRsleep/<version> (<github-url>)`. Modrinth verlangt einen eindeutigen User-Agent.
 
 ## 9. Nachrichten (`Messages`)
-- Alle Texte stehen unter `messages.*` in der Config und werden mit **MiniMessage** dargestellt.
+- Alle Texte stehen in **`lang/<sprache>.yml`** (mitgeliefert: `de`, `en`) und werden mit **MiniMessage** dargestellt. Die Config enthält nur `language`.
+- **Laden (`Messages#load`):** Fehlende mitgelieferte Sprachdateien werden nach `plugins/MRsleep/lang/` kopiert. Der Sprachcode wird aufgelöst: erst exakter Dateiname, dann Aliase (`eng`/`english` → `en`, `deutsch`/`german` → `de`), dann der Teil vor `_`/`-` (`de_AT` → `de`). Gibt es die Datei nicht, wird `en` verwendet.
+- **Ergänzen:** Schlüssel, die in der Datei fehlen, werden aus der mitgelieferten Datei derselben Sprache (sonst `en`) eingefügt und die Datei mit BOM zurückgeschrieben.
+- Discord-Texte stehen unter `discord.<event>` bzw. `discord.test-message` der Sprachdatei, An/aus und Farbe weiter in der Config (`discord.events.<event>`).
+- **Konsole immer Englisch:** Log-Ausgaben sind fest englisch. Nachrichten an die Konsole (Befehle von der Konsole, auch asynchrone Antworten wie Update- oder Discord-Test) nutzen die mitgelieferte `en.yml`: `Messages#as(sender, …)` setzt dafür ein ThreadLocal, `send()` tut das automatisch. `console(key, …)` liefert englische Texte für Logs.
+- **Geänderte Standardtexte:** Bestehende Dateien bekommen nur fehlende Schlüssel automatisch. Ändert sich ein vorhandener Text (z.B. neuer Platzhalter), `Messages.LANG_VERSION` und `lang-version` in beiden Dateien erhöhen und den Schlüssel in `CHANGED_TEXTS` eintragen. Ältere Dateien der mitgelieferten Sprachen bekommen ihn dann erneuert (eigene Anpassungen daran gehen verloren), eigene Sprachen bleiben unberührt.
+- **Neue Texte:** in **beiden** Dateien `de.yml` und `en.yml` anlegen. `LanguageFilesTest` prüft beim Build, dass beide dieselben Schlüssel haben und keiner wie `yes`/`no` als Boolean gelesen wird.
 - `<prefix>` wird als *parsed* Placeholder eingesetzt, darf also selbst Formatierung enthalten. Alle anderen Platzhalter sind *unparsed*, damit Spielernamen keine Tags einschleusen können.
-- Eine leere Nachricht (`""`) wird nicht gesendet. Damit lässt sich jeder Hinweis abschalten. Ein **fehlender** Schlüssel erzeugt sichtbar `Fehlende Nachricht: <key>`.
+- Eine leere Nachricht (`""`) wird nicht gesendet. Damit lässt sich jeder Hinweis abschalten. Ein **fehlender** Schlüssel erzeugt sichtbar `Missing text: <key>`.
 - `nights(n)` erzeugt mit `nights-singular` und `nights-plural` z.B. „1 Nacht“ oder „3 Nächte“.
 - `broadcast(world, …)` sendet nur an Spieler **dieser Welt**, denn Blockaden gelten pro Welt.
 
@@ -260,7 +270,7 @@ Wo welche Nachricht ausgelöst wird:
 | `gui-*` | `gui/*` |
 
 ## 10. Discord-Webhook (`DiscordWebhook`)
-- `load(section)` liest `discord.*` und prüft die URL. Ist sie leer oder ungültig, bleibt Discord aus. Der Grund wird in der Konsole gewarnt und in `disabledReason` gehalten. Bei Erfolg steht „Discord-Webhook aktiv (x/y Events eingeschaltet)“ in der Konsole.
+- `load(section)` liest `discord.*` und prüft die URL. Ist sie leer oder ungültig, bleibt Discord aus. Der Grund wird in der Konsole gewarnt und in `disabledReason` gehalten. Bei Erfolg steht „Discord webhook active (x/y events enabled)“ in der Konsole.
 - **Events:** Die Einträge aus `discord.events` der eigenen Datei, ergänzt um alle Events aus der mitgelieferten Config, die dort fehlen. Bukkit würde für fehlende Abschnitte sonst stillschweigend leere Sektionen liefern. Ruft der Code ein Event auf, das es trotzdem nicht gibt, kommt einmalig eine Warnung.
 - `log(eventKey, key1, value1, key2, value2, …)` ersetzt `{key}` im Event-Text. Die Werte werden für Discord-Markdown escaped (`_ * ~ \` | > \\`), damit z.B. `Mr_Steve` nicht kursiv wird.
 - Das JSON entsteht mit Gson: ein Embed mit `description`, `color`, `timestamp` und optional `footer`, oder einfacher `content`. Zusätzlich wird immer `allowed_mentions: {parse: []}` gesetzt, damit nie jemand gepingt wird.
@@ -288,42 +298,27 @@ Wo welche Nachricht ausgelöst wird:
 ```text
 cd mrsleep
 gradlew.bat build
-→ build/libs/MRsleep-<version>.jar
+→ build/libs/MRsleep-mc<mcVersion>-v<version>.jar
 ```
-Die Version steht in `gradle.properties` und wird beim Build in die `plugin.yml` (`${version}`) und in die `build-info.properties` übernommen.
+Die Versionen stehen in `gradle.properties` und werden beim Build in die `plugin.yml` (`${version}`, `${mcVersion}` als `api-version`) und in die `build-info.properties` übernommen.
 
 ### Tests
 ```text
 gradlew.bat test        nur die Tests
 gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test fehlschlägt)
 ```
-- JUnit 6 (`src/test/java`). Getestet wird die Logik, die ohne laufenden Server auskommt: `DurationUtil` (Parsen und Formatieren von Zeitangaben) und `Versions` (SemVer-Vergleich, Vorabversionen).
+- JUnit 6 (`src/test/java`). Getestet wird die Logik, die ohne laufenden Server auskommt: `DurationUtil` (Parsen und Formatieren von Zeitangaben), `Versions` (SemVer-Vergleich, MC-Präfix, Vorabversionen) und `LanguageFilesTest` (de.yml und en.yml haben dieselben Schlüssel, keine Schlüssel wie `yes`/`no`).
 - Alles, was Bukkit braucht (Schlafen, Events, GUI), prüft die manuelle Testcheckliste weiter unten auf dem Testserver.
 - Die Ergebnisse stehen in `build/reports/tests/test/index.html`. Auf GitHub laufen die Tests bei jedem Push (`build.yml`) und vor jedem Release.
 - **Neue Logik ohne Server-Bezug** am besten nach `util/` legen und dort testen.
 
 ### Versionierung & Release
-- **Semantic Versioning:** `MAJOR.MINOR.PATCH`. **Vorabversionen** sind alle `0.x` (Testphase bis 1.0.0) sowie Versionen mit Suffix wie `1.1.0-rc.1`. Sie landen auf Modrinth als „beta“ und auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`). Seit `1.0.0` werden Versionen ohne Suffix als normale Releases veröffentlicht.
-- **Branches:**
-
-  | Branch | Zweck | Tags / Releases |
-  |---|---|---|
-  | `beta` | Entwicklung. Hier wird gearbeitet, Pull Requests und Dependabot zielen hierhin. | Vorabversionen (`1.0.0-rc.1`, `1.1.0-beta.2`) |
-  | `main` | Stabiler Stand. Bekommt nur Merges aus `beta`, wenn eine Version fertig ist. | Stabile Versionen (`1.0.0`, `1.0.1`) |
-
-  Beide Branches werden bei jedem Push gebaut und getestet (`build.yml`). `release.yml` bricht ab, wenn eine **stabile** Version nicht auf einem Commit aus `main` getaggt wurde (`git merge-base --is-ancestor`).
-
-- **Vorabversion (von `beta`):**
-  1. Auf `beta`: `version` in `gradle.properties` setzen (z.B. `1.1.0-rc.1`).
-  2. In `CHANGELOG.md` einen Abschnitt `## [<version>] - <datum>` anlegen. Dorthin kommt, was bisher unter „Unveröffentlicht“ stand.
-  3. Committen, pushen, dann `git tag v<version>` und `git push origin v<version>`.
-- **Stabile Version (von `main`):**
-  1. Auf `beta`: `version` auf die finale Nummer setzen (z.B. `1.1.0`) und den Changelog-Abschnitt anlegen, dann committen und pushen.
-  2. `git checkout main`, `git merge --no-ff beta`, `git push`.
-  3. `git tag v<version>` und `git push origin v<version>`.
-  4. Wieder `git checkout beta`, dann die nächste Version vorbereiten.
-- **Hotfix für eine stabile Version:** Auf `main` beheben, als PATCH-Version taggen (z.B. `1.0.1`) und `main` anschließend nach `beta` mergen, damit der Fix nicht verloren geht.
-- **`release.yml`** prüft, dass Tag und `gradle.properties` übereinstimmen, baut die JAR, liest den passenden Abschnitt aus `CHANGELOG.md` und erstellt damit das GitHub-Release mit der JAR. Ist das Repository-Secret `MODRINTH_TOKEN` gesetzt, folgt `./gradlew modrinth` (Minotaur). Der Changelog-Text kommt über die Umgebungsvariable `CHANGELOG`.
+Ausführlich in **[RELEASES.md](RELEASES.md)** (Versionsschema, Branches, mehrere Minecraft-Versionen, Checklisten). Kurz:
+- **Version = Minecraft-Version + Plugin-Version:** `mc26.3-v1.2.0`. In `gradle.properties` stehen `version` (SemVer: MAJOR = große Releases, MINOR = Features, PATCH = Hotfixes) und `mcVersion` getrennt. Git-Tag, JAR-Name und Modrinth-Version nutzen `mc26.3-v1.2.0`, die `plugin.yml` `1.2.0+mc26.3` (Paper setzt selbst ein „v“ davor).
+- **Vorabversionen:** `0.x` oder Suffix wie `-rc.1`. Auf Modrinth als „beta“, auf GitHub als Pre-Release (`isPrerelease` in `build.gradle.kts`, `PRERELEASE` in `release.yml`).
+- **Branches:** `beta` = Entwicklung (neueste MC-Version), `main` = stabil (neueste MC-Version), `mc/<version>` = Wartung älterer MC-Versionen. Alle werden bei jedem Push gebaut (`build.yml`).
+- **`release.yml`** startet bei Tags `mc*-v*`, prüft Tag gegen `gradle.properties`, lässt stabile Versionen nur von `main` oder `mc/<mcVersion>` zu, baut, liest den Abschnitt `## [<version>]` aus `CHANGELOG.md`, erstellt das GitHub-Release (nur von `main` als „Latest“) und lädt auf Modrinth hoch (Secret `MODRINTH_TOKEN`).
+- **Update-Checker:** vergleicht nur Versionen derselben Minecraft-Version (`Versions.minecraft`). Alte Tags ohne Präfix (`v1.0.0`) zählen als 26.3.
 - **Einmalig einrichten:**
   - GitHub-Repository anlegen (Name wie `githubRepository` in `gradle.properties`) und pushen.
   - Auf Modrinth ein Projekt mit der Slug aus `modrinthProjectId` anlegen.
@@ -349,11 +344,15 @@ gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test 
 | 10 | Blockierender Spieler geht offline | `nosleep-broadcast-quit`, Schlafen wieder möglich |
 | 11 | Discord-URL eintragen, `/mrsleep reload` | Event `admin-reload` erscheint im Kanal |
 | 12 | Plugin entfernen und Server neu starten | Gamerule steht wieder auf `sleep.percentage` |
-| 13 | Alte Config (ohne `config-version`) und Start mit 0.9.2 | Log „config.yml von Version 1 auf 2 aktualisiert“, Werte übernommen, `config.v1.backup.yml` vorhanden, Datei beginnt mit BOM |
+| 13 | Config und Daten von 1.0.0, Start mit 1.1.0 | Log „Moved … texts … to lang/de.yml“ und „Updated config.yml from version 5 to 6“, eigene Texte stehen in `lang/de.yml`, `config.v5.backup.yml` vorhanden, Dateien beginnen mit BOM |
 | 14 | `/mrsleep ban <spieler> 2h Test`, dann `/nosleep` als dieser Spieler | `nosleep-banned`, die laufende Blockade wurde aufgehoben |
 | 15 | `/mrsleep gui` | Köpfe aktualisieren sich live (Schlafsekunden zählen hoch), Filter und Seiten funktionieren, Items lassen sich nicht herausnehmen |
 | 16 | Spieler-Menü ohne `mrsleep.admin.ban` | Sperr-Buttons zeigen „Keine Berechtigung“, ein Klick wird abgelehnt |
-| 17 | `/mrsleep version` | Version, Links und Update-Status (vor dem ersten Release: „Projekt nicht gefunden“) |
+| 17 | `/mrsleep version` | `MRsleep v<version> (MC 26.3)`, Links und Update-Status |
+| 18 | `language: en`, `/mrsleep reload` | Chat, Bossbar, Menü und Discord-Texte auf Englisch |
+| 19 | `language: eng` bzw. `language: xx` | `eng` wird zu `en`; bei `xx` Warnung in der Konsole und Englisch |
+| 20 | Text in `lang/de.yml` ändern, `/mrsleep reload` | geänderter Text erscheint; nach Neustart bleibt er erhalten |
+| 21 | Befehle von der Konsole bei `language: de` | Antworten und Logs auf Englisch |
 
 ## 13. Erweiterungsideen
 - Eine Permission pro Nächtezahl (z.B. `mrsleep.nosleep.nights.5`), um `max-nights` je Gruppe zu staffeln

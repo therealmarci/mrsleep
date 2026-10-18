@@ -1,0 +1,284 @@
+﻿# ==============================================================================
+#   MRsleep - Sprachdatei: Deutsch (de)
+# ==============================================================================
+#   Aktivieren: in der config.yml  language: de
+#   Eigene Sprache: diese Datei kopieren (z.B. als fr.yml), übersetzen und language: fr setzen.
+#   Fehlende Texte werden bei Updates automatisch ergänzt - deine Änderungen bleiben erhalten.
+#
+#   Format: MiniMessage - https://docs.advntr.dev/minimessage/format.html
+#   Leerer Text ("") = Nachricht wird nicht gesendet.
+#   <nights> wird über nights-singular / nights-plural zu "1 Nacht" oder "3 Nächte".
+# ==============================================================================
+
+# Nicht ändern - damit erkennt das Plugin bei Updates, welche Texte erneuert werden müssen.
+lang-version: 2
+
+# Texte der Discord-Logs (Markdown wie in Discord). Platzhalter: {player} {world} {nights} {players}
+# {admin} {time} {reason} {sleeping} {needed} {counted}. An/aus und Farbe stehen in der config.yml.
+discord:
+  test-message: "🔧 Testnachricht von MRsleep - der Webhook funktioniert!"
+  nosleep-activated: "🛏️ **{player}** blockiert das Schlafen in **{world}** für **{nights}**."
+  nosleep-deactivated: "✅ **{player}** hat die Schlafblockade in **{world}** aufgehoben."
+  nosleep-quit: "🚪 Die Schlafblockade von **{player}** in **{world}** wurde aufgehoben (Server verlassen)."
+  nosleep-expired: "⌛ Die Schlafblockade von **{player}** in **{world}** ist abgelaufen."
+  night-start-blocked: "🌙 Die Nacht in **{world}** beginnt - Schlafen blockiert von **{players}** (noch {nights})."
+  bed-blocked: "⛔ **{player}** wollte in **{world}** schlafen, blockiert von **{players}** (noch {nights})."
+  night-skipped: "🌅 Die Nacht in **{world}** wurde übersprungen ({sleeping}/{needed} Spieler schliefen)."
+  admin-clear: "🛠️ **{admin}** hat die Schlafblockade in **{world}** entfernt (blockiert von: {players})."
+  admin-release: "🛠️ **{admin}** hat die Schlafblockade von **{player}** in **{world}** aufgehoben."
+  admin-bypass: "🛠️ **{admin}** hat **{player}** für **{time}** vom /nosleep-Cooldown befreit."
+  admin-bypass-remove: "🛠️ **{admin}** hat den Cooldown-Bypass von **{player}** entfernt."
+  admin-cooldown-reset: "🛠️ **{admin}** hat den /nosleep-Cooldown von **{player}** zurückgesetzt."
+  admin-ban: "🔒 **{admin}** hat **{player}** von /nosleep ausgeschlossen ({time}, Grund: {reason})."
+  admin-unban: "🔓 **{admin}** hat die /nosleep-Sperre von **{player}** aufgehoben."
+  admin-reload: "🔄 **{admin}** hat die MRsleep-Konfiguration neu geladen."
+
+# Grund, der bei Sperren über das Admin-Menü eingetragen wird.
+gui-ban-reason: "über das Admin-Menü"
+
+prefix: "<dark_gray>[<aqua>MRsleep</aqua>]</dark_gray> "
+nights-singular: "1 Nacht"
+nights-plural: "<count> Nächte"
+
+# --- Allgemein ---------------------------------------------------------------
+no-permission: "<prefix><red>Dazu hast du keine Berechtigung."
+players-only: "<prefix><red>Dieser Befehl kann nur von Spielern genutzt werden."
+world-not-managed: "<prefix><red>In dieser Welt kann nicht geschlafen werden."
+player-not-found: "<prefix><red>Spieler <white><player></white> wurde nicht gefunden."
+invalid-duration: "<prefix><red>Ungültige Dauer <white><input></white>. Beispiele: 30m, 2h, 1d12h"
+value-yes: "ja"
+value-no: "nein"
+
+# --- Schlafen ----------------------------------------------------------------
+# Anzeige laut sleep.display (Bossbar / Actionbar / Titel)
+display-sleeping: "<gray><yellow><sleeping></yellow>/<yellow><needed></yellow> Spieler schlafen"
+display-blocked: "<red>Schlafen blockiert von <white><players></white> <gray>(noch <nights>)"
+# Empfänger laut sleep.sleep-message. Platzhalter: <player> <world> <sleeping> <needed>
+player-sleeping: "<prefix><gray><white><player></white> hat sich schlafen gelegt <dark_gray>(<yellow><sleeping></yellow>/<yellow><needed></yellow>)"
+night-skipped: "<prefix><yellow>Guten Morgen! Die Nacht wurde übersprungen."
+night-start-blocked: "<prefix><gray>Die Nacht bricht an - Schlafen ist blockiert von <gold><players></gold> <gray>(noch <nights>)."
+bed-prevented: "<prefix><gold><players></gold> <red>hat das Schlafen blockiert, du kannst nicht schlafen. Noch <white><nights></white>."
+bed-blocked-warning: "<prefix><gold><players></gold> <yellow>hat das Schlafen blockiert - die Nacht wird nicht übersprungen. Noch <white><nights></white>."
+bed-excluded: "<prefix><gray>Hinweis: Du zählst nicht zur Schlafquote <dark_gray>(<reason>)<gray>. Dein Schlafen überspringt die Nacht nicht."
+join-blocked-info: "<prefix><gray>Info: Schlafen ist gerade blockiert von <gold><players></gold> <gray>(noch <nights>)."
+reason-exempt: "Permission mrsleep.exempt"
+reason-spectator: "Zuschauermodus"
+reason-sleeping-ignored: "von einem anderen Plugin ignoriert, z.B. AFK"
+
+# --- /nosleep ----------------------------------------------------------------
+nosleep-activated: "<prefix><green>Du blockierst das Schlafen für <white><nights></white>. Nutze <white>/nosleep</white> erneut, um es aufzuheben."
+nosleep-updated: "<prefix><green>Deine Schlafblockade gilt jetzt für <white><nights></white>."
+nosleep-deactivated: "<prefix><green>Du hast deine Schlafblockade aufgehoben."
+nosleep-deactivated-free: "<prefix><green>Du hast deine Schlafblockade aufgehoben. <gray>Die Nacht hatte noch nicht begonnen - es entsteht kein Cooldown."
+nosleep-deactivated-cooldown: "<prefix><green>Du hast deine Schlafblockade aufgehoben. <gray>Dein Cooldown läuft weiter (noch <white><time></white>)."
+nosleep-pending-info: "<prefix><gray>Der Cooldown (<white><time></white>) startet erst, wenn die Nacht anbricht. Hebst du die Blockade vorher auf, entsteht keiner."
+nosleep-cooldown-started: "<prefix><gray>Die Nacht bricht an - deine Blockade ist aktiv, dein <white>/nosleep</white>-Cooldown (<white><time></white>) läuft ab jetzt."
+nosleep-not-active: "<prefix><gray>Du hast gerade keine Schlafblockade aktiv."
+nosleep-invalid-nights: "<prefix><red>Bitte gib eine Anzahl zwischen <white>1</white> und <white><max></white> Nächten an: <white>/nosleep [anzahl]</white><red>, oder <white>/nosleep info</white><red> für deinen Status."
+nosleep-cooldown: "<prefix><red>Du kannst <white>/nosleep</white> erst wieder in <white><time></white> nutzen."
+nosleep-banned: "<prefix><red>Du bist von <white>/nosleep</white> ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)<red>."
+# /nosleep info - Werte wie <counts>, <own>, <cooldown>, <ban> kommen aus den gui-value-* Texten weiter unten.
+nosleep-info: |-
+  <prefix><gray>Dein Schlaf-Status:
+  <dark_gray> » <gray>Welt: <white><world></white> <dark_gray>(<phase>)
+  <dark_gray> » <gray>Schlafen: <white><sleeping></white>/<white><needed></white> <dark_gray>| <gray>du zählst: <counts>
+  <dark_gray> » <gray>Blockiert von: <blockers>
+  <dark_gray> » <gray>Deine Blockade: <own>
+  <dark_gray> » <gray>Dein Cooldown: <cooldown>
+  <dark_gray> » <gray>/nosleep: <ban>
+  <dark_gray> » <gray>Befehle: <white>/nosleep [1-<max>]</white><gray>, <white>/nosleep off</white><gray>, <white>/nosleep info
+nosleep-info-blockers: "<gold><players>"
+nosleep-broadcast-activated: "<prefix><gold><player></gold> <gray>blockiert das Schlafen für <white><nights></white>."
+nosleep-broadcast-deactivated: "<prefix><gold><player></gold> <gray>hat die Schlafblockade aufgehoben."
+nosleep-broadcast-quit: "<prefix><gray>Die Schlafblockade von <gold><player></gold> wurde aufgehoben (Server verlassen)."
+nosleep-broadcast-released: "<prefix><gray>Die Schlafblockade von <gold><player></gold> wurde von <white><admin></white> aufgehoben."
+nosleep-expired: "<prefix><gray>Die Schlafblockade von <gold><player></gold> ist abgelaufen - ab jetzt kann wieder geschlafen werden."
+
+# --- Admin-Befehle -----------------------------------------------------------
+admin-usage: |-
+  <prefix><gray>Befehle:
+  <aqua>/mrsleep gui</aqua> <dark_gray>- <gray>Admin-Menü mit allen Spielern
+  <aqua>/mrsleep status [welt]</aqua> <dark_gray>- <gray>Schlafstatus anzeigen
+  <aqua>/mrsleep debug</aqua> <dark_gray>- <gray>Details pro Welt und Spieler
+  <aqua>/mrsleep clear [welt]</aqua> <dark_gray>- <gray>Alle Blockaden einer Welt entfernen
+  <aqua>/mrsleep release <spieler></aqua> <dark_gray>- <gray>Blockade eines Spielers aufheben
+  <aqua>/mrsleep bypass <spieler> <dauer></aqua> <dark_gray>- <gray>Cooldown für eine Dauer aufheben
+  <aqua>/mrsleep bypass remove|list</aqua> <dark_gray>- <gray>Bypässe verwalten
+  <aqua>/mrsleep resetcooldown <spieler></aqua> <dark_gray>- <gray>Cooldown zurücksetzen
+  <aqua>/mrsleep ban <spieler> [dauer] [grund]</aqua> <dark_gray>- <gray>Von /nosleep ausschließen
+  <aqua>/mrsleep unban <spieler></aqua> <dark_gray>- <gray>Sperre aufheben
+  <aqua>/mrsleep bans</aqua> <dark_gray>- <gray>Alle Sperren anzeigen
+  <aqua>/mrsleep discord [test]</aqua> <dark_gray>- <gray>Discord-Status / Testnachricht
+  <aqua>/mrsleep reload</aqua> <dark_gray>- <gray>Konfiguration neu laden
+  <aqua>/mrsleep version</aqua> <dark_gray>- <gray>Version & Update-Status
+reloaded: "<prefix><green>Konfiguration neu geladen."
+status: "<prefix><gray>Welt <white><world></white>: <yellow><sleeping></yellow>/<yellow><needed></yellow> schlafen, <yellow><counted></yellow> zählen, <yellow><exempt></yellow> ausgenommen. Blockiert von: <white><players></white>"
+status-none: "-"
+world-not-found: "<prefix><red>Welt <white><world></white> nicht gefunden oder nicht verwaltet."
+cleared: "<prefix><green>Schlafblockade in <white><world></white> entfernt."
+clear-none: "<prefix><gray>In <white><world></white> ist keine Schlafblockade aktiv."
+cleared-broadcast: "<prefix><gray>Die Schlafblockade wurde von <white><admin></white> aufgehoben - ab jetzt kann wieder geschlafen werden."
+released: "<prefix><green>Blockade von <white><player></white> aufgehoben."
+release-none: "<prefix><gray><white><player></white> blockiert gerade keine Nacht."
+bypass-set: "<prefix><green><white><player></white> kann /nosleep für <white><time></white> ohne Cooldown nutzen."
+bypass-removed: "<prefix><green>Bypass von <white><player></white> entfernt."
+bypass-none: "<prefix><gray><white><player></white> hat keinen aktiven Bypass."
+bypass-list-header: "<prefix><gray>Aktive Bypässe:"
+bypass-list-entry: "<dark_gray> - <white><player></white> <gray>(noch <time>)"
+bypass-list-empty: "<prefix><gray>Keine aktiven Bypässe."
+bypass-granted-notify: "<prefix><green>Du kannst <white>/nosleep</white> für <white><time></white> ohne Cooldown nutzen."
+bypass-removed-notify: "<prefix><gray>Dein Cooldown-Bypass für <white>/nosleep</white> wurde entfernt."
+cooldown-reset: "<prefix><green>Cooldown von <white><player></white> zurückgesetzt."
+cooldown-reset-notify: "<prefix><green>Dein <white>/nosleep</white>-Cooldown wurde zurückgesetzt."
+ban-set: "<prefix><green><white><player></white> ist jetzt von /nosleep ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)."
+ban-notify: "<prefix><red>Du wurdest von <white>/nosleep</white> ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)<red>."
+unban-set: "<prefix><green>Die /nosleep-Sperre von <white><player></white> wurde aufgehoben."
+unban-none: "<prefix><gray><white><player></white> ist nicht gesperrt."
+unban-notify: "<prefix><green>Du darfst <white>/nosleep</white> wieder nutzen."
+bans-header: "<prefix><gray>Von /nosleep ausgeschlossen:"
+bans-entry: "<dark_gray> - <white><player></white> <gray>(<duration>, Grund: <reason>, von <by>)"
+bans-empty: "<prefix><gray>Niemand ist von /nosleep ausgeschlossen."
+ban-duration-permanent: "dauerhaft"
+ban-duration-temporary: "noch <time>"
+ban-no-reason: "kein Grund angegeben"
+
+# --- Debug -------------------------------------------------------------------
+debug-world: "<prefix><aqua><world></aqua> <gray>verwaltet: <white><managed></white>, Gamerule: <white><gamerule></white>, Zeit: <white><time></white>, Nacht: <white><night></white>, blockiert von: <white><players></white>"
+debug-quota: "<dark_gray>  » <gray>zählen: <yellow><counted></yellow>, ausgenommen: <yellow><exempt></yellow>, schlafen: <yellow><sleeping></yellow> (davon tief: <yellow><deep></yellow>), benötigt: <yellow><needed></yellow>"
+debug-player: "<dark_gray>  - <white><player></white> <gray>zählt: <counts>, schläft: <white><sleeping></white> (<ticks> Ticks), /nosleep-Cooldown: <white><cooldown></white>"
+debug-counts-yes: "ja"
+debug-counts-no: "nein"
+debug-cooldown-ready: "bereit"
+debug-cooldown-permission: "keiner (Permission mrsleep.nosleep.nocooldown)"
+debug-cooldown-bypass: "keiner (Bypass, noch <time>)"
+debug-cooldown-remaining: "noch <time>"
+debug-cooldown-pending: "startet bei Nachtbeginn"
+
+# --- Discord ----------------------------------------------------------------
+discord-status-active: "<prefix><green>Discord-Webhook aktiv <gray>(<white><events></white>/<white><total></white> Events eingeschaltet)"
+discord-status-inactive: "<prefix><red>Discord-Webhook inaktiv: <white><reason>"
+discord-status-last: "<prefix><gray>Letzter Versand: <white><result>"
+discord-status-never: "seit dem Start noch nichts gesendet"
+discord-test-hint: "<prefix><gray>Mit <white>/mrsleep discord test</white> eine Testnachricht schicken."
+discord-test-sending: "<prefix><gray>Sende Testnachricht an Discord ..."
+discord-test-ok: "<prefix><green>✔ Testnachricht ist in Discord angekommen."
+discord-test-failed: "<prefix><red>✘ Testnachricht fehlgeschlagen: <white><reason>"
+discord-reason-disabled: "discord.enabled ist false"
+discord-reason-no-url: "discord.webhook-url ist leer"
+discord-reason-bad-url: "discord.webhook-url ist keine Discord-Webhook-URL (muss mit https://discord.com/api/webhooks/ beginnen)"
+discord-reason-invalid-url: "discord.webhook-url enthält ungültige Zeichen (Leerzeichen? Anführungszeichen?)"
+discord-result-ok: "OK (HTTP <status>) um <time>"
+discord-result-error: "FEHLER um <time>: <error>"
+discord-error-400: "Discord lehnt die Nachricht ab (z.B. ungültiger Name/Avatar oder zu langer Text)."
+discord-error-401: "Webhook-Token ungültig."
+discord-error-404: "Webhook existiert nicht (gelöscht? URL falsch kopiert?)."
+discord-error-rate-limit: "Rate-Limit von Discord, Nachricht verworfen"
+discord-error-interrupted: "unterbrochen"
+
+# --- Version & Updates -------------------------------------------------------
+version: "<prefix><gray>MRsleep <white>v<version></white> <dark_gray>(MC <mc>)</dark_gray> von <white><author></white>"
+version-latest: "<prefix><green>Du nutzt die aktuellste Version."
+version-outdated: "<prefix><gold>Neue Version verfügbar: <white><latest></white> <gray>(installiert: <current>) <download>"
+version-unknown: "<prefix><gray>Update-Status unbekannt: <reason>"
+version-checking: "<prefix><gray>Suche nach Updates ..."
+version-links: "<prefix><modrinth> <dark_gray>| <github>"
+update-download-label: "<aqua><u>[Download]</u></aqua>"
+update-join-notify: "<prefix><gold>Für MRsleep gibt es ein Update: <white><latest></white> <gray>(installiert: <current>) <download>"
+update-reason-disabled: "Update-Check ist deaktiviert"
+update-reason-not-found: "Projekt nicht gefunden (HTTP 404) - noch nicht veröffentlicht?"
+update-reason-no-release: "Keine veröffentlichte Version gefunden"
+update-reason-no-repository: "Kein GitHub-Repository hinterlegt"
+
+# --- Admin-Menü --------------------------------------------------------------
+gui-title-main: "<dark_gray>MRsleep <gray>» <dark_aqua>Übersicht"
+gui-title-player: "<dark_gray>MRsleep <gray>» <dark_aqua><player>"
+gui-no-permission: "<red>✘ Keine Berechtigung"
+
+# Spielerkopf (Übersicht und Spieler-Menü)
+gui-head-name: "<white><player>"
+gui-head-lore:
+  - "<dark_gray>Welt: <gray><world>"
+  - ""
+  - "<gray>Zählt zur Quote: <counts>"
+  - "<gray>Schläft: <sleeping>"
+  - "<gray>Blockiert: <blocking>"
+  - "<gray>Cooldown: <cooldown>"
+  - "<gray>/nosleep: <ban>"
+gui-head-click: "<yellow>» Klicken für Aktionen"
+gui-value-counts-yes: "<green>✔ ja"
+gui-value-counts-no: "<red>✘ nein <dark_gray>(<reason>)"
+gui-value-sleeping-yes: "<aqua>✔ seit <seconds>s"
+gui-value-sleeping-no: "<gray>✘ nein"
+gui-value-blocking-yes: "<gold>✔ noch <nights>"
+gui-value-blocking-no: "<gray>–"
+gui-value-cooldown-ready: "<green>bereit"
+gui-value-cooldown-remaining: "<yellow>noch <time>"
+gui-value-cooldown-bypass: "<light_purple>Bypass (noch <time>)"
+gui-value-cooldown-permission: "<light_purple>keiner (Permission)"
+gui-value-cooldown-pending: "<aqua>startet bei Nachtbeginn"
+gui-value-ban-none: "<green>erlaubt"
+gui-value-ban-active: "<red>gesperrt, <duration> <dark_gray>(<reason>)"
+
+# Übersicht
+gui-world-name: "<aqua>Welt: <white><world>"
+gui-world-lore:
+  - "<gray>Uhrzeit: <white><clock></white> <dark_gray>(<phase>)"
+  - "<gray>Spieler zählen: <white><counted></white> <dark_gray>| <gray>ausgenommen: <white><exempt>"
+  - "<gray>Schlafen: <white><sleeping></white>/<white><needed></white> <dark_gray>(tief: <deep>)"
+  - "<gray>Blockiert von: <white><players>"
+gui-world-switch: "<yellow>» Klicken: nächste Welt"
+gui-phase-day: "☀ Tag"
+gui-phase-night: "☽ Nacht"
+gui-clear-name: "<red>Alle Blockaden entfernen"
+gui-clear-lore:
+  - "<gray>Entfernt alle /nosleep-Blockaden"
+  - "<gray>in <white><world></white>."
+gui-clear-none-name: "<green>Keine Blockade aktiv"
+gui-filter-name: "<yellow>Filter: <white><filter>"
+gui-filter-lore:
+  - "<gray>Klicken zum Wechseln"
+gui-filter-all: "Alle"
+gui-filter-sleeping: "Schlafende"
+gui-filter-blocking: "Blockierer"
+gui-filter-excluded: "Ausgenommene"
+gui-filter-banned: "Gesperrte"
+gui-empty: "<gray>Keine passenden Spieler"
+gui-prev: "<yellow>« Vorherige Seite"
+gui-next: "<yellow>Nächste Seite »"
+gui-page-lore:
+  - "<gray>Seite <white><page></white>/<white><pages>"
+gui-close: "<red>Schließen"
+gui-reload-name: "<aqua>Konfiguration neu laden"
+gui-reload-lore:
+  - "<gray>Lädt die config.yml und die Sprachdatei neu."
+gui-info-name: "<aqua>MRsleep <white>v<version> <dark_gray>(MC <mc>)"
+gui-info-lore:
+  - "<gray>Version: <update>"
+  - "<gray>Quote: <white><percentage>%</white> <dark_gray>| <gray>Cooldown: <white><cooldown>"
+gui-update-ok: "<green>Aktuell"
+gui-update-outdated: "<red>Veraltet <dark_gray>(neu: <latest>)"
+gui-update-unknown: "<gray>Unbekannt"
+
+# Spieler-Menü
+gui-back: "<yellow>« Zurück"
+gui-section-cooldown: "<light_purple>Cooldown"
+gui-section-ban: "<red>Sperre"
+gui-section-other: "<aqua>Sonstiges"
+gui-bypass-name: "<light_purple>Bypass: <white><time>"
+gui-bypass-lore:
+  - "<gray>Hebt den /nosleep-Cooldown"
+  - "<gray>für <white><time></white> auf."
+gui-bypass-remove-name: "<red>Bypass entfernen"
+gui-cooldown-reset-name: "<green>Cooldown zurücksetzen"
+gui-release-name: "<gold>Blockade aufheben"
+gui-release-lore:
+  - "<gray>Hebt die /nosleep-Blockade"
+  - "<gray>von <white><player></white> auf."
+gui-release-none-name: "<gray>Keine Blockade aktiv"
+gui-ban-name: "<red>Sperren: <white><time>"
+gui-ban-lore:
+  - "<gray>Schließt <white><player></white> für"
+  - "<white><time></white> <gray>von /nosleep aus."
+gui-unban-name: "<green>Entsperren"
+gui-teleport-name: "<aqua>Zum Spieler teleportieren"
+gui-player-offline: "<prefix><red><player> ist nicht mehr online."

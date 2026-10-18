@@ -22,9 +22,12 @@ import java.util.logging.Level;
  */
 public final class ConfigUpdater {
 
-    public static final int CURRENT_VERSION = 5;
-    private static final String BOM = "﻿";
-    /** Texts whose content changed with new features; the new default replaces the old value. */
+    public static final int CURRENT_VERSION = 6;
+    public static final String BOM = "﻿";
+    /**
+     * Texts whose content changed with new features; the new default replaces the old value.
+     * Since v6 the texts live in lang/*.yml; the keys are still used when old messages are moved there.
+     */
     private static final Set<String> REPLACED_KEYS = Set.of(
             "messages.admin-usage",
             "messages.debug-player",
@@ -63,6 +66,10 @@ public final class ConfigUpdater {
                 return;
             }
 
+            if (version < 6) {
+                migrateTexts(plugin, existing);
+            }
+
             YamlConfiguration template = new YamlConfiguration();
             try (InputStream in = plugin.getResource("config.yml")) {
                 if (in == null) {
@@ -92,11 +99,59 @@ public final class ConfigUpdater {
             File backup = new File(plugin.getDataFolder(), "config.v" + version + ".backup.yml");
             Files.copy(file.toPath(), backup.toPath(), StandardCopyOption.REPLACE_EXISTING);
             Files.writeString(file.toPath(), BOM + template.saveToString(), StandardCharsets.UTF_8);
-            plugin.getLogger().info("config.yml von Version " + version + " auf " + CURRENT_VERSION + " aktualisiert ("
-                    + carried + " Einstellungen übernommen, Sicherung: " + backup.getName() + ").");
+            plugin.getLogger().info("Updated config.yml from version " + version + " to " + CURRENT_VERSION + " ("
+                    + carried + " settings carried over, backup: " + backup.getName() + ").");
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.WARNING, "config.yml konnte nicht aktualisiert werden: " + e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Could not update config.yml: " + e.getMessage());
         }
+    }
+
+    /**
+     * v6: the texts moved from config.yml (messages, discord.events.*.message, discord.test-message, gui.ban-reason)
+     * into lang/de.yml. The old texts were German, so they are carried over into the German file - including
+     * anything the server owner had customised.
+     */
+    private static void migrateTexts(MRSleep plugin, YamlConfiguration old) throws IOException {
+        YamlConfiguration lang = Messages.bundled(plugin, "de");
+        File file = new File(plugin.getDataFolder(), "lang/de.yml");
+        if (file.exists()) {
+            try {
+                lang.loadFromString(stripBom(Files.readString(file.toPath(), StandardCharsets.UTF_8)));
+            } catch (InvalidConfigurationException e) {
+                plugin.getLogger().warning("lang/de.yml is invalid, texts from the old config.yml are not carried over.");
+                return;
+            }
+        }
+        int carried = 0;
+        for (String oldKey : old.getKeys(true)) {
+            String key = RENAMED_KEYS.getOrDefault(oldKey, oldKey);
+            if (old.isConfigurationSection(oldKey) || REPLACED_KEYS.contains(key)) {
+                continue;
+            }
+            String target = null;
+            if (key.startsWith("messages.")) {
+                target = key.substring("messages.".length());
+            } else if (key.equals("discord.test-message")) {
+                target = key;
+            } else if (key.startsWith("discord.events.") && key.endsWith(".message")) {
+                target = "discord." + key.substring("discord.events.".length(), key.length() - ".message".length());
+            } else if (key.equals("gui.ban-reason")) {
+                target = "gui-ban-reason";
+            }
+            if (target != null && lang.contains(target)) {
+                lang.set(target, old.get(oldKey));
+                carried++;
+            }
+        }
+        if (carried == 0) {
+            return;
+        }
+        // The carried texts are from lang-version 1, so Messages renews the texts that changed since then.
+        lang.set("lang-version", 1);
+        Files.createDirectories(file.getParentFile().toPath());
+        lang.options().width(10_000);
+        Files.writeString(file.toPath(), BOM + lang.saveToString(), StandardCharsets.UTF_8);
+        plugin.getLogger().info("Moved " + carried + " texts from the old config.yml to lang/de.yml.");
     }
 
     /** Loads config.yml (tolerating a BOM) with the bundled config as defaults for missing keys. */
@@ -108,21 +163,28 @@ public final class ConfigUpdater {
                 config.loadFromString(stripBom(Files.readString(file.toPath(), StandardCharsets.UTF_8)));
             }
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.SEVERE, "config.yml ist fehlerhaft, verwende Standardwerte: " + e.getMessage());
+            plugin.getLogger().log(Level.SEVERE, "config.yml is invalid, using defaults: " + e.getMessage());
         }
         try (InputStream in = plugin.getResource("config.yml")) {
             if (in != null) {
                 YamlConfiguration defaults = new YamlConfiguration();
                 defaults.loadFromString(stripBom(new String(in.readAllBytes(), StandardCharsets.UTF_8)));
                 config.setDefaults(defaults);
+                // Fill in values missing from the file. Bukkit ignores the defaults whenever code passes its own
+                // fallback (getString(path, "...")), so missing keys would otherwise get those fallbacks.
+                for (String key : defaults.getKeys(true)) {
+                    if (!defaults.isConfigurationSection(key) && !config.isSet(key)) {
+                        config.set(key, defaults.get(key));
+                    }
+                }
             }
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.WARNING, "Standard-Config konnte nicht gelesen werden: " + e.getMessage());
+            plugin.getLogger().log(Level.WARNING, "Could not read the bundled config: " + e.getMessage());
         }
         return config;
     }
 
-    private static String stripBom(String text) {
+    public static String stripBom(String text) {
         return text.startsWith(BOM) ? text.substring(1) : text;
     }
 }

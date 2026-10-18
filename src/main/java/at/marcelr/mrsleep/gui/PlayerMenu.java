@@ -87,7 +87,7 @@ public final class PlayerMenu extends Menu {
             boolean permanent = duration == Settings.PERMANENT;
             String time = permanent ? messages.plain("ban-duration-permanent") : DurationUtil.format(duration);
             button(19 + i, permanent ? Material.OBSIDIAN : Material.TRIPWIRE_HOOK, "gui-ban-name", "gui-ban-lore", PERM_BAN, false,
-                    click -> actions.ban(viewer, target, duration, gui.banReason()),
+                    click -> actions.ban(viewer, target, duration, messages.plain("gui-ban-reason")),
                     tag("time", time), tag("player", target.getName()));
         }
         if (plugin.noSleep().ban(targetId) != null) {

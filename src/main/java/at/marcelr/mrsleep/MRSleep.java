@@ -74,7 +74,7 @@ public final class MRSleep extends JavaPlugin {
     private void loadConfiguration() {
         config = ConfigUpdater.load(this);
         settings = Settings.from(config, getLogger());
-        messages.load(config);
+        messages.load(this, config.getString("language", "de"));
         discord.load(config.getConfigurationSection("discord"));
     }
 

@@ -5,6 +5,32 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.1.0] - 2026-10-18
+Für Minecraft **26.3** (`mc26.3-v1.1.0`). Update von 1.0.0: JAR austauschen und neu starten, Config und Texte
+werden automatisch übernommen.
+
+### Neu
+- **Sprachdateien:** Alle Texte stehen jetzt in `plugins/MRsleep/lang/<sprache>.yml`. Mitgeliefert werden
+  Deutsch (`de`) und Englisch (`en`). In der `config.yml` wird nur noch `language` gesetzt (auch `eng`, `deutsch` …).
+  Eigene Sprachen lassen sich als weitere Datei anlegen. Neue Texte werden bei Updates automatisch ergänzt,
+  geänderte Standardtexte in den mitgelieferten Sprachen erneuert (`lang-version`).
+- Auch bisher fest eingebaute Texte (ja/nein, Discord- und Update-Fehlermeldungen) sind jetzt übersetzbar.
+
+### Geändert
+- **Neues Versionsschema mit Minecraft-Version:** `mc26.3-v1.1.0` statt `v1.1.0` (Git-Tag, JAR-Name, Modrinth).
+  Im Spiel und in `/plugins` steht `1.1.0+mc26.3`. Damit können künftig mehrere Minecraft-Versionen parallel
+  versorgt werden (Wartungs-Branches `mc/<version>`, siehe `docs/RELEASES.md`). Der Update-Checker meldet nur
+  noch Versionen für dieselbe Minecraft-Version. `/mrsleep version` und das Admin-Menü zeigen die MC-Version an.
+- **Konsole immer auf Englisch:** Log-Ausgaben und Antworten auf Konsolenbefehle sind jetzt einheitlich englisch,
+  unabhängig von `language`. Spieler bekommen weiter ihre eingestellte Sprache.
+- Config-Version 6: Der Abschnitt `messages`, die Discord-Texte (`discord.events.*.message`, `discord.test-message`)
+  und `gui.ban-reason` sind aus der `config.yml` in die Sprachdatei gewandert. Bestehende Texte inkl. eigener
+  Anpassungen werden beim Update automatisch nach `lang/de.yml` übernommen.
+
+### Behoben
+- Fehlende Einträge in einer bestehenden `config.yml` werden jetzt mit den mitgelieferten Standardwerten aufgefüllt.
+  Vorher bekamen sie teils einen leeren oder abweichenden Ersatzwert aus dem Code.
+
 ## [1.0.0] - 2026-10-17
 **Erste stabile Version.** Ab hier gilt Semantic Versioning: Config, Befehle und Permissions ändern sich
 nur noch mit einer neuen Hauptversion (2.0.0) inkompatibel. Bestehende Configs aus 0.9.x werden automatisch migriert.

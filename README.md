@@ -4,12 +4,13 @@ Schlaf-Plugin für **Paper 26.3** (Java 25).
 
 > Fehler und Wünsche bitte als [Issue](https://github.com/therealmarci/mrsleep/issues) melden.
 
-MRsleep ist ein Minecraft Schlaf Management Plugin, dass die Schlafmechanik auf Multiplayerservern verbessert & optimiert. 
+MRsleep ist ein Schlaf-Management-Plugin, das die Schlafmechanik auf Multiplayer-Servern verbessert.
 
-- **`/nosleep [nächte]`**: Spieler können das Schlafen blockieren (/nosleep) für eine gewisse Zeit blockieren - perfekt zum bauen von Farmen
-- **Schlafquote mit Ausnahmen**: Spieler & Gruppen können mittels Permission von der Schlafquote ausgenommen werden
+- **`/nosleep [nächte]`**: Spieler können das Schlafen für eine oder mehrere Nächte blockieren - perfekt zum Bauen von Farmen.
+- **Schlafquote mit Ausnahmen**: Spieler und Gruppen lassen sich per Permission von der Schlafquote ausnehmen.
 - **Admin-Menü**: Spielerköpfe mit Live-Status, Sperren, Bypass und Cooldown per Klick.
-- **Perfekt administrierbar** Alle Details können mittels Config File bearbeitet werden.
+- **Alles einstellbar**: Einstellungen in der `config.yml`, alle Texte in Sprachdateien (Deutsch und Englisch mitgeliefert).
+- **Discord-Logs** und **Update-Prüfung** über GitHub Releases.
 
 ---
 
@@ -25,22 +26,24 @@ MRsleep ist ein Minecraft Schlaf Management Plugin, dass die Schlafmechanik auf 
 9. [LuckPerms-Beispiele](#luckperms-beispiele)
 10. [Häufige Fragen](#häufige-fragen)
 11. [Selbst bauen & Releases](#selbst-bauen--releases)
+12. [Lizenz](#lizenz)
 
 ---
 
 ## Installation & Update
-1. `MRsleep-<version>.jar` in den Ordner `plugins/` legen und den Server starten. Beim ersten Start entsteht `plugins/MRsleep/config.yml`.
-2. Die Config anpassen und mit `/mrsleep reload` übernehmen.
+1. Die passende JAR für deine Minecraft-Version in den Ordner `plugins/` legen, z.B. `MRsleep-mc26.3-v1.1.0.jar` für Minecraft 26.3, und den Server starten. Beim ersten Start entstehen `plugins/MRsleep/config.yml` und die Sprachdateien in `plugins/MRsleep/lang/`.
+2. Config und Texte anpassen und mit `/mrsleep reload` übernehmen.
 
 **Update:** Die alte JAR durch die neue ersetzen und den Server neu starten. Hat sich der Aufbau der Config geändert, aktualisiert MRsleep sie **automatisch**:
 - Deine Einstellungen werden übernommen.
 - Neue Optionen kommen mit Standardwerten dazu.
 - Die alte Datei bleibt als `config.v<N>.backup.yml` erhalten.
 
-**Voraussetzungen:** 
-- Paper 26.3, 
-- Java 25, LuckPerms
-- LuckPerms
+**Voraussetzungen:**
+- Paper 26.3 (oder ein Fork wie Purpur)
+- Java 25
+- Empfohlen: LuckPerms (oder ein anderes Permission-Plugin) für Ausnahmen und Admin-Rechte
+
 ---
 
 ## Funktionen
@@ -79,7 +82,7 @@ Verwaltet werden alle normalen Oberwelten. Nether und End sind ausgenommen, weit
 - Blockaden, Cooldowns, Bypässe und Sperren bleiben auch nach einem Neustart erhalten.
 
 ### Chat-Hinweise
-Alle Texte lassen sich in der Config ändern. Ein leerer Text (`""`) schaltet den Hinweis ab. Beispiele:
+Alle Texte lassen sich in der Sprachdatei ändern (siehe [Sprache & Texte](#sprache--texte)). Ein leerer Text (`""`) schaltet den Hinweis ab. Beispiele:
 - `Steve hat das Schlafen blockiert, du kannst nicht schlafen. Noch 2 Nächte.`
 - `Die Nacht bricht an - Schlafen ist blockiert von Steve (noch 2 Nächte).`
 - `Alex hat sich schlafen gelegt (1/2)`: an die Welt, den ganzen Server oder niemanden (`sleep.sleep-message`)
@@ -104,7 +107,7 @@ Ein Klick auf einen Kopf öffnet das **Spieler-Menü**:
 | Sperre | Sperren für 1h / 1d / dauerhaft · Entsperren |
 | Sonstiges | Blockade aufheben · Zum Spieler teleportieren |
 
-Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, steht „Keine Berechtigung“ am Button. Die Schnellauswahl-Zeiten, der Sperrgrund und die Sounds lassen sich unter `gui` in der Config ändern.
+Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, steht „Keine Berechtigung“ am Button. Die Schnellauswahl-Zeiten und die Sounds lassen sich unter `gui` in der Config ändern, der Sperrgrund (`gui-ban-reason`) in der Sprachdatei.
 
 ---
 
@@ -127,7 +130,7 @@ Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, ste
 | `/mrsleep unban <spieler>` | Sperre aufheben | `mrsleep.admin.ban` |
 | `/mrsleep bans` | Alle Sperren anzeigen | `mrsleep.admin.ban` |
 | `/mrsleep discord [test]` | Discord-Status und Testnachricht | `mrsleep.admin.discord` |
-| `/mrsleep reload` | `config.yml` neu laden | `mrsleep.admin.reload` |
+| `/mrsleep reload` | `config.yml` und Sprachdatei neu laden | `mrsleep.admin.reload` |
 | `/mrsleep version` | Version, Links und Update-Status | – (alle) |
 
 Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset funktionieren auch bei Spielern, die gerade offline sind, sofern sie schon einmal auf dem Server waren.
@@ -164,14 +167,23 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 |---|---|
 | **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer und AFK, Wetter, Anzeige (`display`: bossbar/actionbar/title/none), `sleep-message` |
 | **2) /nosleep** `nosleep.*` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
-| **3) Discord** `discord.*` | Webhook-URL und die einzelnen Events |
+| **3) Discord** `discord.*` | Webhook-URL, Events an/aus und Farben (Texte in der Sprachdatei) |
 | **4) Update-Check** `update-checker.*` | Quelle (GitHub Releases oder Modrinth), Intervall, Hinweis beim Betreten |
-| **5) Admin-Menü** `gui.*` | Aktualisierung, Schnellauswahl-Zeiten, Sperrgrund, Sounds |
-| **6) Nachrichten** `messages.*` | Alle Texte ([MiniMessage](https://docs.advntr.dev/minimessage/format.html)) |
+| **5) Admin-Menü** `gui.*` | Aktualisierung, Schnellauswahl-Zeiten, Sounds |
 
 - **Zeitangaben** bestehen aus `d`, `h`, `m` und `s` (`15m`, `1h30m`, `2d`). Eine reine Zahl zählt als Minuten.
 - **Umlaute:** Die Datei ist UTF-8 mit BOM gespeichert, damit Editoren die Kodierung erkennen. Siehst du trotzdem „Ã¤“ statt „ä“, stell die Kodierung im Editor auf **UTF-8**.
 - **`config-version`** nicht ändern. Darüber erkennt MRsleep, ob die Datei aktualisiert werden muss.
+
+### Sprache & Texte
+In der `config.yml` steht nur die Sprache: **`language: de`** (Deutsch) oder **`language: en`** (English).
+Alle Texte stehen in `plugins/MRsleep/lang/<sprache>.yml`, also Chat, Anzeige, Menüs, Discord-Logs und Sperrgrund
+([MiniMessage](https://docs.advntr.dev/minimessage/format.html)).
+
+- Texte direkt in der Sprachdatei ändern und `/mrsleep reload` ausführen. Ein leerer Text (`""`) schaltet die Nachricht ab.
+- **Eigene Sprache:** `lang/en.yml` kopieren, z.B. als `lang/fr.yml`, übersetzen und `language: fr` setzen.
+- Kommen mit einem Update neue Texte dazu, ergänzt MRsleep sie automatisch in deiner Sprachdatei. Deine Änderungen bleiben erhalten.
+- **Update von 1.0.0:** Die Texte aus dem alten `messages`-Abschnitt (inkl. eigener Anpassungen) werden automatisch nach `lang/de.yml` übernommen.
 
 ---
 
@@ -182,7 +194,7 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 
 Testen mit **`/mrsleep discord test`**: Das schickt eine Testnachricht und meldet, ob sie angekommen ist oder warum nicht. **`/mrsleep discord`** zeigt, ob der Webhook aktiv ist, wie viele Events eingeschaltet sind und wie der letzte Versand ausging.
 
-Unter `discord.events` legst du für jedes Ereignis fest, ob es gesendet wird, welche Farbe es hat und welchen Text es bekommt:
+Unter `discord.events` legst du für jedes Ereignis fest, ob es gesendet wird und welche Farbe es hat. Die Texte stehen in der Sprachdatei unter `discord`:
 - `nosleep-activated`, `nosleep-deactivated`, `nosleep-quit`, `nosleep-expired`
 - `night-start-blocked`, `bed-blocked`, `night-skipped`
 - `admin-clear`, `admin-release`, `admin-bypass`, `admin-bypass-remove`, `admin-cooldown-reset`, `admin-ban`, `admin-unban`, `admin-reload`
@@ -196,6 +208,7 @@ MRsleep prüft beim Start und danach alle `update-checker.interval-hours` Stunde
 - **Konsole:** Ein auffälliger Hinweis mit installierter und neuer Version samt Download-Link.
 - **Im Spiel:** Spieler mit `mrsleep.admin.update` bekommen beim Betreten einen anklickbaren Hinweis.
 - `/mrsleep version` prüft sofort und zeigt das Ergebnis.
+- Gemeldet werden nur Versionen für **dieselbe Minecraft-Version**. Ein Server mit 26.3 bekommt also nie eine Version für eine andere Minecraft-Version angeboten.
 
 ---
 
@@ -221,6 +234,19 @@ Das ist gewollt. Die Quote kommt aus `sleep.percentage`.
 
 **Was zählt als „eine Nacht“?**
 Wer tagsüber `/nosleep` nutzt, blockiert die kommende Nacht, wer es nachts nutzt, die laufende. Blockaden gelten pro Welt.
+
+---
+
+## Selbst bauen & Releases
+```text
+gradlew build      →  build/libs/MRsleep-mc<minecraft>-v<version>.jar
+```
+Benötigt Java 25. Versionen heißen `mc<minecraft>-v<version>`, z.B. `mc26.3-v1.1.0`:
+- **MAJOR** (`2.0.0`): große Releases, inkompatible Änderungen
+- **MINOR** (`1.1.0`): neue Funktionen
+- **PATCH** (`1.1.1`): Hotfixes
+
+Branches, Release-Ablauf und die Versorgung mehrerer Minecraft-Versionen stehen in [docs/RELEASES.md](docs/RELEASES.md), technische Details in [docs/DOKUMENTATION.md](docs/DOKUMENTATION.md).
 
 ---
 

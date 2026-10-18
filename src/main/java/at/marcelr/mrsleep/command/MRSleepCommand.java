@@ -60,6 +60,11 @@ public final class MRSleepCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // From the console every text is English, also values built along the way.
+        return plugin.messages().as(sender, () -> handle(sender, command, label, args));
+    }
+
+    private boolean handle(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
             messages().send(sender, hasAnyAdminPermission(sender) ? "admin-usage" : "no-permission");
             return true;
@@ -139,7 +144,7 @@ public final class MRSleepCommand implements TabExecutor {
     private void version(CommandSender sender) {
         UpdateChecker updates = plugin.updateChecker();
         messages().send(sender, "version",
-                tag("version", updates.currentVersion()),
+                tag("version", updates.currentVersion()), tag("mc", updates.minecraftVersion()),
                 tag("author", String.join(", ", plugin.getPluginMeta().getAuthors())));
         // Order: version, update check, result, empty line, links.
         Runnable links = () -> {
@@ -204,10 +209,10 @@ public final class MRSleepCommand implements TabExecutor {
             Map<UUID, Integer> blockers = managed ? plugin.noSleep().activeBlockers(world) : Map.of();
             messages.send(sender, "debug-world",
                     tag("world", world.getName()),
-                    tag("managed", managed ? "ja" : "nein"),
+                    tag("managed", messages.plain(managed ? "value-yes" : "value-no")),
                     tag("gamerule", String.valueOf(world.getGameRuleValue(GameRules.PLAYERS_SLEEPING_PERCENTAGE))),
                     tag("time", world.getTime()),
-                    tag("night", SleepManager.isNight(world) ? "ja" : "nein"),
+                    tag("night", messages.plain(SleepManager.isNight(world) ? "value-yes" : "value-no")),
                     tag("players", blockers.isEmpty() ? messages.plain("status-none") : NoSleepManager.names(blockers.keySet())));
             if (!managed) {
                 continue;
@@ -225,7 +230,7 @@ public final class MRSleepCommand implements TabExecutor {
                         tag("player", player.getName()),
                         tag("counts", reason == null ? messages.plain("debug-counts-yes")
                                 : messages.plain("debug-counts-no") + " (" + messages.plain(reason) + ")"),
-                        tag("sleeping", player.isSleeping() ? "ja" : "nein"),
+                        tag("sleeping", messages.plain(player.isSleeping() ? "value-yes" : "value-no")),
                         tag("ticks", player.getSleepTicks()),
                         tag("cooldown", cooldownState(player)));
             }
@@ -360,7 +365,7 @@ public final class MRSleepCommand implements TabExecutor {
             return;
         }
         messages().send(sender, "discord-test-sending");
-        discord.test().whenComplete((error, throwable) -> Bukkit.getScheduler().runTask(plugin, () -> {
+        discord.test(sender).whenComplete((error, throwable) -> Bukkit.getScheduler().runTask(plugin, () -> {
             String problem = throwable != null ? throwable.getMessage() : error;
             if (problem == null) {
                 messages().send(sender, "discord-test-ok");
