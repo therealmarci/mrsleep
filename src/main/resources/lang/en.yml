@@ -10,6 +10,9 @@
 #   <nights> is formatted with nights-singular / nights-plural, e.g. "1 night" or "3 nights".
 # ==============================================================================
 
+# Do not change - tells the plugin which texts need to be renewed on updates.
+lang-version: 2
+
 # Discord log texts (Discord markdown). Placeholders: {player} {world} {nights} {players}
 # {admin} {time} {reason} {sleeping} {needed} {counted}. On/off and colour are set in config.yml.
 discord:
