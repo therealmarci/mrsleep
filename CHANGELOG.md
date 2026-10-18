@@ -4,6 +4,9 @@ Alle wichtigen Änderungen an MRsleep. Format nach [Keep a Changelog](https://ke
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
+### Behoben
+- Zu lange Fenstertitel im Admin-Menü (z.B. bei langen Spielernamen) werden automatisch mit „…“ gekürzt, statt aus
+  dem Fenster zu ragen.
 
 ## [1.1.0] - 2026-10-18
 Für Minecraft **26.3** (`mc26.3-v1.1.0`). Update von 1.0.0: JAR austauschen und neu starten, Config und Texte
