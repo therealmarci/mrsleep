@@ -47,7 +47,7 @@ public record Settings(
 
     /** Durations in ms; ban durations may contain {@link #PERMANENT}. */
     public record GuiSettings(int refreshTicks, List<Long> bypassDurations, List<Long> banDurations,
-                              String banReason, boolean sounds) {
+                              boolean sounds) {
     }
 
     public static Settings from(FileConfiguration c, Logger log) {
@@ -80,7 +80,6 @@ public record Settings(
                 Math.max(5, c.getInt("gui.refresh-ticks", 20)),
                 durations(c.getStringList("gui.bypass-durations"), List.of("30m", "2h", "1d"), false, log),
                 durations(c.getStringList("gui.ban-durations"), List.of("1h", "1d", "permanent"), true, log),
-                c.getString("gui.ban-reason", "über das Admin-Menü"),
                 c.getBoolean("gui.sounds", true));
 
         return new Settings(

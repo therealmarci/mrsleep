@@ -217,6 +217,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
   1. Die mitgelieferte `config.yml` wird als Vorlage geladen. Die Kommentare und die Reihenfolge bleiben erhalten, weil Bukkit Kommentare mitliest.
   2. Jeder Wert der alten Datei, dessen Schlüssel es in der Vorlage noch gibt, wird übernommen. Ausnahme sind die `REPLACED_KEYS`, also Texte, deren Inhalt sich mit neuen Funktionen geändert hat.
   3. Die alte Datei wird als `config.v<N>.backup.yml` gesichert, die neue mit BOM geschrieben.
+- **v6 (Sprachdateien):** `migrateTexts` überträgt vor der Migration `messages.*`, `discord.events.*.message`, `discord.test-message` und `gui.ban-reason` aus der alten Config nach `lang/de.yml` (die alten Texte waren deutsch). `REPLACED_KEYS` und `RENAMED_KEYS` gelten dabei weiter.
 - **Wenn sich die Config-Struktur ändert:** `CURRENT_VERSION` und `config-version` in der Vorlage erhöhen. Bei umbenannten Schlüsseln die Werte vor dem Übernehmen umschreiben, bei geänderten Standardtexten den Schlüssel in `REPLACED_KEYS` aufnehmen.
 
 ## 7. Admin-Menü (`gui/*`)
@@ -224,7 +225,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 - **`render()`** leert das Inventar und ruft `draw()` neu auf. `MenuListener` macht das alle `gui.refresh-ticks` Ticks für jedes offene Menü. Da Bukkit Inventaränderungen erst am Tick-Ende synchronisiert, flackert dabei nichts.
 - **`MainMenu`**: Oben die Welt (eine Uhr, nachts ein Recovery-Kompass, Klick wechselt die Welt), das Info-Buch (Version und Update-Status) und „Blockaden entfernen“. In der Mitte bis zu 36 Köpfe pro Seite, sortiert nach `PlayerHead.rank` (Blockierer → Schlafende → Zählende → Ausgenommene, danach alphabetisch) und gefiltert nach `Filter`. Unten Seiten, Filter, Schließen und Reload.
 - **`PlayerMenu`**: Aktionen für einen Spieler. Jede Taste läuft über `button(...)`: Sie prüft die Permission (sonst Lore-Hinweis, Ablehnungs-Sound und `no-permission`), ruft die Methode in `AdminActions` auf, spielt den Erfolgs-Sound und zeichnet neu. Geht der Spieler offline, springt das Menü zur Übersicht zurück.
-- Alle Texte kommen aus `messages.gui-*`. `Messages#item` und `Messages#lore` entfernen die Kursivschrift, die Minecraft standardmäßig für Item-Texte nutzt. Werte in der Kopf-Lore (z.B. `<counts>`) sind formatierte Komponenten (`Messages.tag(name, Component)`).
+- Alle Texte kommen aus `gui-*` der Sprachdatei. `Messages#item` und `Messages#lore` entfernen die Kursivschrift, die Minecraft standardmäßig für Item-Texte nutzt. Werte in der Kopf-Lore (z.B. `<counts>`) sind formatierte Komponenten (`Messages.tag(name, Component)`).
 
 ## 8. Update-Checker (`UpdateChecker`)
 - Die Projekt-IDs stehen in `gradle.properties` und landen beim Build in `build-info.properties`.
@@ -235,9 +236,13 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 - Der User-Agent lautet `MRsleep/<version> (<github-url>)`. Modrinth verlangt einen eindeutigen User-Agent.
 
 ## 9. Nachrichten (`Messages`)
-- Alle Texte stehen unter `messages.*` in der Config und werden mit **MiniMessage** dargestellt.
+- Alle Texte stehen in **`lang/<sprache>.yml`** (mitgeliefert: `de`, `en`) und werden mit **MiniMessage** dargestellt. Die Config enthält nur `language`.
+- **Laden (`Messages#load`):** Fehlende mitgelieferte Sprachdateien werden nach `plugins/MRsleep/lang/` kopiert. Der Sprachcode wird aufgelöst: erst exakter Dateiname, dann Aliase (`eng`/`english` → `en`, `deutsch`/`german` → `de`), dann der Teil vor `_`/`-` (`de_AT` → `de`). Gibt es die Datei nicht, wird `en` verwendet.
+- **Ergänzen:** Schlüssel, die in der Datei fehlen, werden aus der mitgelieferten Datei derselben Sprache (sonst `en`) eingefügt und die Datei mit BOM zurückgeschrieben.
+- Discord-Texte stehen unter `discord.<event>` bzw. `discord.test-message` der Sprachdatei, An/aus und Farbe weiter in der Config (`discord.events.<event>`).
+- **Neue Texte:** in **beiden** Dateien `de.yml` und `en.yml` anlegen. `LanguageFilesTest` prüft beim Build, dass beide dieselben Schlüssel haben und keiner wie `yes`/`no` als Boolean gelesen wird.
 - `<prefix>` wird als *parsed* Placeholder eingesetzt, darf also selbst Formatierung enthalten. Alle anderen Platzhalter sind *unparsed*, damit Spielernamen keine Tags einschleusen können.
-- Eine leere Nachricht (`""`) wird nicht gesendet. Damit lässt sich jeder Hinweis abschalten. Ein **fehlender** Schlüssel erzeugt sichtbar `Fehlende Nachricht: <key>`.
+- Eine leere Nachricht (`""`) wird nicht gesendet. Damit lässt sich jeder Hinweis abschalten. Ein **fehlender** Schlüssel erzeugt sichtbar `Missing text: <key>`.
 - `nights(n)` erzeugt mit `nights-singular` und `nights-plural` z.B. „1 Nacht“ oder „3 Nächte“.
 - `broadcast(world, …)` sendet nur an Spieler **dieser Welt**, denn Blockaden gelten pro Welt.
 

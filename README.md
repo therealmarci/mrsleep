@@ -104,7 +104,7 @@ Ein Klick auf einen Kopf öffnet das **Spieler-Menü**:
 | Sperre | Sperren für 1h / 1d / dauerhaft · Entsperren |
 | Sonstiges | Blockade aufheben · Zum Spieler teleportieren |
 
-Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, steht „Keine Berechtigung“ am Button. Die Schnellauswahl-Zeiten, der Sperrgrund und die Sounds lassen sich unter `gui` in der Config ändern.
+Für jede Aktion braucht man zusätzlich die passende Permission. Fehlt sie, steht „Keine Berechtigung“ am Button. Die Schnellauswahl-Zeiten und die Sounds lassen sich unter `gui` in der Config ändern, der Sperrgrund (`gui-ban-reason`) in der Sprachdatei.
 
 ---
 
@@ -164,14 +164,23 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 |---|---|
 | **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer und AFK, Wetter, Anzeige (`display`: bossbar/actionbar/title/none), `sleep-message` |
 | **2) /nosleep** `nosleep.*` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
-| **3) Discord** `discord.*` | Webhook-URL und die einzelnen Events |
+| **3) Discord** `discord.*` | Webhook-URL, Events an/aus und Farben (Texte in der Sprachdatei) |
 | **4) Update-Check** `update-checker.*` | Quelle (GitHub Releases oder Modrinth), Intervall, Hinweis beim Betreten |
-| **5) Admin-Menü** `gui.*` | Aktualisierung, Schnellauswahl-Zeiten, Sperrgrund, Sounds |
-| **6) Nachrichten** `messages.*` | Alle Texte ([MiniMessage](https://docs.advntr.dev/minimessage/format.html)) |
+| **5) Admin-Menü** `gui.*` | Aktualisierung, Schnellauswahl-Zeiten, Sounds |
 
 - **Zeitangaben** bestehen aus `d`, `h`, `m` und `s` (`15m`, `1h30m`, `2d`). Eine reine Zahl zählt als Minuten.
 - **Umlaute:** Die Datei ist UTF-8 mit BOM gespeichert, damit Editoren die Kodierung erkennen. Siehst du trotzdem „Ã¤“ statt „ä“, stell die Kodierung im Editor auf **UTF-8**.
 - **`config-version`** nicht ändern. Darüber erkennt MRsleep, ob die Datei aktualisiert werden muss.
+
+### Sprache & Texte
+In der `config.yml` steht nur die Sprache: **`language: de`** (Deutsch) oder **`language: en`** (English).
+Alle Texte stehen in `plugins/MRsleep/lang/<sprache>.yml`, also Chat, Anzeige, Menüs, Discord-Logs und Sperrgrund
+([MiniMessage](https://docs.advntr.dev/minimessage/format.html)).
+
+- Texte direkt in der Sprachdatei ändern und `/mrsleep reload` ausführen. Ein leerer Text (`""`) schaltet die Nachricht ab.
+- **Eigene Sprache:** `lang/en.yml` kopieren, z.B. als `lang/fr.yml`, übersetzen und `language: fr` setzen.
+- Kommen mit einem Update neue Texte dazu, ergänzt MRsleep sie automatisch in deiner Sprachdatei. Deine Änderungen bleiben erhalten.
+- **Update von 1.0.0:** Die Texte aus dem alten `messages`-Abschnitt (inkl. eigener Anpassungen) werden automatisch nach `lang/de.yml` übernommen.
 
 ---
 

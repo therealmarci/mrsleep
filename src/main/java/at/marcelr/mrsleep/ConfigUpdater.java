@@ -22,9 +22,12 @@ import java.util.logging.Level;
  */
 public final class ConfigUpdater {
 
-    public static final int CURRENT_VERSION = 5;
-    private static final String BOM = "﻿";
-    /** Texts whose content changed with new features; the new default replaces the old value. */
+    public static final int CURRENT_VERSION = 6;
+    public static final String BOM = "﻿";
+    /**
+     * Texts whose content changed with new features; the new default replaces the old value.
+     * Since v6 the texts live in lang/*.yml; the keys are still used when old messages are moved there.
+     */
     private static final Set<String> REPLACED_KEYS = Set.of(
             "messages.admin-usage",
             "messages.debug-player",
@@ -63,6 +66,10 @@ public final class ConfigUpdater {
                 return;
             }
 
+            if (version < 6) {
+                migrateTexts(plugin, existing);
+            }
+
             YamlConfiguration template = new YamlConfiguration();
             try (InputStream in = plugin.getResource("config.yml")) {
                 if (in == null) {
@@ -99,6 +106,52 @@ public final class ConfigUpdater {
         }
     }
 
+    /**
+     * v6: the texts moved from config.yml (messages, discord.events.*.message, discord.test-message, gui.ban-reason)
+     * into lang/de.yml. The old texts were German, so they are carried over into the German file - including
+     * anything the server owner had customised.
+     */
+    private static void migrateTexts(MRSleep plugin, YamlConfiguration old) throws IOException {
+        YamlConfiguration lang = Messages.bundled(plugin, "de");
+        File file = new File(plugin.getDataFolder(), "lang/de.yml");
+        if (file.exists()) {
+            try {
+                lang.loadFromString(stripBom(Files.readString(file.toPath(), StandardCharsets.UTF_8)));
+            } catch (InvalidConfigurationException e) {
+                plugin.getLogger().warning("lang/de.yml ist fehlerhaft, Texte aus der alten config.yml werden nicht übernommen.");
+                return;
+            }
+        }
+        int carried = 0;
+        for (String oldKey : old.getKeys(true)) {
+            String key = RENAMED_KEYS.getOrDefault(oldKey, oldKey);
+            if (old.isConfigurationSection(oldKey) || REPLACED_KEYS.contains(key)) {
+                continue;
+            }
+            String target = null;
+            if (key.startsWith("messages.")) {
+                target = key.substring("messages.".length());
+            } else if (key.equals("discord.test-message")) {
+                target = key;
+            } else if (key.startsWith("discord.events.") && key.endsWith(".message")) {
+                target = "discord." + key.substring("discord.events.".length(), key.length() - ".message".length());
+            } else if (key.equals("gui.ban-reason")) {
+                target = "gui-ban-reason";
+            }
+            if (target != null && lang.contains(target)) {
+                lang.set(target, old.get(oldKey));
+                carried++;
+            }
+        }
+        if (carried == 0) {
+            return;
+        }
+        Files.createDirectories(file.getParentFile().toPath());
+        lang.options().width(10_000);
+        Files.writeString(file.toPath(), BOM + lang.saveToString(), StandardCharsets.UTF_8);
+        plugin.getLogger().info(carried + " Texte aus der alten config.yml nach lang/de.yml übernommen.");
+    }
+
     /** Loads config.yml (tolerating a BOM) with the bundled config as defaults for missing keys. */
     public static YamlConfiguration load(MRSleep plugin) {
         YamlConfiguration config = new YamlConfiguration();
@@ -129,7 +182,7 @@ public final class ConfigUpdater {
         return config;
     }
 
-    private static String stripBom(String text) {
+    public static String stripBom(String text) {
         return text.startsWith(BOM) ? text.substring(1) : text;
     }
 }

@@ -4,6 +4,17 @@ Alle wichtigen Änderungen an MRsleep. Format nach [Keep a Changelog](https://ke
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
+### Neu
+- **Sprachdateien:** Alle Texte stehen jetzt in `plugins/MRsleep/lang/<sprache>.yml`. Mitgeliefert werden
+  Deutsch (`de`) und Englisch (`en`). In der `config.yml` wird nur noch `language` gesetzt (auch `eng`, `deutsch` …).
+  Eigene Sprachen lassen sich als weitere Datei anlegen. Neue Texte werden bei Updates automatisch ergänzt.
+- Auch bisher fest eingebaute Texte (ja/nein, Discord- und Update-Fehlermeldungen) sind jetzt übersetzbar.
+
+### Geändert
+- Config-Version 6: Der Abschnitt `messages`, die Discord-Texte (`discord.events.*.message`, `discord.test-message`)
+  und `gui.ban-reason` sind aus der `config.yml` in die Sprachdatei gewandert. Bestehende Texte inkl. eigener
+  Anpassungen werden beim Update automatisch nach `lang/de.yml` übernommen.
+
 ### Behoben
 - Fehlende Einträge in einer bestehenden `config.yml` werden jetzt mit den mitgelieferten Standardwerten aufgefüllt.
   Vorher bekamen sie teils einen leeren oder abweichenden Ersatzwert aus dem Code.

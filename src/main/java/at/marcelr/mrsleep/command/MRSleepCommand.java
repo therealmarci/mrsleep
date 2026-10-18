@@ -204,10 +204,10 @@ public final class MRSleepCommand implements TabExecutor {
             Map<UUID, Integer> blockers = managed ? plugin.noSleep().activeBlockers(world) : Map.of();
             messages.send(sender, "debug-world",
                     tag("world", world.getName()),
-                    tag("managed", managed ? "ja" : "nein"),
+                    tag("managed", messages.plain(managed ? "value-yes" : "value-no")),
                     tag("gamerule", String.valueOf(world.getGameRuleValue(GameRules.PLAYERS_SLEEPING_PERCENTAGE))),
                     tag("time", world.getTime()),
-                    tag("night", SleepManager.isNight(world) ? "ja" : "nein"),
+                    tag("night", messages.plain(SleepManager.isNight(world) ? "value-yes" : "value-no")),
                     tag("players", blockers.isEmpty() ? messages.plain("status-none") : NoSleepManager.names(blockers.keySet())));
             if (!managed) {
                 continue;
@@ -225,7 +225,7 @@ public final class MRSleepCommand implements TabExecutor {
                         tag("player", player.getName()),
                         tag("counts", reason == null ? messages.plain("debug-counts-yes")
                                 : messages.plain("debug-counts-no") + " (" + messages.plain(reason) + ")"),
-                        tag("sleeping", player.isSleeping() ? "ja" : "nein"),
+                        tag("sleeping", messages.plain(player.isSleeping() ? "value-yes" : "value-no")),
                         tag("ticks", player.getSleepTicks()),
                         tag("cooldown", cooldownState(player)));
             }
