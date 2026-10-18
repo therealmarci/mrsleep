@@ -228,6 +228,11 @@ gui-world-lore:
   - "<gray>Blockiert von: <white><players>"
 gui-world-switch: "<yellow>» Klicken: nächste Welt"
 gui-phase-day: "☀ Tag"
+# Zusammenfassung auf dem MRsleep-Knopf im Admin-Kompass von MRadmin: eine Zeile pro Welt (höchstens 3), darunter mradmin-summary.
+# Platzhalter: <world> <sleeping> <needed> <phase> bzw. <blocked> (Spieler mit aktivem /nosleep) <bans>
+mradmin-summary-world: "<gray><world>: <white><sleeping></white>/<white><needed></white> schlafen <dark_gray>(<phase>)"
+mradmin-summary:
+  - "<gray>/nosleep aktiv: <white><blocked></white> <dark_gray>|</dark_gray> <gray>Gesperrt: <white><bans>"
 gui-phase-night: "☽ Nacht"
 gui-clear-name: "<red>Alle Blockaden entfernen"
 gui-clear-lore:

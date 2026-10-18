@@ -35,13 +35,18 @@ public final class PlayerMenu extends Menu {
     private static final String PERM_TELEPORT = "mrsleep.admin.teleport";
 
     private final UUID targetId;
-    private final MainMenu parent;
+    /** What "back" does: reopen the overview, or return to whoever opened this (e.g. MRadmin). */
+    private final Runnable back;
 
     public PlayerMenu(MRSleep plugin, Player viewer, UUID targetId, MainMenu parent) {
+        this(plugin, viewer, targetId, parent::open);
+    }
+
+    public PlayerMenu(MRSleep plugin, Player viewer, UUID targetId, Runnable back) {
         super(plugin, viewer, 5, plugin.messages().get("gui-title-player",
                 tag("player", AdminActions.name(Bukkit.getOfflinePlayer(targetId)))));
         this.targetId = targetId;
-        this.parent = parent;
+        this.back = back;
     }
 
     @Override
@@ -52,7 +57,7 @@ public final class PlayerMenu extends Menu {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 plugin.messages().send(viewer, "gui-player-offline",
                         tag("player", AdminActions.name(Bukkit.getOfflinePlayer(targetId))));
-                parent.open();
+                back.run();
             });
             return;
         }
@@ -114,7 +119,7 @@ public final class PlayerMenu extends Menu {
         // ---- navigation
         set(36, Items.of(Material.ARROW).name(messages.item("gui-back")).build(), click -> {
             clickSound();
-            parent.open();
+            back.run();
         });
         set(40, Items.of(Material.BARRIER).name(messages.item("gui-close")).build(), click -> viewer.closeInventory());
 

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import static at.marcelr.mrsleep.Messages.tag;
 
 /** Builds a player head showing that player's live sleep / nosleep status. */
-final class PlayerHead {
+public final class PlayerHead {
 
     /** Sort rank: blockers first, then sleepers, counting players, excluded players. */
     static int rank(MRSleep plugin, Player player) {
@@ -24,7 +24,7 @@ final class PlayerHead {
         return plugin.sleep().isExcluded(player) ? 3 : 2;
     }
 
-    static ItemStack build(MRSleep plugin, Player target, boolean clickHint) {
+    public static ItemStack build(MRSleep plugin, Player target, boolean clickHint) {
         Messages messages = plugin.messages();
         World world = target.getWorld();
         boolean blocking = plugin.sleep().isManaged(world)
