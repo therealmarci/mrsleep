@@ -43,17 +43,18 @@ mrsleep/
 ├─ .editorconfig               Formatierung; hält das BOM der config.yml
 ├─ .github/
 │  ├─ workflows/build.yml      Build + Tests bei jedem Push/PR, JAR als Artefakt
-│  ├─ workflows/release.yml    Bei Tag v*: GitHub-Release + Modrinth-Upload
+│  ├─ workflows/release.yml    Bei Tag mc*-v*: GitHub-Release + Modrinth-Upload
 │  ├─ ISSUE_TEMPLATE/          Vorlagen für Fehlermeldungen und Wünsche
 │  └─ dependabot.yml           monatliche Updates der GitHub-Actions
 ├─ docs/DOKUMENTATION.md       diese Datei
+├─ docs/RELEASES.md            Versionsschema, Branches, mehrere Minecraft-Versionen, Release-Ablauf
 ├─ README.md                   Doku für Server-Admins
 └─ src/
    ├─ main/java/at/marcelr/mrsleep/
    │  ├─ MRSleep.java              Hauptklasse: Lebenszyklus, verbindet alle Komponenten
    │  ├─ Settings.java             unveränderlicher Record mit allen Werten aus config.yml
    │  ├─ ConfigUpdater.java        Config-Migration, Laden mit BOM-Unterstützung
-   │  ├─ Messages.java             MiniMessage (Chat, Broadcast, Item-Namen/Lore)
+   │  ├─ Messages.java             Sprachdateien laden/ergänzen, MiniMessage, Konsole immer Englisch
    │  ├─ StatusTexts.java          Status-Texte eines Spielers (für GUI und /nosleep info)
    │  ├─ SleepDisplay.java         Fortschrittsanzeige: Bossbar / Actionbar / Titel
    │  ├─ SleepManager.java         eigene Schlaflogik (Quote, Nacht überspringen)
@@ -74,12 +75,13 @@ mrsleep/
    │  │  └─ Items.java             Item-Builder
    │  └─ util/
    │     ├─ DurationUtil.java      "1h30m" ⇄ Millisekunden
-   │     └─ Versions.java          SemVer-Vergleich, Erkennung von Vorabversionen
+   │     └─ Versions.java          Versionen "mc26.3-v1.2.0": SemVer-Vergleich, MC-Version, Vorabversionen
    ├─ main/resources/
-   │  ├─ plugin.yml                Befehle und Permissions (${version} wird ersetzt)
+   │  ├─ plugin.yml                Befehle und Permissions (${version}, ${mcVersion} werden ersetzt)
    │  ├─ config.yml                Standard-Config (UTF-8 mit BOM!)
+   │  ├─ lang/de.yml, lang/en.yml   alle Texte (UTF-8 mit BOM, gleiche Schlüssel)
    │  └─ build-info.properties     Version und Projekt-IDs für den Update-Checker (wird ersetzt)
-   └─ test/java/…/util/            JUnit-Tests für DurationUtil und Versions
+   └─ test/java/…/                 JUnit-Tests: DurationUtil, Versions, LanguageFilesTest (de/en gleich)
 ```
 
 ## 3. Architektur
@@ -233,6 +235,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 - Die höchste Version wird mit `Versions.compare` bestimmt (SemVer): Zahlen werden numerisch verglichen (`0.10.0 > 0.9.2`), ein führendes `v` und Build-Metadaten (`+…`) werden ignoriert, eine Release-Version gilt als neuer als ihre Vorabversion (`1.0.0 > 1.0.0-rc.1`), und Vorabversionen werden je Teil verglichen (`rc.10 > rc.2`).
 - Der Check läuft beim Start (nach 5 s) und danach alle `interval-hours` Stunden als Async-Task, außerdem bei `/mrsleep version`. Ist eine neuere Version verfügbar, erscheint einmal pro Version ein Hinweisblock in der Konsole, und online-Admins (`mrsleep.admin.update`) bekommen eine Nachricht. Beim Join kommt der Hinweis nach 3 s.
 - Fehler wie 404 (Projekt noch nicht veröffentlicht) werden einmal als INFO geloggt, danach erst wieder, wenn sich der Grund ändert.
+- **Nur dieselbe Minecraft-Version:** Releases mit anderem `mc…`-Präfix (GitHub) bzw. ohne passende `game_versions` (Modrinth) werden übersprungen. Alte Tags ohne Präfix (`v1.0.0`) zählen mit. Die eigene MC-Version kommt aus `build-info.properties` (`mcVersion`).
 - Der User-Agent lautet `MRsleep/<version> (<github-url>)`. Modrinth verlangt einen eindeutigen User-Agent.
 
 ## 9. Nachrichten (`Messages`)
@@ -304,7 +307,7 @@ Die Versionen stehen in `gradle.properties` und werden beim Build in die `plugin
 gradlew.bat test        nur die Tests
 gradlew.bat build       Kompilieren + Tests + JAR (schlägt fehl, wenn ein Test fehlschlägt)
 ```
-- JUnit 6 (`src/test/java`). Getestet wird die Logik, die ohne laufenden Server auskommt: `DurationUtil` (Parsen und Formatieren von Zeitangaben) und `Versions` (SemVer-Vergleich, Vorabversionen).
+- JUnit 6 (`src/test/java`). Getestet wird die Logik, die ohne laufenden Server auskommt: `DurationUtil` (Parsen und Formatieren von Zeitangaben), `Versions` (SemVer-Vergleich, MC-Präfix, Vorabversionen) und `LanguageFilesTest` (de.yml und en.yml haben dieselben Schlüssel, keine Schlüssel wie `yes`/`no`).
 - Alles, was Bukkit braucht (Schlafen, Events, GUI), prüft die manuelle Testcheckliste weiter unten auf dem Testserver.
 - Die Ergebnisse stehen in `build/reports/tests/test/index.html`. Auf GitHub laufen die Tests bei jedem Push (`build.yml`) und vor jedem Release.
 - **Neue Logik ohne Server-Bezug** am besten nach `util/` legen und dort testen.
@@ -341,11 +344,15 @@ Ausführlich in **[RELEASES.md](RELEASES.md)** (Versionsschema, Branches, mehrer
 | 10 | Blockierender Spieler geht offline | `nosleep-broadcast-quit`, Schlafen wieder möglich |
 | 11 | Discord-URL eintragen, `/mrsleep reload` | Event `admin-reload` erscheint im Kanal |
 | 12 | Plugin entfernen und Server neu starten | Gamerule steht wieder auf `sleep.percentage` |
-| 13 | Alte Config (ohne `config-version`) und Start mit 0.9.2 | Log „config.yml von Version 1 auf 2 aktualisiert“, Werte übernommen, `config.v1.backup.yml` vorhanden, Datei beginnt mit BOM |
+| 13 | Config und Daten von 1.0.0, Start mit 1.1.0 | Log „Moved … texts … to lang/de.yml“ und „Updated config.yml from version 5 to 6“, eigene Texte stehen in `lang/de.yml`, `config.v5.backup.yml` vorhanden, Dateien beginnen mit BOM |
 | 14 | `/mrsleep ban <spieler> 2h Test`, dann `/nosleep` als dieser Spieler | `nosleep-banned`, die laufende Blockade wurde aufgehoben |
 | 15 | `/mrsleep gui` | Köpfe aktualisieren sich live (Schlafsekunden zählen hoch), Filter und Seiten funktionieren, Items lassen sich nicht herausnehmen |
 | 16 | Spieler-Menü ohne `mrsleep.admin.ban` | Sperr-Buttons zeigen „Keine Berechtigung“, ein Klick wird abgelehnt |
-| 17 | `/mrsleep version` | Version, Links und Update-Status (vor dem ersten Release: „Projekt nicht gefunden“) |
+| 17 | `/mrsleep version` | `MRsleep v<version> (MC 26.3)`, Links und Update-Status |
+| 18 | `language: en`, `/mrsleep reload` | Chat, Bossbar, Menü und Discord-Texte auf Englisch |
+| 19 | `language: eng` bzw. `language: xx` | `eng` wird zu `en`; bei `xx` Warnung in der Konsole und Englisch |
+| 20 | Text in `lang/de.yml` ändern, `/mrsleep reload` | geänderter Text erscheint; nach Neustart bleibt er erhalten |
+| 21 | Befehle von der Konsole bei `language: de` | Antworten und Logs auf Englisch |
 
 ## 13. Erweiterungsideen
 - Eine Permission pro Nächtezahl (z.B. `mrsleep.nosleep.nights.5`), um `max-nights` je Gruppe zu staffeln
