@@ -4,10 +4,16 @@ Alle wichtigen Änderungen an MRsleep. Format nach [Keep a Changelog](https://ke
 Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
+
+## [1.1.0] - 2026-10-18
+Für Minecraft **26.3** (`mc26.3-v1.1.0`). Update von 1.0.0: JAR austauschen und neu starten, Config und Texte
+werden automatisch übernommen.
+
 ### Neu
 - **Sprachdateien:** Alle Texte stehen jetzt in `plugins/MRsleep/lang/<sprache>.yml`. Mitgeliefert werden
   Deutsch (`de`) und Englisch (`en`). In der `config.yml` wird nur noch `language` gesetzt (auch `eng`, `deutsch` …).
-  Eigene Sprachen lassen sich als weitere Datei anlegen. Neue Texte werden bei Updates automatisch ergänzt.
+  Eigene Sprachen lassen sich als weitere Datei anlegen. Neue Texte werden bei Updates automatisch ergänzt,
+  geänderte Standardtexte in den mitgelieferten Sprachen erneuert (`lang-version`).
 - Auch bisher fest eingebaute Texte (ja/nein, Discord- und Update-Fehlermeldungen) sind jetzt übersetzbar.
 
 ### Geändert
