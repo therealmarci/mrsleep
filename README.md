@@ -31,7 +31,7 @@ MRsleep ist ein Schlaf-Management-Plugin, das die Schlafmechanik auf Multiplayer
 ---
 
 ## Installation & Update
-1. Die passende JAR für deine Minecraft-Version in den Ordner `plugins/` legen, z.B. `MRsleep-mc26.3-v1.1.0.jar` für Minecraft 26.3, und den Server starten. Beim ersten Start entstehen `plugins/MRsleep/config.yml` und die Sprachdateien in `plugins/MRsleep/lang/`.
+1. Die passende JAR für deine Minecraft-Version in den Ordner `plugins/` legen, z.B. `MRsleep-mc26.3-v1.1.1.jar` für Minecraft 26.3, und den Server starten. Beim ersten Start entstehen `plugins/MRsleep/config.yml` und die Sprachdateien in `plugins/MRsleep/lang/`.
 2. Config und Texte anpassen und mit `/mrsleep reload` übernehmen.
 
 **Update:** Die alte JAR durch die neue ersetzen und den Server neu starten. Hat sich der Aufbau der Config geändert, aktualisiert MRsleep sie **automatisch**:
