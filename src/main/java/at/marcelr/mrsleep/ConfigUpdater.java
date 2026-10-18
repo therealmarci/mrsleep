@@ -146,6 +146,8 @@ public final class ConfigUpdater {
         if (carried == 0) {
             return;
         }
+        // The carried texts are from lang-version 1, so Messages renews the texts that changed since then.
+        lang.set("lang-version", 1);
         Files.createDirectories(file.getParentFile().toPath());
         lang.options().width(10_000);
         Files.writeString(file.toPath(), BOM + lang.saveToString(), StandardCharsets.UTF_8);
