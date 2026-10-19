@@ -262,6 +262,30 @@ public final class NoSleepManager {
         return Math.max(0, last + plugin.settings().cooldownMillis() - System.currentTimeMillis());
     }
 
+    /** Like {@link #remainingCooldown(Player)}, also for offline players (then without the permission check). */
+    public long remainingCooldown(UUID player) {
+        Player online = Bukkit.getPlayer(player);
+        if (online != null) {
+            return remainingCooldown(online);
+        }
+        Long last = lastUse.get(player);
+        if (last == null || bypassRemaining(player) > 0) {
+            return 0;
+        }
+        return Math.max(0, last + plugin.settings().cooldownMillis() - System.currentTimeMillis());
+    }
+
+    /** Players whose /nosleep cooldown is still running (offline players included). */
+    public java.util.Set<UUID> onCooldown() {
+        java.util.Set<UUID> result = new java.util.HashSet<>();
+        for (UUID player : lastUse.keySet()) {
+            if (remainingCooldown(player) > 0) {
+                result.add(player);
+            }
+        }
+        return result;
+    }
+
     public void markUsed(UUID player) {
         lastUse.put(player, System.currentTimeMillis());
         save();

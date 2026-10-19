@@ -5,6 +5,12 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+### Neu
+- **MRadmin-Weboberfläche:** Schnittstelle Version 4 (`MRadminHook.web`) liefert Welten mit Schlafstatus und /nosleep-Blockaden,
+  pro Spieler Cooldown, Bypass und Sperre (`player`, `flags`) als Daten und nimmt Aktionen an (Blockaden aufheben, Bypass, Cooldown zurücksetzen,
+  sperren, entsperren) - mit denselben Nachrichten, Broadcasts und Discord-Logs wie ingame. Es gelten die
+  Permissions von MRsleep. Ohne MRadmin ändert sich nichts.
+
 ## [1.1.1] - 2026-10-19
 Für Minecraft **26.3** (`mc26.3-v1.1.1`). Kleines Update von 1.1.0: JAR austauschen und neu starten.
 
