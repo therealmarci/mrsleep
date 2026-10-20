@@ -64,6 +64,7 @@ join-blocked-info: "<prefix><gray>Info: sleeping is currently blocked by <gold><
 reason-exempt: "permission mrsleep.exempt"
 reason-spectator: "spectator mode"
 reason-sleeping-ignored: "ignored by another plugin, e.g. AFK"
+reason-admin-mode: "in admin mode (MRadmin)"
 
 # --- /nosleep ----------------------------------------------------------------
 nosleep-activated: "<prefix><green>You block sleeping for <white><nights></white>. Use <white>/nosleep</white> again to lift it."

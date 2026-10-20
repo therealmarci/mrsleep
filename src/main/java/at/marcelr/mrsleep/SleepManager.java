@@ -1,5 +1,6 @@
 package at.marcelr.mrsleep;
 
+import at.marcelr.mrsleep.api.MRadminAdminMode;
 import at.marcelr.mrsleep.util.DurationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -42,6 +43,7 @@ public final class SleepManager {
     /** world -> night key for which the "night begins" notice was already handled */
     private final Map<UUID, Long> nightAnnounced = new HashMap<>();
     private final SleepDisplay display;
+    private final MRadminAdminMode adminMode;
     private BukkitTask task;
 
     public record Status(int counted, int exempt, int sleeping, int deepSleeping, int needed) {
@@ -50,6 +52,7 @@ public final class SleepManager {
     public SleepManager(MRSleep plugin) {
         this.plugin = plugin;
         this.display = new SleepDisplay(plugin);
+        this.adminMode = new MRadminAdminMode(plugin.getLogger());
     }
 
     /** Removes all boss bars, e.g. after a reload switched the display mode. */
@@ -106,6 +109,9 @@ public final class SleepManager {
         }
         if (s.respectSleepingIgnored() && player.isSleepingIgnored()) {
             return "reason-sleeping-ignored";
+        }
+        if (s.ignoreAdminMode() && adminMode.active(player)) {
+            return "reason-admin-mode";
         }
         return null;
     }

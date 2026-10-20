@@ -139,6 +139,7 @@ checkSleep(world)
 excluded  = hasPermission("mrsleep.exempt")
           ∨ (ignore-spectators ∧ Zuschauermodus)
           ∨ (respect-sleeping-ignored ∧ isSleepingIgnored())
+          ∨ (ignore-admin-mode ∧ im Admin-Modus von MRadmin)
 counted   = Spieler der Welt, die nicht ausgeschlossen sind
 needed    = clamp( max(minimum-sleepers, ceil(counted × percentage / 100)), 1, counted )
 deep      = schlafende gezählte Spieler mit getSleepTicks() ≥ 100   (wie Vanilla)
