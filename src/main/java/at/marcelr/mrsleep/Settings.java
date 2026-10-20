@@ -16,6 +16,7 @@ public record Settings(
         int minimumSleepers,
         boolean ignoreSpectators,
         boolean respectSleepingIgnored,
+        boolean ignoreAdminMode,
         boolean clearWeather,
         DisplaySettings display,
         SleepMessage sleepMessage,
@@ -87,6 +88,7 @@ public record Settings(
                 Math.max(1, c.getInt("sleep.minimum-sleepers", 1)),
                 c.getBoolean("sleep.ignore-spectators", true),
                 c.getBoolean("sleep.respect-sleeping-ignored", true),
+                c.getBoolean("sleep.ignore-admin-mode", true),
                 c.getBoolean("sleep.clear-weather", true),
                 new DisplaySettings(
                         parseEnum(c.getString("sleep.display"), SleepDisplay.Mode.BOSSBAR, "sleep.display", log),

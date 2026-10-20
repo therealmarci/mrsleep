@@ -5,6 +5,11 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+### Neu
+- **MRadmin-Admin-Modus:** Spieler im Admin-Modus von MRadmin zählen nicht mehr zur Schlafquote
+  (`sleep.ignore-admin-mode`, Standard an). Braucht MRadmin mit `MRadminApi` (ab der nächsten Version), ohne MRadmin
+  ändert sich nichts.
+
 ## [1.1.2] - 2026-10-20
 Für Minecraft **26.3** (`mc26.3-v1.1.2`).
 

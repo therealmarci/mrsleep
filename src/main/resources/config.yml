@@ -42,6 +42,9 @@ sleep:
   # Spieler nicht mitzählen, die ein anderes Plugin als "sleeping ignored" markiert (z.B. AFK).
   respect-sleeping-ignored: true
 
+  # Spieler im Admin-Modus von MRadmin nicht mitzählen (nur wenn MRadmin installiert ist).
+  ignore-admin-mode: true
+
   # Wetter beim Überspringen der Nacht aufklaren lassen (wie Vanilla).
   clear-weather: true
 

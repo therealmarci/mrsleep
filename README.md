@@ -56,7 +56,7 @@ Spieler mit `mrsleep.exempt` werden **komplett aus der Rechnung genommen**.
 Vanilla kann das nicht. Dort zählen „ignorierte“ Spieler weiter zur Gesamtzahl. Deshalb rechnet MRsleep selbst:
 - Die Gamerule `playersSleepingPercentage` steht in verwalteten Welten auf `100`, und den Vanilla-Skip fängt das Plugin ab.
 - Die eigentliche Quote steht in `sleep.percentage`.
-- Ebenfalls nicht gezählt werden Zuschauer und Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert. Beides lässt sich abschalten.
+- Ebenfalls nicht gezählt werden Zuschauer, Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert, und Spieler im Admin-Modus von MRadmin. Alles lässt sich abschalten.
 - Wer nicht zählt, bekommt beim Hinlegen einen Hinweis mit dem Grund.
 - Wie in Vanilla wird die Nacht erst übersprungen, wenn die nötigen Spieler etwa 5 Sekunden im Bett liegen.
 
@@ -165,7 +165,7 @@ Die `plugins/MRsleep/config.yml` ist in Abschnitte gegliedert, die wichtigsten E
 
 | Abschnitt | Inhalt |
 |---|---|
-| **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer und AFK, Wetter, Anzeige (`display`: bossbar/actionbar/title/none), `sleep-message` |
+| **1) Schlafquote** `sleep.*` | `percentage` (50), `minimum-sleepers`, `disabled-worlds`, Zuschauer, AFK und MRadmin-Admin-Modus, Wetter, Anzeige (`display`: bossbar/actionbar/title/none), `sleep-message` |
 | **2) /nosleep** `nosleep.*` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
 | **3) Discord** `discord.*` | Webhook-URL, Events an/aus und Farben (Texte in der Sprachdatei) |
 | **4) Update-Check** `update-checker.*` | Quelle (GitHub Releases oder Modrinth), Intervall, Hinweis beim Betreten |
