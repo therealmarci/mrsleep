@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static at.marcelr.mrsleep.Messages.tag;
@@ -24,7 +25,7 @@ import static at.marcelr.mrsleep.Messages.tag;
  */
 public final class MRadminHook {
 
-    public static final int API_VERSION = 1;
+    public static final int API_VERSION = 4;
     private static final String PERM_GUI = "mrsleep.admin.gui";
     private static final int MAX_WORLDS = 3;
 
@@ -76,6 +77,17 @@ public final class MRadminHook {
             List<Component> lore = meta == null ? null : meta.lore();
             return lore == null ? List.of() : lore;
         });
+    }
+
+    /**
+     * Data and actions for MRadmin's web interface (hook version 4): {@code overview}, {@code player} (args: uuid), {@code flags},
+     * {@code action} (args: action = clear | release | bypass | removeBypass | resetCooldown | ban | unban, admin = name,
+     * uuid or world, duration, reason). Answers with plain values only (maps, lists, strings, numbers); an action
+     * answers null or an error key. MRadmin checks the permissions (mrsleep.admin.gui to look, mrsleep.admin.clear,
+     * .bypass and .ban to act) and calls this on the server thread.
+     */
+    public static Object web(String request, Map<String, Object> args) {
+        return WebData.handle(plugin(), request, args);
     }
 
     /** Opens the player's MRsleep menu; "back" returns to MRadmin. @return false without permission or offline */
