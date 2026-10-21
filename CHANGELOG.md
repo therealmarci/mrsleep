@@ -5,6 +5,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.1.4] - 2026-10-21
+
 ### Behoben
 - Update-Hinweis erschien doppelt im Chat, wenn man kurz nach einem Serverstart joint (Hinweis beim Betreten und
   erste Update-Prüfung). Jetzt höchstens einmal pro Minute.
