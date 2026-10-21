@@ -5,6 +5,10 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+### Behoben
+- Update-Hinweis erschien doppelt im Chat, wenn man kurz nach einem Serverstart joint (Hinweis beim Betreten und
+  erste Update-Prüfung). Jetzt höchstens einmal pro Minute.
+
 ## [1.1.3] - 2026-10-20
 Für Minecraft **26.3** (`mc26.3-v1.1.3`).
 
