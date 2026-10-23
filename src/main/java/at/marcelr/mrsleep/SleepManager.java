@@ -1,6 +1,7 @@
 package at.marcelr.mrsleep;
 
 import at.marcelr.mrsleep.api.MRadminAdminMode;
+import at.marcelr.mrsleep.api.MRpvpGame;
 import at.marcelr.mrsleep.util.DurationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -44,6 +45,7 @@ public final class SleepManager {
     private final Map<UUID, Long> nightAnnounced = new HashMap<>();
     private final SleepDisplay display;
     private final MRadminAdminMode adminMode;
+    private final MRpvpGame pvp;
     private BukkitTask task;
 
     public record Status(int counted, int exempt, int sleeping, int deepSleeping, int needed) {
@@ -53,6 +55,7 @@ public final class SleepManager {
         this.plugin = plugin;
         this.display = new SleepDisplay(plugin);
         this.adminMode = new MRadminAdminMode(plugin.getLogger());
+        this.pvp = new MRpvpGame(plugin.getLogger());
     }
 
     /** Removes all boss bars, e.g. after a reload switched the display mode. */
@@ -81,7 +84,9 @@ public final class SleepManager {
 
     public boolean isManaged(World world) {
         return world.getEnvironment() == World.Environment.NORMAL
-                && !plugin.settings().disabledWorlds().contains(world.getName().toLowerCase(Locale.ROOT));
+                && !plugin.settings().disabledWorlds().contains(world.getName().toLowerCase(Locale.ROOT))
+                // MRpvp's arena world has neither night nor beds - nothing to manage there.
+                && !pvp.isArenaWorld(world);
     }
 
     /** Disables vanilla night skipping in managed worlds, restores it in worlds no longer managed. */
@@ -112,6 +117,9 @@ public final class SleepManager {
         }
         if (s.ignoreAdminMode() && adminMode.active(player)) {
             return "reason-admin-mode";
+        }
+        if (s.ignorePvp() && pvp.inGame(player)) {
+            return "reason-pvp";
         }
         return null;
     }

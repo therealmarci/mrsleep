@@ -17,6 +17,7 @@ public record Settings(
         boolean ignoreSpectators,
         boolean respectSleepingIgnored,
         boolean ignoreAdminMode,
+        boolean ignorePvp,
         boolean clearWeather,
         DisplaySettings display,
         SleepMessage sleepMessage,
@@ -89,6 +90,7 @@ public record Settings(
                 c.getBoolean("sleep.ignore-spectators", true),
                 c.getBoolean("sleep.respect-sleeping-ignored", true),
                 c.getBoolean("sleep.ignore-admin-mode", true),
+                c.getBoolean("sleep.ignore-pvp", true),
                 c.getBoolean("sleep.clear-weather", true),
                 new DisplaySettings(
                         parseEnum(c.getString("sleep.display"), SleepDisplay.Mode.BOSSBAR, "sleep.display", log),

@@ -65,6 +65,7 @@ reason-exempt: "permission mrsleep.exempt"
 reason-spectator: "spectator mode"
 reason-sleeping-ignored: "ignored by another plugin, e.g. AFK"
 reason-admin-mode: "in admin mode (MRadmin)"
+reason-pvp: "in a duel (MRpvp)"
 
 # --- /nosleep ----------------------------------------------------------------
 nosleep-activated: "<prefix><green>You block sleeping for <white><nights></white>. Use <white>/nosleep</white> again to lift it."
