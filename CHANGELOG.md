@@ -5,6 +5,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.1.5] - 2026-10-23
+
 ### Neu
 - **MRpvp:** Spieler in einem Duell (auch im Arena-Editor und beim Zuschauen) zählen bei der Schlafquote nicht mit
   (Grund „im Duell“ in `/mrsleep status`), die Arena-Welt von MRpvp wird nie verwaltet. Abschaltbar mit
