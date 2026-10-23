@@ -56,7 +56,7 @@ Spieler mit `mrsleep.exempt` werden **komplett aus der Rechnung genommen**.
 Vanilla kann das nicht. Dort zählen „ignorierte“ Spieler weiter zur Gesamtzahl. Deshalb rechnet MRsleep selbst:
 - Die Gamerule `playersSleepingPercentage` steht in verwalteten Welten auf `100`, und den Vanilla-Skip fängt das Plugin ab.
 - Die eigentliche Quote steht in `sleep.percentage`.
-- Ebenfalls nicht gezählt werden Zuschauer, Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert, und Spieler im Admin-Modus von MRadmin. Alles lässt sich abschalten.
+- Ebenfalls nicht gezählt werden Zuschauer, Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert, Spieler im Admin-Modus von MRadmin und Spieler in einem Duell von MRpvp (die Arena-Welt von MRpvp wird nie verwaltet). Alles lässt sich abschalten.
 - Wer nicht zählt, bekommt beim Hinlegen einen Hinweis mit dem Grund.
 - Wie in Vanilla wird die Nacht erst übersprungen, wenn die nötigen Spieler etwa 5 Sekunden im Bett liegen.
 

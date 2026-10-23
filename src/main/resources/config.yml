@@ -15,7 +15,7 @@
 # ==============================================================================
 
 # Nicht ändern - wird für automatische Config-Updates verwendet.
-config-version: 6
+config-version: 7
 
 # Sprache aller Texte: de = Deutsch, en = English. Die Texte stehen in plugins/MRsleep/lang/<sprache>.yml
 # und können dort angepasst werden. Eigene Sprache: Datei kopieren (z.B. fr.yml), übersetzen, language: fr.
@@ -44,6 +44,10 @@ sleep:
 
   # Spieler im Admin-Modus von MRadmin nicht mitzählen (nur wenn MRadmin installiert ist).
   ignore-admin-mode: true
+
+  # Spieler in einem Duell von MRpvp nicht mitzählen (auch im Arena-Editor). Die Arena-Welt selbst wird nie
+  # verwaltet (nur wenn MRpvp installiert ist).
+  ignore-pvp: true
 
   # Wetter beim Überspringen der Nacht aufklaren lassen (wie Vanilla).
   clear-weather: true
