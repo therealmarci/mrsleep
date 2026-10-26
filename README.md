@@ -17,16 +17,17 @@ MRsleep ist ein Schlaf-Management-Plugin, das die Schlafmechanik auf Multiplayer
 ## Inhalt
 1. [Installation & Update](#installation--update)
 2. [Funktionen](#funktionen)
-3. [Admin-Menü](#admin-menü)
-4. [Befehle](#befehle)
-5. [Permissions](#permissions)
-6. [Konfiguration](#konfiguration)
-7. [Discord-Webhook](#discord-webhook)
-8. [Update-Prüfung](#update-prüfung)
-9. [LuckPerms-Beispiele](#luckperms-beispiele)
-10. [Häufige Fragen](#häufige-fragen)
-11. [Selbst bauen & Releases](#selbst-bauen--releases)
-12. [Lizenz](#lizenz)
+3. [Zusammenarbeit mit anderen Plugins](#zusammenarbeit-mit-anderen-plugins)
+4. [Admin-Menü](#admin-menü)
+5. [Befehle](#befehle)
+6. [Permissions](#permissions)
+7. [Konfiguration](#konfiguration)
+8. [Discord-Webhook](#discord-webhook)
+9. [Update-Prüfung](#update-prüfung)
+10. [LuckPerms-Beispiele](#luckperms-beispiele)
+11. [Häufige Fragen](#häufige-fragen)
+12. [Selbst bauen & Releases](#selbst-bauen--releases)
+13. [Lizenz](#lizenz)
 
 ---
 
@@ -56,7 +57,7 @@ Spieler mit `mrsleep.exempt` werden **komplett aus der Rechnung genommen**.
 Vanilla kann das nicht. Dort zählen „ignorierte“ Spieler weiter zur Gesamtzahl. Deshalb rechnet MRsleep selbst:
 - Die Gamerule `playersSleepingPercentage` steht in verwalteten Welten auf `100`, und den Vanilla-Skip fängt das Plugin ab.
 - Die eigentliche Quote steht in `sleep.percentage`.
-- Ebenfalls nicht gezählt werden Zuschauer, Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert, Spieler im Admin-Modus von MRadmin und Spieler in einem Duell von MRpvp (die Arena-Welt von MRpvp wird nie verwaltet). Alles lässt sich abschalten.
+- Ebenfalls nicht gezählt werden Zuschauer, Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert, Spieler im Admin-Modus von MRadmin und Spieler in einem Duell von MRpvp (die Arena-Welt von MRpvp wird nie verwaltet) - die beiden letzten nur mit MRadmin, siehe [Zusammenarbeit mit anderen Plugins](#zusammenarbeit-mit-anderen-plugins). Alles lässt sich abschalten.
 - Wer nicht zählt, bekommt beim Hinlegen einen Hinweis mit dem Grund.
 - Wie in Vanilla wird die Nacht erst übersprungen, wenn die nötigen Spieler etwa 5 Sekunden im Bett liegen.
 
@@ -91,6 +92,17 @@ Alle Texte lassen sich in der Sprachdatei ändern (siehe [Sprache & Texte](#spra
 - Hinweise, wenn eine Blockade abläuft, wenn jemand den Server während einer Blockade betritt, und wenn ein Admin einen Spieler sperrt, entsperrt oder seinen Cooldown ändert.
 
 ---
+
+## Zusammenarbeit mit anderen Plugins
+MRsleep läuft **allein** – kein anderes Plugin ist Pflicht. Die MR-Plugins sprechen **über MRadmin** miteinander
+(Modul-Schnittstelle): Ohne MRadmin bekommen sie voneinander nichts mit. Was welche Plugins braucht:
+
+| Funktion | Braucht |
+|---|---|
+| MRsleep im Dashboard und im Spieler-Menü, Seite **Schlaf** im Web, Hinweis auf `/nosleep`-Blockaden auf der Startseite | MRadmin |
+| Spieler im Admin-Modus zählen nicht zur Quote (`sleep.ignore-admin-mode`) | MRadmin |
+| Spieler im Duell (auch im Arena-Editor) zählen nicht (`sleep.ignore-pvp`), die Arena-Welt wird nie verwaltet | MRadmin + MRpvp |
+| Dummy-Spieler von MRchunks zählen nie | – (MRsleep erkennt sie selbst) |
 
 ## Admin-Menü
 `/mrsleep gui` öffnet eine Übersicht, die sich jede Sekunde selbst aktualisiert.

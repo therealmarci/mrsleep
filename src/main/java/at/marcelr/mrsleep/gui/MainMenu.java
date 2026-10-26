@@ -6,6 +6,7 @@ import at.marcelr.mrsleep.NoSleepManager;
 import at.marcelr.mrsleep.SleepManager;
 import at.marcelr.mrsleep.UpdateChecker;
 import at.marcelr.mrsleep.util.DurationUtil;
+import at.marcelr.mrsleep.util.Npcs;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -215,6 +216,9 @@ public final class MainMenu extends Menu {
     private List<Player> filteredPlayers() {
         List<Player> players = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (Npcs.is(player)) {
+                continue;
+            }
             boolean include = switch (filter) {
                 case ALL -> true;
                 case SLEEPING -> player.isSleeping();

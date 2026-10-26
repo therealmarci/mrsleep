@@ -46,7 +46,7 @@ sleep:
   ignore-admin-mode: true
 
   # Spieler in einem Duell von MRpvp nicht mitzählen (auch im Arena-Editor). Die Arena-Welt selbst wird nie
-  # verwaltet (nur wenn MRpvp installiert ist).
+  # verwaltet. Braucht MRpvp UND MRadmin (die Plugins sprechen über MRadmins Modul-Schnittstelle miteinander).
   ignore-pvp: true
 
   # Wetter beim Überspringen der Nacht aufklaren lassen (wie Vanilla).

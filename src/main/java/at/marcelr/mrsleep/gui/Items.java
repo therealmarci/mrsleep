@@ -5,7 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +26,7 @@ final class Items {
     }
 
     static Items head(Player owner) {
-        ItemStack head = new ItemStack(Material.PLAYER_HEAD);
-        head.editMeta(SkullMeta.class, meta -> meta.setPlayerProfile(owner.getPlayerProfile()));
-        return new Items(head);
+        return new Items(Heads.of(owner));
     }
 
     static ItemStack filler() {

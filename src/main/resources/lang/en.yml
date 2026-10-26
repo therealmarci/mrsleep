@@ -233,6 +233,8 @@ gui-phase-day: "☀ Day"
 # Summary on the MRsleep button in MRadmin's admin compass: one line per world (at most 3), then mradmin-summary.
 # Placeholders: <world> <sleeping> <needed> <phase> or <blocked> (players with active /nosleep) <bans>
 mradmin-summary-world: "<gray><world>: <white><sleeping></white>/<white><needed></white> sleeping <dark_gray>(<phase>)"
+# Hint on the start page of MRadmin's web interface (plain text). Placeholder: <count>
+web-alert-blocked: "<count> player(s) block sleeping with /nosleep"
 mradmin-summary:
   - "<gray>/nosleep active: <white><blocked></white> <dark_gray>|</dark_gray> <gray>Banned: <white><bans>"
 gui-phase-night: "☽ Night"

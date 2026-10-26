@@ -19,7 +19,7 @@ import java.util.UUID;
 
 /**
  * Plain data (maps, lists, strings, numbers) for MRadmin's web interface - no MRsleep or Bukkit types leave this
- * class. Called by {@link MRadminHook#web} on the server thread. MRadmin checks the permissions (MRsleep's own:
+ * class. Called by {@link MRadminModule} on the server thread. MRadmin checks the permissions (MRsleep's own:
  * mrsleep.admin.gui to look, .clear / .bypass / .ban for the actions) before it asks.
  * <pre>
  *  overview                                       worlds with sleep status and blocks, totals, settings

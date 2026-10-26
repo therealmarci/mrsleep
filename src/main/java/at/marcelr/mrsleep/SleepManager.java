@@ -1,8 +1,7 @@
 package at.marcelr.mrsleep;
 
-import at.marcelr.mrsleep.api.MRadminAdminMode;
-import at.marcelr.mrsleep.api.MRpvpGame;
 import at.marcelr.mrsleep.util.DurationUtil;
+import at.marcelr.mrsleep.util.Npcs;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRules;
@@ -44,8 +43,6 @@ public final class SleepManager {
     /** world -> night key for which the "night begins" notice was already handled */
     private final Map<UUID, Long> nightAnnounced = new HashMap<>();
     private final SleepDisplay display;
-    private final MRadminAdminMode adminMode;
-    private final MRpvpGame pvp;
     private BukkitTask task;
 
     public record Status(int counted, int exempt, int sleeping, int deepSleeping, int needed) {
@@ -54,8 +51,6 @@ public final class SleepManager {
     public SleepManager(MRSleep plugin) {
         this.plugin = plugin;
         this.display = new SleepDisplay(plugin);
-        this.adminMode = new MRadminAdminMode(plugin.getLogger());
-        this.pvp = new MRpvpGame(plugin.getLogger());
     }
 
     /** Removes all boss bars, e.g. after a reload switched the display mode. */
@@ -85,8 +80,8 @@ public final class SleepManager {
     public boolean isManaged(World world) {
         return world.getEnvironment() == World.Environment.NORMAL
                 && !plugin.settings().disabledWorlds().contains(world.getName().toLowerCase(Locale.ROOT))
-                // MRpvp's arena world has neither night nor beds - nothing to manage there.
-                && !pvp.isArenaWorld(world);
+                // A world of another plugin (MRpvp's arena world, through MRadmin) - nothing to manage there.
+                && !plugin.mradmin().reservedWorld(world);
     }
 
     /** Disables vanilla night skipping in managed worlds, restores it in worlds no longer managed. */
@@ -115,10 +110,10 @@ public final class SleepManager {
         if (s.respectSleepingIgnored() && player.isSleepingIgnored()) {
             return "reason-sleeping-ignored";
         }
-        if (s.ignoreAdminMode() && adminMode.active(player)) {
+        if (s.ignoreAdminMode() && plugin.mradmin().adminMode(player)) {
             return "reason-admin-mode";
         }
-        if (s.ignorePvp() && pvp.inGame(player)) {
+        if (s.ignorePvp() && plugin.mradmin().busyElsewhere(player)) {
             return "reason-pvp";
         }
         return null;
@@ -151,6 +146,9 @@ public final class SleepManager {
         int sleeping = 0;
         int deep = 0;
         for (Player player : world.getPlayers()) {
+            if (Npcs.is(player)) {
+                continue; // e.g. MRchunks' dummies: no players at all
+            }
             if (isExcluded(player)) {
                 exempt++;
                 continue;

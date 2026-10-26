@@ -1,5 +1,6 @@
 package at.marcelr.mrsleep;
 
+import at.marcelr.mrsleep.api.MRadminLink;
 import at.marcelr.mrsleep.command.MRSleepCommand;
 import at.marcelr.mrsleep.command.NoSleepCommand;
 import at.marcelr.mrsleep.gui.MenuListener;
@@ -25,12 +26,17 @@ public final class MRSleep extends JavaPlugin {
     private MenuListener menuListener;
     private NoSleepManager noSleep;
     private SleepManager sleep;
+    private MRadminLink mradmin;
 
     @Override
     public void onEnable() {
         ConfigUpdater.update(this);
         loadConfiguration();
 
+        // Optional: MRadmin (module API) - dashboard, player menu, web interface, admin mode for the quota.
+        mradmin = new MRadminLink(this);
+        getServer().getPluginManager().registerEvents(mradmin, this);
+        mradmin.connect();
         noSleep = new NoSleepManager(this);
         noSleep.load();
         sleep = new SleepManager(this);
@@ -127,5 +133,10 @@ public final class MRSleep extends JavaPlugin {
 
     public SleepManager sleep() {
         return sleep;
+    }
+
+    /** The optional connection to MRadmin. */
+    public MRadminLink mradmin() {
+        return mradmin;
     }
 }
