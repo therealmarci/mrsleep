@@ -29,7 +29,8 @@ public record Settings(
         boolean releaseOnQuit,
         boolean broadcast,
         UpdateSettings update,
-        GuiSettings gui
+        GuiSettings gui,
+        LimitSettings limits
 ) {
 
     /** Marker for a permanent ban in {@link GuiSettings#banDurations()}. */
@@ -52,6 +53,13 @@ public record Settings(
     /** Durations in ms; ban durations may contain {@link #PERMANENT}. */
     public record GuiSettings(int refreshTicks, List<Long> bypassDurations, List<Long> banDurations,
                               boolean sounds) {
+    }
+
+    /**
+     * Longest cooldown bypass and /nosleep ban (ms) the team may give: support with mrsleep.admin.bypass / .ban, staff
+     * with .bypass.staff / .ban.staff; .bypass.unlimited / .ban.unlimited have no limit (and may ban permanently).
+     */
+    public record LimitSettings(long supportBypass, long supportBan, long staffBypass, long staffBan) {
     }
 
     public static Settings from(FileConfiguration c, Logger log) {
@@ -108,7 +116,9 @@ public record Settings(
                 c.getBoolean("nosleep.release-on-quit", true),
                 c.getBoolean("nosleep.broadcast", true),
                 update,
-                gui
+                gui,
+                new LimitSettings(limit(c, "limits.support.bypass", "30m", log), limit(c, "limits.support.ban", "1d", log),
+                        limit(c, "limits.staff.bypass", "1d", log), limit(c, "limits.staff.ban", "1d", log))
         );
     }
 
@@ -123,6 +133,16 @@ public record Settings(
             log.warning("Invalid value '" + raw + "' for " + path + ", using " + fallback.name().toLowerCase(Locale.ROOT) + ".");
             return fallback;
         }
+    }
+
+    private static long limit(FileConfiguration c, String path, String fallback, Logger log) {
+        String raw = c.getString(path, fallback);
+        long parsed = DurationUtil.parse(raw);
+        if (parsed <= 0) {
+            log.warning("Invalid duration '" + raw + "' for " + path + ", using " + fallback + ".");
+            parsed = DurationUtil.parse(fallback);
+        }
+        return parsed;
     }
 
     /** Parses exactly three quick-select durations, falling back to the defaults for invalid entries. */

@@ -103,6 +103,11 @@ final class WebData {
         Map<String, Object> p = player(plugin, id);
         p.put("bypassDurations", plugin.settings().gui().bypassDurations());
         p.put("banDurations", plugin.settings().gui().banDurations());
+        // Which level (action) each quick choice needs: "" up to limits.support, "Staff", "Unlimited".
+        p.put("bypassLevels", plugin.settings().gui().bypassDurations().stream()
+                .map(d -> level(plugin.adminActions().bypassPermission(d))).toList());
+        p.put("banLevels", plugin.settings().gui().banDurations().stream()
+                .map(d -> level(plugin.adminActions().banPermission(d))).toList());
         p.put("cooldownTotal", plugin.settings().cooldownMillis());
         return p;
     }
@@ -183,10 +188,14 @@ final class WebData {
         long duration = args.get("duration") instanceof Number n ? n.longValue() : 0;
         return switch (action) {
             case "release" -> actions.release(admin, null, target) ? null : "not-blocking";
-            case "bypass" -> {
+            case "bypass", "bypassStaff", "bypassUnlimited" -> {
                 // Only the durations the menu offers (sleep.gui in MRsleep's config).
                 if (!gui.bypassDurations().contains(duration)) {
                     yield "invalid-duration";
+                }
+                // MRadmin checked the permission of the action; the duration must fit it (limits in config.yml).
+                if (!within(action, "bypass", actions.bypassPermission(duration))) {
+                    yield "limit-exceeded";
                 }
                 actions.bypass(admin, null, target, duration);
                 yield null;
@@ -196,9 +205,12 @@ final class WebData {
                 actions.resetCooldown(admin, null, target);
                 yield null;
             }
-            case "ban" -> {
+            case "ban", "banStaff", "banUnlimited" -> {
                 if (!gui.banDurations().contains(duration)) {
                     yield "invalid-duration";
+                }
+                if (!within(action, "ban", actions.banPermission(duration))) {
+                    yield "limit-exceeded";
                 }
                 String reason = args.get("reason") instanceof String r ? r.strip() : "";
                 if (reason.length() > MAX_REASON) {
@@ -210,6 +222,20 @@ final class WebData {
             case "unban" -> actions.unban(admin, null, target) ? null : "not-banned";
             default -> "unknown-action";
         };
+    }
+
+    private static String level(String permission) {
+        return permission.endsWith(".unlimited") ? "Unlimited" : permission.endsWith(".staff") ? "Staff" : "";
+    }
+
+    /**
+     * Whether the web action's level ("bypass", "bypassStaff", "bypassUnlimited" - MRadmin checked its permission)
+     * covers the permission the duration needs.
+     */
+    private static boolean within(String action, String base, String needed) {
+        int level = action.equals(base) ? 0 : action.equals(base + "Staff") ? 1 : 2;
+        int need = needed.endsWith(".unlimited") ? 2 : needed.endsWith(".staff") ? 1 : 0;
+        return need <= level;
     }
 
     /** A player who has been on the server (or is online); null for anything else. */

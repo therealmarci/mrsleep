@@ -111,7 +111,7 @@ public final class MRSleepCommand implements TabExecutor {
                 }
             }
             case "resetcooldown" -> {
-                if (check(sender, PERM_BYPASS)) {
+                if (check(sender, AdminActions.PERM_RESET)) {
                     withPlayer(sender, args, 1, target -> actions().resetCooldown(sender, target));
                 }
             }
@@ -412,7 +412,7 @@ public final class MRSleepCommand implements TabExecutor {
     }
 
     private static boolean hasAnyAdminPermission(CommandSender sender) {
-        for (String permission : List.of(PERM_GUI, PERM_RELOAD, PERM_STATUS, PERM_CLEAR, PERM_BYPASS, PERM_BAN, PERM_DISCORD)) {
+        for (String permission : List.of(PERM_GUI, PERM_RELOAD, PERM_STATUS, PERM_CLEAR, PERM_BYPASS, PERM_BAN, AdminActions.PERM_RESET, PERM_DISCORD)) {
             if (sender.hasPermission(permission)) {
                 return true;
             }
@@ -439,7 +439,8 @@ public final class MRSleepCommand implements TabExecutor {
             addIf(sender, PERM_GUI, options, "gui");
             addIf(sender, PERM_STATUS, options, "status", "debug");
             addIf(sender, PERM_CLEAR, options, "clear", "release");
-            addIf(sender, PERM_BYPASS, options, "bypass", "resetcooldown");
+            addIf(sender, PERM_BYPASS, options, "bypass");
+            addIf(sender, AdminActions.PERM_RESET, options, "resetcooldown");
             addIf(sender, PERM_BAN, options, "ban", "unban", "bans");
             addIf(sender, PERM_DISCORD, options, "discord");
             addIf(sender, PERM_RELOAD, options, "reload");

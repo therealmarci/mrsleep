@@ -5,6 +5,7 @@ import at.marcelr.mradmin.api.MRadminService;
 import at.marcelr.mradmin.api.WebAlert;
 import at.marcelr.mradmin.api.WebModule;
 import at.marcelr.mradmin.api.WebUser;
+import at.marcelr.mrsleep.AdminActions;
 import at.marcelr.mrsleep.MRSleep;
 import at.marcelr.mrsleep.SleepManager;
 import at.marcelr.mrsleep.gui.PlayerHead;
@@ -38,11 +39,17 @@ final class MRadminModule implements AdminModule, WebModule {
     private static final String PERM_GUI = "mrsleep.admin.gui";
     private static final int MAX_WORLDS = 3;
 
+    /** The bypass and ban levels: the web sends the action of the level the duration needs (limits in config.yml). */
     private static final Map<String, String> PERMISSIONS = Map.of(
-            "clear", "mrsleep.admin.clear", "bypass", "mrsleep.admin.bypass", "ban", "mrsleep.admin.ban");
-    private static final Map<String, String> ACTIONS = Map.of(
-            "clear", "clear", "release", "clear", "bypass", "bypass", "removeBypass", "bypass",
-            "resetCooldown", "bypass", "ban", "ban", "unban", "ban");
+            "clear", "mrsleep.admin.clear", "bypass", AdminActions.PERM_BYPASS, "ban", AdminActions.PERM_BAN,
+            "bypassStaff", AdminActions.PERM_BYPASS_STAFF, "bypassUnlimited", AdminActions.PERM_BYPASS_UNLIMITED,
+            "banStaff", AdminActions.PERM_BAN_STAFF, "banUnlimited", AdminActions.PERM_BAN_UNLIMITED,
+            "reset", AdminActions.PERM_RESET);
+    private static final Map<String, String> ACTIONS = Map.ofEntries(
+            Map.entry("clear", "clear"), Map.entry("release", "clear"), Map.entry("bypass", "bypass"),
+            Map.entry("bypassStaff", "bypassStaff"), Map.entry("bypassUnlimited", "bypassUnlimited"),
+            Map.entry("removeBypass", "bypass"), Map.entry("resetCooldown", "reset"), Map.entry("ban", "ban"),
+            Map.entry("banStaff", "banStaff"), Map.entry("banUnlimited", "banUnlimited"), Map.entry("unban", "ban"));
 
     private final MRSleep plugin;
 
@@ -143,6 +150,16 @@ final class MRadminModule implements AdminModule, WebModule {
             List<Component> lore = meta == null ? null : meta.lore();
             return lore == null ? List.of() : lore;
         });
+    }
+
+    @Override
+    public boolean openMenu(Player viewer, Runnable back) {
+        if (!viewer.hasPermission(PERM_GUI)) {
+            plugin.messages().send(viewer, "no-permission");
+            return false;
+        }
+        plugin.messages().run(viewer, () -> new at.marcelr.mrsleep.gui.MainMenu(plugin, viewer).open());
+        return true;
     }
 
     @Override
