@@ -10,6 +10,7 @@ import at.marcelr.mrsleep.SleepManager;
 import at.marcelr.mrsleep.UpdateChecker;
 import at.marcelr.mrsleep.gui.MainMenu;
 import at.marcelr.mrsleep.util.DurationUtil;
+import at.marcelr.mrsleep.util.Npcs;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -150,7 +151,8 @@ public final class MRSleepCommand implements TabExecutor {
         Runnable links = () -> {
             sender.sendMessage(Component.empty());
             messages().send(sender, "version-links",
-                    tag("modrinth", link("Modrinth", updates.modrinthPage())),
+                    tag("website", link("Website", updates.websitePage())),
+                    tag("modrinth", link("Website", updates.websitePage())),
                     tag("github", link("GitHub", updates.githubPage())));
         };
         if (plugin.settings().update().enabled()) {
@@ -225,6 +227,9 @@ public final class MRSleepCommand implements TabExecutor {
                     tag("deep", status.deepSleeping()),
                     tag("needed", status.needed()));
             for (Player player : world.getPlayers()) {
+                if (Npcs.is(player)) {
+                    continue;
+                }
                 String reason = plugin.sleep().exclusionReason(player);
                 messages.send(sender, "debug-player",
                         tag("player", player.getName()),
@@ -499,7 +504,9 @@ public final class MRSleepCommand implements TabExecutor {
 
     private static void onlineNames(List<String> target) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            target.add(player.getName());
+            if (!Npcs.is(player)) {
+                target.add(player.getName());
+            }
         }
     }
 }

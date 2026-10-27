@@ -5,6 +5,30 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.2.0] - 2026-10-27
+
+### Geändert – Lizenz, Doku, Website
+- **MRtechnology Lizenz 1.0:** Eine einheitliche Lizenz für alle MRtechnology-Projekte. Ausdrücklich erlaubt ist jetzt auch die gewerbliche Nutzung, Weiterveröffentlichen und Verkaufen bleiben verboten, die Nutzung erfolgt auf eigenes Risiko.
+- **README überarbeitet:** Schnellstart, Auf einen Blick, Häufige Fragen, Kurzlinks zur Website (Download, Anleitung, Fehler melden).
+- **Links zur Website** [mrtechnology.marcelr.at](https://mrtechnology.marcelr.at): Update-Hinweise in Konsole und Spiel führen zur Download-Seite, `/mrsleep version` zeigt „Website | GitHub“ (statt des Modrinth-Links), `website` in der plugin.yml zeigt auf die Anleitung. Der Text `version-links` wird in den mitgelieferten Sprachdateien automatisch erneuert.
+
+### Geändert
+- **MRadmin über die Modul-API:** Das Plugin meldet sich als Modul bei MRadmin an (statt der alten
+  `MRadminHook`-Klasse). Admin-Modus für die Schlafquote kommt jetzt ebenfalls über die Modul-API. Braucht MRadmin mit Modul-API; ohne MRadmin ändert sich nichts.
+- **Verbindung zu anderen MR-Plugins nur noch über MRadmin:** Spieler im Duell nicht mitzählen und die
+  Arena-Welt nicht verwalten (`sleep.ignore-pvp`) funktioniert jetzt nur mit MRpvp **und** MRadmin (vorher eigene
+  Schnittstelle zu MRpvp). Den Hinweis zu `/nosleep`-Blockaden auf der Startseite von MRadmins Weboberfläche
+  liefert MRsleep selbst (`web-alert-blocked`). Die README hat einen Abschnitt „Zusammenarbeit mit anderen Plugins“.
+
+### Neu
+- **NPCs zählen nicht:** Dummy-Spieler von MRchunks und andere NPCs (Metadata `NPC`, z.B. Citizens) werden komplett
+  ignoriert - weder in der Schlafquote noch als „ausgenommen“, nicht in `/mrsleep debug`, im Menü oder bei der
+  Tab-Vervollständigung. Eine eigene Permission-Gruppe für sie ist nicht nötig.
+
+### Behoben
+- Menüs mit Spielerköpfen fragten jede Sekunde erneut bei Mojang nach dem Skin (HTTP 429 im Log, besonders im
+  Offline-Mode). Köpfe werden jetzt einmal nachgeschlagen und 10 Minuten zwischengespeichert.
+
 ## [1.1.5] - 2026-10-23
 
 ### Neu

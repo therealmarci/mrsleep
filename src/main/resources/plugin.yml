@@ -2,8 +2,9 @@ name: MRsleep
 version: '${version}'
 main: at.marcelr.mrsleep.MRSleep
 api-version: '${mcVersion}'
+softdepend: [MRadmin]
 author: _therealmarci
-website: https://modrinth.com/plugin/${modrinthProjectId}
+website: ${website}/docs/${websiteSlug}/
 description: Verbesserte Schlafquote mit Ausnahmen, /nosleep, Admin-Menü und Discord-Logs.
 
 commands:
