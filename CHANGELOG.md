@@ -5,6 +5,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.2.1] - 2026-10-27
+
 ### Neu
 - **Jeder Spieler in seiner Sprache:** Chat, Anzeige (Bossbar, Actionbar, Titel), Menüs und Hinweise richten sich jetzt nach der Sprache, die der Spieler in Minecraft eingestellt hat (`language: auto`, neuer Standard): Deutsch (auch Österreich/Schweiz) bekommt Deutsch, Englisch bekommt Englisch, alle anderen `fallback-language` (Standard `en`). `language: de` oder `en` stellt weiterhin eine Sprache für alle ein.
 - **Server-Sprache (`server-language`):** Texte ohne einzelnen Empfänger wie die Discord-Logs kommen in dieser Sprache (Standard `en`).
