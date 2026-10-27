@@ -71,6 +71,7 @@ Vanilla kann Spieler nicht wirklich aus der Rechnung nehmen - „ignorierte“ S
 
 ### Anzeige & Chat-Hinweise
 - **Fortschritt** als Bossbar (Standard), Actionbar, Titel oder gar nicht (`sleep.display`). Die Bossbar wird vom Chat im Bett nicht verdeckt.
+- Die eingebaute Minecraft-Anzeige „x/y Spieler schlafen“ in der Actionbar zählt alle Spieler und kennt die Regeln von MRsleep nicht. MRsleep ersetzt sie deshalb sofort durch den eigenen Fortschritt (bei `display: actionbar`) bzw. blendet sie aus (`sleep.hide-vanilla-message`, Standard an).
 - **Schlaf-Nachricht** „Alex hat sich schlafen gelegt (1/2)“ an die Welt, den ganzen Server oder niemanden (`sleep.sleep-message`).
 - Hinweise, wenn die Nacht blockiert ist, wenn sie übersprungen wurde („Guten Morgen!“), wenn eine Blockade abläuft und wenn ein Admin etwas ändert.
 - Jeder Text steht in der Sprachdatei und lässt sich ändern oder mit `""` abschalten.
@@ -150,7 +151,7 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 
 | Abschnitt | Die wichtigsten Einstellungen |
 |---|---|
-| `sleep` | `percentage` (Quote, Standard 50), `minimum-sleepers`, `disabled-worlds`, `display` (bossbar/actionbar/title/none), `sleep-message`, wer nicht zählt |
+| `sleep` | `percentage` (Quote, Standard 50), `minimum-sleepers`, `disabled-worlds`, `display` (bossbar/actionbar/title/none), `hide-vanilla-message`, `sleep-message`, wer nicht zählt |
 | `nosleep` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
 | `discord` | Webhook-URL, welche Ereignisse gesendet werden, Farben |
 | `update-checker` | an/aus, Prüfintervall, Hinweis beim Betreten |

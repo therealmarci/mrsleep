@@ -130,6 +130,26 @@ public final class SleepManager {
         }
     }
 
+    /**
+     * Minecraft announces "x/y players sleeping" in the action bar of everyone in the world whenever the number of
+     * sleepers changes - with the gamerule MRsleep sets, y is simply everyone, which is wrong. There is no API to stop
+     * it, so right after it (next tick) MRsleep puts its own progress there (display: actionbar) or clears it.
+     */
+    public void hideVanillaMessage(World world) {
+        if (!plugin.settings().display().hideVanilla() || !isManaged(world)) {
+            return;
+        }
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            boolean ownBar = plugin.settings().display().mode() == SleepDisplay.Mode.ACTIONBAR
+                    && !plugin.noSleep().isBlocked(world) && status(world).sleeping() > 0;
+            if (ownBar) {
+                showProgress(world);
+            } else {
+                world.getPlayers().forEach(player -> player.sendActionBar(net.kyori.adventure.text.Component.empty()));
+            }
+        });
+    }
+
     /** Sleeping is possible at night and during thunderstorms - that is when a /nosleep block takes effect. */
     public static boolean sleepPossible(World world) {
         return isNight(world) || world.isThundering();

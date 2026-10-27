@@ -7,6 +7,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.TimeSkipEvent;
@@ -71,6 +74,7 @@ public final class SleepListener implements Listener {
         }
         Player player = event.getPlayer();
         World world = player.getWorld();
+        plugin.sleep().hideVanillaMessage(world);
         if (!plugin.sleep().isManaged(world) || plugin.noSleep().isBlocked(world)) {
             return;
         }
@@ -101,9 +105,28 @@ public final class SleepListener implements Listener {
         });
     }
 
+    // Every change of the sleepers makes Minecraft announce "x/y players sleeping" - see SleepManager#hideVanillaMessage.
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBedLeave(PlayerBedLeaveEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getFrom());
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onGameModeChange(PlayerGameModeChangeEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
+    }
+
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        plugin.sleep().hideVanillaMessage(player.getWorld());
         // A little later, so the notice is not buried under join messages.
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) {
@@ -125,6 +148,7 @@ public final class SleepListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
         if (!plugin.settings().releaseOnQuit()) {
             return;
         }

@@ -15,7 +15,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 8
+config-version: 9
 
 # Language of the texts (chat, menus, display). The texts are in plugins/MRsleep/lang/<language>.yml.
 #   auto = every player gets the language set in their Minecraft client:
@@ -72,6 +72,9 @@ sleep:
   # Boss bar colours: pink, blue, red, green, yellow, purple, white
   bossbar-color: yellow
   bossbar-blocked-color: red
+  # Hide Minecraft's own "x/y players sleeping" in the action bar - it counts everyone and does not know the rules
+  # of MRsleep. It is replaced right away by MRsleep's progress (display: actionbar) or cleared.
+  hide-vanilla-message: true
 
   # Chat message "<player> went to bed (1/2)":
   #   world  = to all players in the same world

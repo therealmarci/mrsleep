@@ -37,7 +37,9 @@ public record Settings(
 
     private static final long DEFAULT_COOLDOWN = 15 * 60_000L;
 
-    public record DisplaySettings(SleepDisplay.Mode mode, BossBar.Color color, BossBar.Color blockedColor) {
+    /** @param hideVanilla replace Minecraft's own "x/y players sleeping" in the action bar (sleep.hide-vanilla-message) */
+    public record DisplaySettings(SleepDisplay.Mode mode, BossBar.Color color, BossBar.Color blockedColor,
+                                  boolean hideVanilla) {
     }
 
     /** Who receives "<player> hat sich schlafen gelegt". */
@@ -95,7 +97,8 @@ public record Settings(
                 new DisplaySettings(
                         parseEnum(c.getString("sleep.display"), SleepDisplay.Mode.BOSSBAR, "sleep.display", log),
                         parseEnum(c.getString("sleep.bossbar-color"), BossBar.Color.YELLOW, "sleep.bossbar-color", log),
-                        parseEnum(c.getString("sleep.bossbar-blocked-color"), BossBar.Color.RED, "sleep.bossbar-blocked-color", log)),
+                        parseEnum(c.getString("sleep.bossbar-blocked-color"), BossBar.Color.RED, "sleep.bossbar-blocked-color", log),
+                        c.getBoolean("sleep.hide-vanilla-message", true)),
                 parseEnum(c.getString("sleep.sleep-message"), SleepMessage.WORLD, "sleep.sleep-message", log),
                 c.getBoolean("sleep.announce-skip", true),
                 disabled,

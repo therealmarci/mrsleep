@@ -12,6 +12,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - **Bossbar pro Spieler:** Jeder Spieler hat seine eigene Fortschritts-Bossbar, damit sie in seiner Sprache erscheint.
 
 ### Behoben & geändert
+- **Minecraft-Anzeige „x/y Spieler schlafen“ ausgeblendet:** Die eingebaute Anzeige in der Actionbar zählte alle Spieler und passte nicht zur Quote von MRsleep. MRsleep ersetzt sie jetzt sofort durch den eigenen Fortschritt (bei `sleep.display: actionbar`) bzw. blendet sie aus. Abschaltbar mit `sleep.hide-vanilla-message: false`.
 - **Update-Hinweis bei `/mrsleep version` doppelt:** Fand die Abfrage eine neue Version, kam zuerst der Admin-Hinweis „Für MRsleep gibt es ein Update“ und direkt danach „Neue Version verfügbar“. Jetzt kommt nur noch die Antwort auf den Befehl. Die Download-Links führen auf die Website (https://mrtechnology.marcelr.at/download/mrsleep/).
 - **Config und plugin.yml auf Englisch:** Alle Kommentare in der `config.yml` und die Beschreibungen der Befehle und Permissions in der `plugin.yml` sind jetzt englisch. Bestehende Configs bekommen die neuen Kommentare beim nächsten Start automatisch (config-version 8, Sicherung als `config.v<alt>.backup.yml`), alle Einstellungen bleiben erhalten.
 
