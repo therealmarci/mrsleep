@@ -1,75 +1,75 @@
 ﻿# ==============================================================================
-#   MRsleep - Konfiguration
+#   MRsleep - Configuration
 # ==============================================================================
-#   Nach Änderungen:  /mrsleep reload   (kein Neustart nötig)
-#   Admin-Menü:       /mrsleep gui
-#   Hilfe & Doku:     README.md im Projekt bzw. auf GitHub / Modrinth
+#   After changes:   /mrsleep reload   (no restart needed)
+#   Admin menu:      /mrsleep gui
+#   Help & docs:     https://mrtechnology.marcelr.at/docs/mrsleep/
 #
-#   Zeitangaben: d = Tage, h = Stunden, m = Minuten, s = Sekunden
-#                z.B. "15m", "1h30m", "2d". Eine reine Zahl zählt als Minuten.
+#   Durations: d = days, h = hours, m = minutes, s = seconds
+#              e.g. "15m", "1h30m", "2d". A plain number counts as minutes.
 #
-#   Texte & Nachrichten: lang/de.yml bzw. lang/en.yml (Sprache siehe "language" unten).
+#   Texts & messages: lang/de.yml or lang/en.yml (see "language" below).
 #
-#   Diese Datei ist UTF-8-kodiert. Falls Umlaute (ä, ö, ü) falsch angezeigt werden,
-#   im Editor die Kodierung auf "UTF-8" stellen.
+#   This file is UTF-8 encoded. If special characters (ä, ö, ü) look wrong,
+#   set the encoding in your editor to "UTF-8".
 # ==============================================================================
 
-# Nicht ändern - wird für automatische Config-Updates verwendet.
-config-version: 7
+# Do not change - used for automatic config updates.
+config-version: 8
 
-# Sprache aller Texte: de = Deutsch, en = English. Die Texte stehen in plugins/MRsleep/lang/<sprache>.yml
-# und können dort angepasst werden. Eigene Sprache: Datei kopieren (z.B. fr.yml), übersetzen, language: fr.
+# Language of all texts: de = German, en = English. The texts are in plugins/MRsleep/lang/<language>.yml
+# and can be edited there. Own language: copy a file (e.g. as fr.yml), translate it, set language: fr.
 language: de
 
 
 # ------------------------------------------------------------------------------
-#   1) SCHLAFQUOTE
+#   1) SLEEP QUOTA
 # ------------------------------------------------------------------------------
 sleep:
-  # Prozent der zählenden Spieler einer Welt, die schlafen müssen (0-100).
-  # Spieler mit der Permission "mrsleep.exempt" zählen nicht mit (z.B. Cam-/Bot-Accounts).
+  # Percentage of the counted players in a world who have to sleep (0-100).
+  # Players with the permission "mrsleep.exempt" are not counted (e.g. cam or bot accounts).
   percentage: 50
 
-  # Mindestanzahl schlafender Spieler (nie mehr als die Anzahl zählender Spieler).
+  # Minimum number of sleeping players (never more than the number of counted players).
   minimum-sleepers: 1
 
-  # Welten, in denen MRsleep nicht eingreift (Nether/End sind immer ausgenommen).
+  # Worlds MRsleep leaves alone (the Nether and the End are always excluded).
   disabled-worlds: []
 
-  # Spieler im Zuschauermodus nicht mitzählen (wie Vanilla).
+  # Do not count players in spectator mode (like vanilla).
   ignore-spectators: true
 
-  # Spieler nicht mitzählen, die ein anderes Plugin als "sleeping ignored" markiert (z.B. AFK).
+  # Do not count players another plugin marks as "sleeping ignored" (e.g. AFK).
   respect-sleeping-ignored: true
 
-  # Spieler im Admin-Modus von MRadmin nicht mitzählen (nur wenn MRadmin installiert ist).
+  # Do not count players in MRadmin's admin mode (only when MRadmin is installed).
   ignore-admin-mode: true
 
-  # Spieler in einem Duell von MRpvp nicht mitzählen (auch im Arena-Editor). Die Arena-Welt selbst wird nie
-  # verwaltet. Braucht MRpvp UND MRadmin (die Plugins sprechen über MRadmins Modul-Schnittstelle miteinander).
+  # Do not count players in an MRpvp duel (also in the arena editor). The arena world itself is never
+  # managed. Needs MRpvp AND MRadmin (the plugins talk to each other through MRadmin's module interface).
   ignore-pvp: true
 
-  # Wetter beim Überspringen der Nacht aufklaren lassen (wie Vanilla).
+  # Clear the weather when the night is skipped (like vanilla).
   clear-weather: true
 
-  # Wo der Fortschritt ("1/2 Spieler schlafen") bzw. eine Blockade angezeigt wird:
-  #   bossbar   = Leiste oben am Bildschirm mit Fortschrittsbalken (empfohlen - wird vom
-  #               Chat-Fenster, das sich im Bett öffnet, nicht verdeckt)
-  #   actionbar = über der Hotbar (wird im Bett vom Chat-Fenster verdeckt)
-  #   title     = Untertitel in der Bildschirmmitte
-  #   none      = keine Anzeige
+  # Where the progress ("1/2 players sleeping") or a block is shown:
+  #   bossbar   = bar at the top of the screen with a progress bar (recommended - not hidden by
+  #               the chat window that opens in bed)
+  #   actionbar = above the hotbar (hidden by the chat window while in bed)
+  #   title     = subtitle in the middle of the screen
+  #   none      = nothing
   display: bossbar
-  # Farben der Bossbar: pink, blue, red, green, yellow, purple, white
+  # Boss bar colours: pink, blue, red, green, yellow, purple, white
   bossbar-color: yellow
   bossbar-blocked-color: red
 
-  # Chat-Meldung "<Spieler> hat sich schlafen gelegt (1/2)":
-  #   world  = an alle Spieler in derselben Welt
-  #   server = an alle Spieler auf dem Server
-  #   none   = keine Meldung
+  # Chat message "<player> went to bed (1/2)":
+  #   world  = to all players in the same world
+  #   server = to all players on the server
+  #   none   = no message
   sleep-message: world
 
-  # Chat-Nachricht an die Welt, wenn die Nacht übersprungen wurde.
+  # Chat message to the world when the night was skipped.
   announce-skip: true
 
 
@@ -77,46 +77,46 @@ sleep:
 #   2) /NOSLEEP
 # ------------------------------------------------------------------------------
 nosleep:
-  # Cooldown zwischen zwei Blockaden pro Spieler.
-  # Er startet erst, wenn die blockierte Nacht anbricht (ab da kann man schlafen, auch bei Gewitter).
-  # Wird tagsüber blockiert und vor Nachtbeginn wieder aufgehoben, entsteht kein Cooldown.
-  # Aufheben in der Nacht ist jederzeit möglich, der Cooldown läuft dann aber weiter.
-  # Ausgenommen: Permission "mrsleep.nosleep.nocooldown" oder ein Admin-Bypass.
+  # Cooldown between two blocks per player.
+  # It only starts when the blocked night begins (from then on you can sleep, also during thunderstorms).
+  # Blocking during the day and cancelling before nightfall causes no cooldown.
+  # Cancelling during the night is always possible, but the cooldown keeps running.
+  # Exempt: permission "mrsleep.nosleep.nocooldown" or an admin bypass.
   cooldown: 15m
 
-  # Wie viele Nächte ein Spieler mit "/nosleep <anzahl>" höchstens auf einmal blockieren darf.
+  # How many nights a player may block at once with "/nosleep <number>".
   max-nights: 3
 
-  # true  = In einer blockierten Nacht kann man sich gar nicht erst hinlegen
-  #         (dann wird auch kein Respawnpunkt gesetzt).
-  # false = Man kann sich hinlegen, die Nacht wird aber nicht übersprungen.
+  # true  = In a blocked night you cannot get into bed at all
+  #         (so no respawn point is set either).
+  # false = You can get into bed, but the night is not skipped.
   prevent-bed-enter: false
 
-  # Blockade eines Spielers aufheben, wenn er den Server verlässt.
+  # Cancel a player's block when they leave the server.
   release-on-quit: true
 
-  # Alle Spieler der Welt informieren, wenn jemand /nosleep nutzt oder aufhebt.
+  # Tell all players in the world when someone uses or cancels /nosleep.
   broadcast: true
 
 
 # ------------------------------------------------------------------------------
-#   3) DISCORD-LOGS
+#   3) DISCORD LOGS
 # ------------------------------------------------------------------------------
-# Webhook anlegen: Discord-Kanal -> Kanal bearbeiten -> Integrationen -> Webhooks
-#                  -> Neuer Webhook -> Webhook-URL kopieren.
-# Die Texte der Events stehen in der Sprachdatei (lang/<sprache>.yml, Abschnitt discord).
-# Ein Event mit "enabled: false" oder leerem Text wird nicht gesendet.
-# Funktioniert es nicht? -> /mrsleep discord zeigt den Status, /mrsleep discord test schickt eine Testnachricht.
+# Create a webhook: Discord channel -> Edit Channel -> Integrations -> Webhooks
+#                   -> New Webhook -> Copy Webhook URL.
+# The texts of the events are in the language file (lang/<language>.yml, section discord).
+# An event with "enabled: false" or an empty text is not sent.
+# Not working? -> /mrsleep discord shows the status, /mrsleep discord test sends a test message.
 discord:
   enabled: false
-  # Komplette URL in Anführungszeichen, z.B. "https://discord.com/api/webhooks/123456/abcdef"
+  # Full URL in quotes, e.g. "https://discord.com/api/webhooks/123456/abcdef"
   webhook-url: ""
-  # Name und Avatar des Webhooks (leer = Einstellungen aus Discord).
+  # Name and avatar of the webhook (empty = settings from Discord).
   username: "MRsleep"
   avatar-url: ""
-  # true = farbige Embeds, false = einfache Textnachrichten.
+  # true = coloured embeds, false = plain text messages.
   use-embeds: true
-  # Fußzeile der Embeds, z.B. der Servername (leer = keine).
+  # Footer of the embeds, e.g. the server name (empty = none).
   footer: "Minecraft-Server"
   events:
     nosleep-activated:
@@ -167,31 +167,31 @@ discord:
 
 
 # ------------------------------------------------------------------------------
-#   4) UPDATE-CHECK
+#   4) UPDATE CHECK
 # ------------------------------------------------------------------------------
 update-checker:
-  # Beim Start und danach regelmäßig nach neuen Versionen suchen.
-  # Ist eine neuere Version verfügbar, erscheint ein Hinweis in der Konsole.
+  # Look for new versions on startup and regularly afterwards.
+  # If a newer version is available, a notice appears in the console.
   enabled: true
-  # Quelle: "github" (GitHub Releases, Standard) oder "modrinth"
+  # Source: "github" (GitHub Releases, default) or "modrinth"
   source: github
-  # Auch Beta-/Alpha-Versionen melden. Läuft selbst eine Vorabversion (0.x), werden sie immer gemeldet.
+  # Also report beta/alpha versions. If a pre-release (0.x) is running, they are always reported.
   include-prereleases: false
-  # Wie oft erneut geprüft wird (in Stunden).
+  # How often to check again (in hours).
   interval-hours: 6
-  # Spieler mit "mrsleep.admin.update" beim Betreten des Servers informieren.
+  # Notify players with "mrsleep.admin.update" when they join the server.
   notify-on-join: true
 
 
 # ------------------------------------------------------------------------------
-#   5) ADMIN-MENÜ (/mrsleep gui)
+#   5) ADMIN MENU (/mrsleep gui)
 # ------------------------------------------------------------------------------
 gui:
-  # Wie oft das geöffnete Menü aktualisiert wird (in Ticks, 20 = 1 Sekunde).
+  # How often the open menu is refreshed (in ticks, 20 = 1 second).
   refresh-ticks: 20
-  # Schnellauswahl für den Cooldown-Bypass im Spieler-Menü (genau 3 Einträge).
+  # Quick choices for the cooldown bypass in the player menu (exactly 3 entries).
   bypass-durations: ["30m", "2h", "1d"]
-  # Schnellauswahl für /nosleep-Sperren ("permanent" = dauerhaft, genau 3 Einträge).
+  # Quick choices for /nosleep bans ("permanent" = forever, exactly 3 entries).
   ban-durations: ["1h", "1d", "permanent"]
-  # Klick-Sounds im Menü.
+  # Click sounds in the menu.
   sounds: true

@@ -5,6 +5,9 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+### Behoben & geändert
+- **Config und plugin.yml auf Englisch:** Alle Kommentare in der `config.yml` und die Beschreibungen der Befehle und Permissions in der `plugin.yml` sind jetzt englisch. Bestehende Configs bekommen die neuen Kommentare beim nächsten Start automatisch (config-version 8, Sicherung als `config.v<alt>.backup.yml`), alle Einstellungen bleiben erhalten.
+
 ## [1.2.0] - 2026-10-27
 
 ### Geändert – Lizenz, Doku, Website
