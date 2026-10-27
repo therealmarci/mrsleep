@@ -19,7 +19,9 @@ public final class MRSleep extends JavaPlugin {
     private FileConfiguration config;
     private Settings settings;
     // lang-version 2: the version display got the Minecraft version.
-    private final Messages messages = new Messages(2, Map.of(2, Set.of("version", "gui-info-name")));
+    private final Messages messages = new Messages(3, Map.of(2, Set.of("version", "gui-info-name"),
+            // 3: "Website | GitHub" in /mrsleep version.
+            3, Set.of("version-links")));
     private final DiscordWebhook discord = new DiscordWebhook(this);
     private final AdminActions adminActions = new AdminActions(this);
     private UpdateChecker updateChecker;
