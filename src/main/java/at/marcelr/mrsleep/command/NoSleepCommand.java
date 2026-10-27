@@ -118,18 +118,18 @@ public final class NoSleepCommand implements TabExecutor {
         // Starts the cooldown right away at night, otherwise once the night begins (SleepManager#housekeeping).
         noSleep.setBlock(world, player.getUniqueId(), nights);
 
-        String nightsText = messages.nights(nights);
-        messages.send(player, active ? "nosleep-updated" : "nosleep-activated", tag("nights", nightsText));
+        int count = nights;
+        messages.send(player, active ? "nosleep-updated" : "nosleep-activated", tag("nights", messages.nights(count)));
         if (noSleep.isPending(world, player.getUniqueId()) && noSleep.remainingCooldown(player) == 0
                 && !player.hasPermission(NoSleepManager.PERM_NO_COOLDOWN) && noSleep.bypassRemaining(player.getUniqueId()) <= 0) {
             messages.send(player, "nosleep-pending-info", tag("time", DurationUtil.format(plugin.settings().cooldownMillis())));
         }
         if (plugin.settings().broadcast()) {
-            messages.broadcast(world, "nosleep-broadcast-activated",
-                    tag("player", player.getName()), tag("nights", nightsText));
+            messages.each(world.getPlayers(), recipient -> messages.send(recipient, "nosleep-broadcast-activated",
+                    tag("player", player.getName()), tag("nights", messages.nights(count))));
         }
         plugin.discord().log("nosleep-activated", "player", player.getName(), "world", world.getName(),
-                "nights", nightsText);
+                "nights", messages.server(() -> messages.nights(count)));
         return true;
     }
 

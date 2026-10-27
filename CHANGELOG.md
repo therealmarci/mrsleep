@@ -5,6 +5,12 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+### Neu
+- **Jeder Spieler in seiner Sprache:** Chat, Anzeige (Bossbar, Actionbar, Titel), Menüs und Hinweise richten sich jetzt nach der Sprache, die der Spieler in Minecraft eingestellt hat (`language: auto`, neuer Standard): Deutsch (auch Österreich/Schweiz) bekommt Deutsch, Englisch bekommt Englisch, alle anderen `fallback-language` (Standard `en`). `language: de` oder `en` stellt weiterhin eine Sprache für alle ein.
+- **Server-Sprache (`server-language`):** Texte ohne einzelnen Empfänger wie die Discord-Logs kommen in dieser Sprache (Standard `en`).
+- **Automatische Umstellung:** Bestehende Configs bekommen `language: auto`; eine bisher fest eingestellte Sprache wird zur `server-language`, damit z.B. die Discord-Logs eines deutschen Servers deutsch bleiben.
+- **Bossbar pro Spieler:** Jeder Spieler hat seine eigene Fortschritts-Bossbar, damit sie in seiner Sprache erscheint.
+
 ### Behoben & geändert
 - **Config und plugin.yml auf Englisch:** Alle Kommentare in der `config.yml` und die Beschreibungen der Befehle und Permissions in der `plugin.yml` sind jetzt englisch. Bestehende Configs bekommen die neuen Kommentare beim nächsten Start automatisch (config-version 8, Sicherung als `config.v<alt>.backup.yml`), alle Einstellungen bleiben erhalten.
 

@@ -92,6 +92,14 @@ public final class ConfigUpdater {
             if (existing.contains("sleep.action-bar") && !existing.getBoolean("sleep.action-bar")) {
                 template.set("sleep.display", "none");
             }
+            // v8: every player gets the language of their game; a fixed language so far stays for Discord & co.
+            if (version < 8) {
+                String old = existing.getString("language", "auto").trim();
+                if (!old.isEmpty() && !old.equalsIgnoreCase("auto")) {
+                    template.set("server-language", old);
+                }
+                template.set("language", "auto");
+            }
             template.set("config-version", CURRENT_VERSION);
             // Keep long messages on one line instead of folding them.
             template.options().width(10_000);

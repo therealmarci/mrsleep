@@ -208,9 +208,11 @@ public final class SleepManager {
         Map<UUID, Integer> blockers = plugin.noSleep().activeBlockers(world);
         if (!blockers.isEmpty()) {
             String names = NoSleepManager.names(blockers.keySet());
-            String nights = messages.nights(NoSleepManager.longest(blockers));
-            messages.broadcast(world, "night-start-blocked", tag("players", names), tag("nights", nights));
-            plugin.discord().log("night-start-blocked", "world", world.getName(), "players", names, "nights", nights);
+            int longest = NoSleepManager.longest(blockers);
+            messages.each(world.getPlayers(), player -> messages.send(player, "night-start-blocked",
+                    tag("players", names), tag("nights", messages.nights(longest))));
+            plugin.discord().log("night-start-blocked", "world", world.getName(), "players", names,
+                    "nights", messages.nights(longest));
         }
     }
 
@@ -223,8 +225,7 @@ public final class SleepManager {
 
         Map<UUID, Integer> blockers = plugin.noSleep().activeBlockers(world);
         if (!blockers.isEmpty()) {
-            display.blocked(world, NoSleepManager.names(blockers.keySet()),
-                    plugin.messages().nights(NoSleepManager.longest(blockers)));
+            display.blocked(world, NoSleepManager.names(blockers.keySet()), NoSleepManager.longest(blockers));
             return;
         }
 

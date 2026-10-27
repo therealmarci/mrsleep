@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import static at.marcelr.mrsleep.Messages.tag;
 
 /**
  * Shows the sleep progress ("1/2 players sleeping") or the blocked notice, either as a boss bar (top of the
  * screen, not covered by the chat window that opens while lying in bed), action bar, subtitle or not at all.
+ * Every player gets the text in their own language, so every player has their own boss bar.
  */
 public final class SleepDisplay {
 
@@ -30,8 +32,9 @@ public final class SleepDisplay {
             Title.Times.times(Duration.ZERO, Duration.ofMillis(1500), Duration.ofMillis(250));
 
     private final MRSleep plugin;
-    /** One boss bar per world, plus the players currently seeing it. */
+    /** The boss bar of each player currently seeing one. */
     private final Map<UUID, BossBar> bars = new HashMap<>();
+    /** Per world the players currently seeing its display. */
     private final Map<UUID, Set<UUID>> viewers = new HashMap<>();
 
     public SleepDisplay(MRSleep plugin) {
@@ -44,68 +47,68 @@ public final class SleepDisplay {
 
     /** Progress for everyone in the world. */
     public void progress(World world, SleepManager.Status status) {
-        Component text = plugin.messages().get("display-sleeping",
+        float progress = status.needed() == 0 ? 0f : Math.min(1f, (float) status.sleeping() / status.needed());
+        show(world, () -> plugin.messages().get("display-sleeping",
                 tag("sleeping", status.sleeping()),
                 tag("needed", status.needed()),
-                tag("counted", status.counted()));
-        float progress = status.needed() == 0 ? 0f : Math.min(1f, (float) status.sleeping() / status.needed());
-        show(world, text, progress, settings().color(), world.getPlayers());
+                tag("counted", status.counted())), progress, settings().color(), world.getPlayers());
     }
 
     /** Blocked notice, only for the players lying in bed. */
-    public void blocked(World world, String players, String nights) {
-        Component text = plugin.messages().get("display-blocked", tag("players", players), tag("nights", nights));
+    public void blocked(World world, String players, int nights) {
         List<Player> sleepers = world.getPlayers().stream().filter(Player::isSleeping).toList();
-        show(world, text, 1f, settings().blockedColor(), sleepers);
+        show(world, () -> plugin.messages().get("display-blocked", tag("players", players),
+                tag("nights", plugin.messages().nights(nights))), 1f, settings().blockedColor(), sleepers);
     }
 
-    private void show(World world, Component text, float progress, BossBar.Color color, Collection<Player> targets) {
+    /** @param text builds the text; called once per player in their language */
+    private void show(World world, Supplier<Component> text, float progress, BossBar.Color color,
+                      Collection<Player> targets) {
         switch (settings().mode()) {
-            case BOSSBAR -> showBar(world, text, progress, color, targets);
-            case ACTIONBAR -> targets.forEach(player -> player.sendActionBar(text));
-            case TITLE -> targets.forEach(player -> player.showTitle(Title.title(Component.empty(), text, TITLE_TIMES)));
+            case BOSSBAR -> showBars(world, text, progress, color, targets);
+            case ACTIONBAR -> plugin.messages().each(targets, player -> ((Player) player).sendActionBar(text.get()));
+            case TITLE -> plugin.messages().each(targets,
+                    player -> ((Player) player).showTitle(Title.title(Component.empty(), text.get(), TITLE_TIMES)));
             case NONE -> {
             }
         }
     }
 
-    private void showBar(World world, Component text, float progress, BossBar.Color color, Collection<Player> targets) {
-        BossBar bar = bars.computeIfAbsent(world.getUID(),
-                id -> BossBar.bossBar(text, progress, color, BossBar.Overlay.NOTCHED_10));
-        bar.name(text);
-        bar.progress(progress);
-        bar.color(color);
-
+    private void showBars(World world, Supplier<Component> text, float progress, BossBar.Color color,
+                          Collection<Player> targets) {
         Set<UUID> now = new HashSet<>();
         for (Player player : targets) {
+            Component name = plugin.messages().as(player, text);
+            BossBar bar = bars.computeIfAbsent(player.getUniqueId(),
+                    id -> BossBar.bossBar(name, progress, color, BossBar.Overlay.NOTCHED_10));
+            bar.name(name);
+            bar.progress(progress);
+            bar.color(color);
             player.showBossBar(bar);
             now.add(player.getUniqueId());
         }
         // Hide for players that no longer belong to the audience (left the world, got up, ...).
-        Set<UUID> before = viewers.getOrDefault(world.getUID(), Set.of());
-        for (UUID uuid : before) {
+        for (UUID uuid : viewers.getOrDefault(world.getUID(), Set.of())) {
             if (!now.contains(uuid)) {
-                Player player = Bukkit.getPlayer(uuid);
-                if (player != null) {
-                    player.hideBossBar(bar);
-                }
+                hideBar(uuid);
             }
         }
         viewers.put(world.getUID(), now);
     }
 
+    private void hideBar(UUID uuid) {
+        BossBar bar = bars.remove(uuid);
+        Player player = Bukkit.getPlayer(uuid);
+        if (bar != null && player != null) {
+            player.hideBossBar(bar);
+        }
+    }
+
     /** Nobody sleeps (any more) in this world. */
     public void hide(World world) {
-        BossBar bar = bars.remove(world.getUID());
         Set<UUID> seen = viewers.remove(world.getUID());
-        if (bar == null || seen == null) {
-            return;
-        }
-        for (UUID uuid : seen) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null) {
-                player.hideBossBar(bar);
-            }
+        if (seen != null) {
+            seen.forEach(this::hideBar);
         }
     }
 
@@ -113,7 +116,7 @@ public final class SleepDisplay {
         for (World world : Bukkit.getWorlds()) {
             hide(world);
         }
-        bars.clear();
+        Set.copyOf(bars.keySet()).forEach(this::hideBar);
         viewers.clear();
     }
 }

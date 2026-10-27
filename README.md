@@ -8,7 +8,7 @@
 |---|---|
 | Server | Paper 26.3 (oder ein Fork wie Purpur), Java 25 |
 | Benötigt | nichts - LuckPerms ist empfohlen, MRadmin optional |
-| Sprachen | Deutsch, Englisch (eigene Übersetzungen möglich) |
+| Sprachen | Deutsch, Englisch - jeder Spieler automatisch in der Sprache seines Minecraft-Clients |
 | Status | stabil (1.x) |
 
 ## Was kann MRsleep?
@@ -162,9 +162,11 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 - **Umlaute kaputt** („Ã¤“ statt „ä“)? Stell die Kodierung im Editor auf **UTF-8**.
 
 ### Sprache & Texte
-- In der `config.yml` wählst du die Sprache: `language: de` oder `language: en`.
+- **Jeder Spieler bekommt seine Sprache:** Mit `language: auto` (Standard) richtet sich MRsleep nach der Sprache, die der Spieler in Minecraft eingestellt hat - Deutsch (auch Österreich und Schweiz) bekommt Deutsch, Englisch bekommt Englisch. Für Sprachen ohne eigene Datei gilt `fallback-language` (Standard Englisch). Mit `language: de` oder `en` bekommen alle dieselbe Sprache.
+- **Server-Sprache:** Discord-Logs haben keinen einzelnen Empfänger - sie kommen in `server-language` (Standard `en`). Auf einem deutschen Server also `server-language: de` setzen.
+- Die Konsole ist immer Englisch.
 - Alle Texte (Chat, Anzeige, Menüs, Discord) stehen in `plugins/MRsleep/lang/<sprache>.yml` im [MiniMessage-Format](https://docs.advntr.dev/minimessage/format.html). Ein leerer Text (`""`) schaltet die Nachricht ab.
-- **Eigene Sprache:** `lang/en.yml` kopieren (z.B. als `lang/fr.yml`), übersetzen und `language: fr` setzen.
+- **Eigene Sprache:** `lang/en.yml` kopieren (z.B. als `lang/fr.yml`) und übersetzen - mit `language: auto` bekommen französische Spieler sie dann automatisch.
 - Neue Texte aus Updates ergänzt MRsleep automatisch - deine Änderungen bleiben erhalten.
 
 ### Discord-Webhook
