@@ -5,32 +5,32 @@ api-version: '${mcVersion}'
 softdepend: [MRadmin]
 author: _therealmarci
 website: ${website}/docs/${websiteSlug}/
-description: Verbesserte Schlafquote mit Ausnahmen, /nosleep, Admin-Menü und Discord-Logs.
+description: Better sleep quota with exemptions, /nosleep, admin menu and Discord logs.
 
 commands:
   nosleep:
-    description: Blockiert das Schlafen für eine oder mehrere Nächte (erneut ausführen zum Aufheben).
-    usage: /nosleep [nächte|off|info]
+    description: Blocks sleeping for one or more nights (run it again to cancel).
+    usage: /nosleep [nights|off|info]
     permission: mrsleep.nosleep
   mrsleep:
-    description: Verwaltung von MRsleep.
+    description: Management of MRsleep.
     usage: /mrsleep <gui|status|debug|clear|release|bypass|resetcooldown|ban|unban|bans|reload|version>
 
 permissions:
   mrsleep.exempt:
-    description: Spieler wird bei der Schlafquote nicht mitgezählt (z.B. Cam- oder Bot-Accounts).
+    description: Player is not counted for the sleep quota (e.g. cam or bot accounts).
     default: false
   mrsleep.nosleep:
-    description: Erlaubt /nosleep.
+    description: Allows /nosleep.
     default: true
   mrsleep.nosleep.info:
-    description: /nosleep info - eigenen Schlaf- und /nosleep-Status anzeigen.
+    description: /nosleep info - show your own sleep and /nosleep status.
     default: true
   mrsleep.nosleep.nocooldown:
-    description: /nosleep dauerhaft ohne Cooldown nutzen (muss explizit vergeben werden, auch OPs haben sie nicht automatisch).
+    description: Use /nosleep without cooldown (must be granted explicitly, OPs do not get it automatically either).
     default: false
   mrsleep.admin:
-    description: Alle Admin-Befehle von MRsleep.
+    description: All admin commands of MRsleep.
     default: op
     children:
       mrsleep.admin.gui: true
@@ -43,29 +43,29 @@ permissions:
       mrsleep.admin.update: true
       mrsleep.admin.discord: true
   mrsleep.admin.discord:
-    description: /mrsleep discord [test] - Status des Discord-Webhooks und Testnachricht.
+    description: /mrsleep discord [test] - status of the Discord webhook and test message.
     default: op
   mrsleep.admin.gui:
-    description: /mrsleep gui - Admin-Menü öffnen (Aktionen darin brauchen zusätzlich ihre eigene Permission).
+    description: /mrsleep gui - open the admin menu (actions in it also need their own permission).
     default: op
   mrsleep.admin.reload:
     description: /mrsleep reload
     default: op
   mrsleep.admin.status:
-    description: /mrsleep status und /mrsleep debug
+    description: /mrsleep status and /mrsleep debug
     default: op
   mrsleep.admin.clear:
-    description: /mrsleep clear und /mrsleep release - /nosleep-Blockaden entfernen.
+    description: /mrsleep clear and /mrsleep release - remove /nosleep blocks.
     default: op
   mrsleep.admin.bypass:
-    description: /mrsleep bypass und /mrsleep resetcooldown - Cooldowns von Spielern verwalten.
+    description: /mrsleep bypass and /mrsleep resetcooldown - manage players' cooldowns.
     default: op
   mrsleep.admin.ban:
-    description: /mrsleep ban, unban und bans - Spieler von /nosleep ausschließen.
+    description: /mrsleep ban, unban and bans - exclude players from /nosleep.
     default: op
   mrsleep.admin.teleport:
-    description: Im Admin-Menü zu Spielern teleportieren.
+    description: Teleport to players in the admin menu.
     default: op
   mrsleep.admin.update:
-    description: Hinweis beim Betreten des Servers, wenn ein MRsleep-Update verfügbar ist.
+    description: Notice when joining the server if an MRsleep update is available.
     default: op

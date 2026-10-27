@@ -5,6 +5,19 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.2.1] - 2026-10-27
+
+### Neu
+- **Jeder Spieler in seiner Sprache:** Chat, Anzeige (Bossbar, Actionbar, Titel), Menüs und Hinweise richten sich jetzt nach der Sprache, die der Spieler in Minecraft eingestellt hat (`language: auto`, neuer Standard): Deutsch (auch Österreich/Schweiz) bekommt Deutsch, Englisch bekommt Englisch, alle anderen `fallback-language` (Standard `en`). `language: de` oder `en` stellt weiterhin eine Sprache für alle ein.
+- **Server-Sprache (`server-language`):** Texte ohne einzelnen Empfänger wie die Discord-Logs kommen in dieser Sprache (Standard `en`).
+- **Automatische Umstellung:** Bestehende Configs bekommen `language: auto`; eine bisher fest eingestellte Sprache wird zur `server-language`, damit z.B. die Discord-Logs eines deutschen Servers deutsch bleiben.
+- **Bossbar pro Spieler:** Jeder Spieler hat seine eigene Fortschritts-Bossbar, damit sie in seiner Sprache erscheint.
+
+### Behoben & geändert
+- **Minecraft-Anzeige „x/y Spieler schlafen“ ausgeblendet:** Die eingebaute Anzeige in der Actionbar zählte alle Spieler und passte nicht zur Quote von MRsleep. MRsleep ersetzt sie jetzt sofort durch den eigenen Fortschritt (bei `sleep.display: actionbar`) bzw. blendet sie aus. Abschaltbar mit `sleep.hide-vanilla-message: false`.
+- **Update-Hinweis bei `/mrsleep version` doppelt:** Fand die Abfrage eine neue Version, kam zuerst der Admin-Hinweis „Für MRsleep gibt es ein Update“ und direkt danach „Neue Version verfügbar“. Jetzt kommt nur noch die Antwort auf den Befehl. Die Download-Links führen auf die Website (https://mrtechnology.marcelr.at/download/mrsleep/).
+- **Config und plugin.yml auf Englisch:** Alle Kommentare in der `config.yml` und die Beschreibungen der Befehle und Permissions in der `plugin.yml` sind jetzt englisch. Bestehende Configs bekommen die neuen Kommentare beim nächsten Start automatisch (config-version 8, Sicherung als `config.v<alt>.backup.yml`), alle Einstellungen bleiben erhalten.
+
 ## [1.2.0] - 2026-10-27
 
 ### Geändert – Lizenz, Doku, Website

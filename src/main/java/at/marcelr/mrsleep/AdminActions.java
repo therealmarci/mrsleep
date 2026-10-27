@@ -134,14 +134,20 @@ public final class AdminActions {
     }
 
     public void ban(String admin, CommandSender feedback, OfflinePlayer target, long duration, String reason) {
-        String cleanReason = reason == null || reason.isBlank() ? messages().plain("ban-no-reason") : reason;
+        // The reason is stored, so a missing one is filled in the server language.
+        String cleanReason = reason == null || reason.isBlank()
+                ? messages().server(() -> messages().plain("ban-no-reason")) : reason;
         plugin.noSleep().ban(target.getUniqueId(), duration, cleanReason, admin);
         String name = name(target);
-        String durationText = banDuration(plugin.noSleep().ban(target.getUniqueId()));
-        reply(feedback, "ban-set", tag("player", name), tag("duration", durationText), tag("reason", cleanReason));
-        notifyTarget(feedback, target, "ban-notify", tag("duration", durationText), tag("reason", cleanReason));
+        NoSleepManager.Ban ban = plugin.noSleep().ban(target.getUniqueId());
+        reply(feedback, "ban-set", tag("player", name), tag("duration", banDuration(ban)), tag("reason", cleanReason));
+        Player online = target.getPlayer();
+        if (online != null && online != feedback) {
+            messages().run(online, () -> messages().send(online, "ban-notify",
+                    tag("duration", banDuration(ban)), tag("reason", cleanReason)));
+        }
         plugin.discord().log("admin-ban", "admin", admin, "player", name,
-                "time", durationText, "reason", cleanReason);
+                "time", messages().server(() -> banDuration(ban)), "reason", cleanReason);
 
         for (World world : plugin.noSleep().release(target.getUniqueId())) {
             messages().broadcast(world, "nosleep-broadcast-released", tag("player", name), tag("admin", admin));

@@ -22,7 +22,7 @@ import java.util.logging.Level;
  */
 public final class ConfigUpdater {
 
-    public static final int CURRENT_VERSION = 7;
+    public static final int CURRENT_VERSION = 9;
     public static final String BOM = "﻿";
     /**
      * Texts whose content changed with new features; the new default replaces the old value.
@@ -91,6 +91,14 @@ public final class ConfigUpdater {
             // v3: "sleep.action-bar: false" became "sleep.display: none".
             if (existing.contains("sleep.action-bar") && !existing.getBoolean("sleep.action-bar")) {
                 template.set("sleep.display", "none");
+            }
+            // v8: every player gets the language of their game; a fixed language so far stays for Discord & co.
+            if (version < 8) {
+                String old = existing.getString("language", "auto").trim();
+                if (!old.isEmpty() && !old.equalsIgnoreCase("auto")) {
+                    template.set("server-language", old);
+                }
+                template.set("language", "auto");
             }
             template.set("config-version", CURRENT_VERSION);
             // Keep long messages on one line instead of folding them.

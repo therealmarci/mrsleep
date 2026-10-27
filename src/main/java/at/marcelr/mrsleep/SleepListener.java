@@ -1,6 +1,5 @@
 package at.marcelr.mrsleep;
 
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -8,6 +7,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBedLeaveEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.world.TimeSkipEvent;
@@ -48,18 +50,19 @@ public final class SleepListener implements Listener {
         }
 
         String names = NoSleepManager.names(blockers.keySet());
-        String nights = plugin.messages().nights(NoSleepManager.longest(blockers));
+        int longest = NoSleepManager.longest(blockers);
         boolean prevent = plugin.settings().preventBedEnter();
         if (prevent) {
             event.setCancelled(true);
         }
-        plugin.messages().send(player, prevent ? "bed-prevented" : "bed-blocked-warning",
-                tag("players", names), tag("nights", nights));
+        plugin.messages().run(player, () -> plugin.messages().send(player,
+                prevent ? "bed-prevented" : "bed-blocked-warning",
+                tag("players", names), tag("nights", plugin.messages().nights(longest))));
 
         String key = world.getUID() + ":" + player.getUniqueId() + ":" + NoSleepManager.nightKey(world);
         if (loggedBedAttempts.add(key)) {
             plugin.discord().log("bed-blocked", "player", player.getName(), "world", world.getName(),
-                    "players", names, "nights", nights);
+                    "players", names, "nights", plugin.messages().nights(longest));
         }
     }
 
@@ -71,13 +74,15 @@ public final class SleepListener implements Listener {
         }
         Player player = event.getPlayer();
         World world = player.getWorld();
+        plugin.sleep().hideVanillaMessage(world);
         if (!plugin.sleep().isManaged(world) || plugin.noSleep().isBlocked(world)) {
             return;
         }
         String reason = plugin.sleep().exclusionReason(player);
         if (reason != null) {
             // Otherwise an excluded player gets no feedback at all and assumes sleeping is broken.
-            plugin.messages().send(player, "bed-excluded", tag("reason", plugin.messages().plain(reason)));
+            plugin.messages().run(player, () -> plugin.messages().send(player, "bed-excluded",
+                    tag("reason", plugin.messages().plain(reason))));
             return;
         }
         // One tick later the player is actually in bed and counted as sleeping.
@@ -86,26 +91,42 @@ public final class SleepListener implements Listener {
                 return;
             }
             SleepManager.Status status = plugin.sleep().status(world);
-            Component message = plugin.messages().get("player-sleeping",
-                    tag("player", player.getName()),
-                    tag("world", world.getName()),
-                    tag("sleeping", status.sleeping()),
-                    tag("needed", status.needed()));
             Collection<? extends Player> audience = switch (plugin.settings().sleepMessage()) {
                 case WORLD -> world.getPlayers();
                 case SERVER -> Bukkit.getOnlinePlayers();
                 case NONE -> List.of();
             };
-            if (!message.equals(Component.empty())) {
-                audience.forEach(p -> p.sendMessage(message));
-            }
+            plugin.messages().each(audience, recipient -> plugin.messages().send(recipient, "player-sleeping",
+                    tag("player", player.getName()),
+                    tag("world", world.getName()),
+                    tag("sleeping", status.sleeping()),
+                    tag("needed", status.needed())));
             plugin.sleep().showProgress(world);
         });
+    }
+
+    // Every change of the sleepers makes Minecraft announce "x/y players sleeping" - see SleepManager#hideVanillaMessage.
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBedLeave(PlayerBedLeaveEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldChange(PlayerChangedWorldEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getFrom());
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onGameModeChange(PlayerGameModeChangeEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        plugin.sleep().hideVanillaMessage(player.getWorld());
         // A little later, so the notice is not buried under join messages.
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             if (player.isOnline()) {
@@ -119,14 +140,15 @@ public final class SleepListener implements Listener {
         }
         Map<UUID, Integer> blockers = plugin.noSleep().activeBlockers(world);
         if (!blockers.isEmpty()) {
-            plugin.messages().send(player, "join-blocked-info",
+            plugin.messages().run(player, () -> plugin.messages().send(player, "join-blocked-info",
                     tag("players", NoSleepManager.names(blockers.keySet())),
-                    tag("nights", plugin.messages().nights(NoSleepManager.longest(blockers))));
+                    tag("nights", plugin.messages().nights(NoSleepManager.longest(blockers)))));
         }
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+        plugin.sleep().hideVanillaMessage(event.getPlayer().getWorld());
         if (!plugin.settings().releaseOnQuit()) {
             return;
         }

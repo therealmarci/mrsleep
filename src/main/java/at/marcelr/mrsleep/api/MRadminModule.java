@@ -154,7 +154,7 @@ final class MRadminModule implements AdminModule, WebModule {
         if (Bukkit.getPlayer(player) == null) {
             return false;
         }
-        new PlayerMenu(plugin, viewer, player, back).open();
+        plugin.messages().run(viewer, () -> new PlayerMenu(plugin, viewer, player, back).open());
         return true;
     }
 

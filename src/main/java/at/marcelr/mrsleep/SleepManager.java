@@ -130,6 +130,26 @@ public final class SleepManager {
         }
     }
 
+    /**
+     * Minecraft announces "x/y players sleeping" in the action bar of everyone in the world whenever the number of
+     * sleepers changes - with the gamerule MRsleep sets, y is simply everyone, which is wrong. There is no API to stop
+     * it, so right after it (next tick) MRsleep puts its own progress there (display: actionbar) or clears it.
+     */
+    public void hideVanillaMessage(World world) {
+        if (!plugin.settings().display().hideVanilla() || !isManaged(world)) {
+            return;
+        }
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            boolean ownBar = plugin.settings().display().mode() == SleepDisplay.Mode.ACTIONBAR
+                    && !plugin.noSleep().isBlocked(world) && status(world).sleeping() > 0;
+            if (ownBar) {
+                showProgress(world);
+            } else {
+                world.getPlayers().forEach(player -> player.sendActionBar(net.kyori.adventure.text.Component.empty()));
+            }
+        });
+    }
+
     /** Sleeping is possible at night and during thunderstorms - that is when a /nosleep block takes effect. */
     public static boolean sleepPossible(World world) {
         return isNight(world) || world.isThundering();
@@ -208,9 +228,11 @@ public final class SleepManager {
         Map<UUID, Integer> blockers = plugin.noSleep().activeBlockers(world);
         if (!blockers.isEmpty()) {
             String names = NoSleepManager.names(blockers.keySet());
-            String nights = messages.nights(NoSleepManager.longest(blockers));
-            messages.broadcast(world, "night-start-blocked", tag("players", names), tag("nights", nights));
-            plugin.discord().log("night-start-blocked", "world", world.getName(), "players", names, "nights", nights);
+            int longest = NoSleepManager.longest(blockers);
+            messages.each(world.getPlayers(), player -> messages.send(player, "night-start-blocked",
+                    tag("players", names), tag("nights", messages.nights(longest))));
+            plugin.discord().log("night-start-blocked", "world", world.getName(), "players", names,
+                    "nights", messages.nights(longest));
         }
     }
 
@@ -223,8 +245,7 @@ public final class SleepManager {
 
         Map<UUID, Integer> blockers = plugin.noSleep().activeBlockers(world);
         if (!blockers.isEmpty()) {
-            display.blocked(world, NoSleepManager.names(blockers.keySet()),
-                    plugin.messages().nights(NoSleepManager.longest(blockers)));
+            display.blocked(world, NoSleepManager.names(blockers.keySet()), NoSleepManager.longest(blockers));
             return;
         }
 

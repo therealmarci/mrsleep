@@ -8,7 +8,7 @@
 |---|---|
 | Server | Paper 26.3 (oder ein Fork wie Purpur), Java 25 |
 | Benötigt | nichts - LuckPerms ist empfohlen, MRadmin optional |
-| Sprachen | Deutsch, Englisch (eigene Übersetzungen möglich) |
+| Sprachen | Deutsch, Englisch - jeder Spieler automatisch in der Sprache seines Minecraft-Clients |
 | Status | stabil (1.x) |
 
 ## Was kann MRsleep?
@@ -71,6 +71,7 @@ Vanilla kann Spieler nicht wirklich aus der Rechnung nehmen - „ignorierte“ S
 
 ### Anzeige & Chat-Hinweise
 - **Fortschritt** als Bossbar (Standard), Actionbar, Titel oder gar nicht (`sleep.display`). Die Bossbar wird vom Chat im Bett nicht verdeckt.
+- Die eingebaute Minecraft-Anzeige „x/y Spieler schlafen“ in der Actionbar zählt alle Spieler und kennt die Regeln von MRsleep nicht. MRsleep ersetzt sie deshalb sofort durch den eigenen Fortschritt (bei `display: actionbar`) bzw. blendet sie aus (`sleep.hide-vanilla-message`, Standard an).
 - **Schlaf-Nachricht** „Alex hat sich schlafen gelegt (1/2)“ an die Welt, den ganzen Server oder niemanden (`sleep.sleep-message`).
 - Hinweise, wenn die Nacht blockiert ist, wenn sie übersprungen wurde („Guten Morgen!“), wenn eine Blockade abläuft und wenn ein Admin etwas ändert.
 - Jeder Text steht in der Sprachdatei und lässt sich ändern oder mit `""` abschalten.
@@ -150,7 +151,7 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 
 | Abschnitt | Die wichtigsten Einstellungen |
 |---|---|
-| `sleep` | `percentage` (Quote, Standard 50), `minimum-sleepers`, `disabled-worlds`, `display` (bossbar/actionbar/title/none), `sleep-message`, wer nicht zählt |
+| `sleep` | `percentage` (Quote, Standard 50), `minimum-sleepers`, `disabled-worlds`, `display` (bossbar/actionbar/title/none), `hide-vanilla-message`, `sleep-message`, wer nicht zählt |
 | `nosleep` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
 | `discord` | Webhook-URL, welche Ereignisse gesendet werden, Farben |
 | `update-checker` | an/aus, Prüfintervall, Hinweis beim Betreten |
@@ -162,9 +163,11 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 - **Umlaute kaputt** („Ã¤“ statt „ä“)? Stell die Kodierung im Editor auf **UTF-8**.
 
 ### Sprache & Texte
-- In der `config.yml` wählst du die Sprache: `language: de` oder `language: en`.
+- **Jeder Spieler bekommt seine Sprache:** Mit `language: auto` (Standard) richtet sich MRsleep nach der Sprache, die der Spieler in Minecraft eingestellt hat - Deutsch (auch Österreich und Schweiz) bekommt Deutsch, Englisch bekommt Englisch. Für Sprachen ohne eigene Datei gilt `fallback-language` (Standard Englisch). Mit `language: de` oder `en` bekommen alle dieselbe Sprache.
+- **Server-Sprache:** Discord-Logs haben keinen einzelnen Empfänger - sie kommen in `server-language` (Standard `en`). Auf einem deutschen Server also `server-language: de` setzen.
+- Die Konsole ist immer Englisch.
 - Alle Texte (Chat, Anzeige, Menüs, Discord) stehen in `plugins/MRsleep/lang/<sprache>.yml` im [MiniMessage-Format](https://docs.advntr.dev/minimessage/format.html). Ein leerer Text (`""`) schaltet die Nachricht ab.
-- **Eigene Sprache:** `lang/en.yml` kopieren (z.B. als `lang/fr.yml`), übersetzen und `language: fr` setzen.
+- **Eigene Sprache:** `lang/en.yml` kopieren (z.B. als `lang/fr.yml`) und übersetzen - mit `language: auto` bekommen französische Spieler sie dann automatisch.
 - Neue Texte aus Updates ergänzt MRsleep automatisch - deine Änderungen bleiben erhalten.
 
 ### Discord-Webhook
