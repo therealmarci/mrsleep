@@ -21,6 +21,18 @@ import static at.marcelr.mrsleep.Messages.tag;
  */
 public final class AdminActions {
 
+    /** Bypass up to limits.support.bypass, ban up to limits.support.ban (and lift both). */
+    public static final String PERM_BYPASS = "mrsleep.admin.bypass";
+    public static final String PERM_BAN = "mrsleep.admin.ban";
+    /** Up to limits.staff.*. */
+    public static final String PERM_BYPASS_STAFF = "mrsleep.admin.bypass.staff";
+    public static final String PERM_BAN_STAFF = "mrsleep.admin.ban.staff";
+    /** No limit, permanent bans. */
+    public static final String PERM_BYPASS_UNLIMITED = "mrsleep.admin.bypass.unlimited";
+    public static final String PERM_BAN_UNLIMITED = "mrsleep.admin.ban.unlimited";
+    /** Reset a player's /nosleep cooldown. */
+    public static final String PERM_RESET = "mrsleep.admin.resetcooldown";
+
     private final MRSleep plugin;
 
     public AdminActions(MRSleep plugin) {
@@ -86,7 +98,42 @@ public final class AdminActions {
         return true;
     }
 
+    // ------------------------------------------------------------------ team limits
+
+    /** The permission a bypass of this length needs (limits in config.yml). */
+    public String bypassPermission(long duration) {
+        Settings.LimitSettings limits = plugin.settings().limits();
+        return duration <= limits.supportBypass() ? PERM_BYPASS
+                : duration <= limits.staffBypass() ? PERM_BYPASS_STAFF : PERM_BYPASS_UNLIMITED;
+    }
+
+    /** The permission a ban of this length needs; a permanent one only with .ban.unlimited. */
+    public String banPermission(long duration) {
+        Settings.LimitSettings limits = plugin.settings().limits();
+        return duration == Settings.PERMANENT ? PERM_BAN_UNLIMITED : duration <= limits.supportBan() ? PERM_BAN
+                : duration <= limits.staffBan() ? PERM_BAN_STAFF : PERM_BAN_UNLIMITED;
+    }
+
+    /** Longest bypass the sender may give, -1 = no limit. */
+    private long maxBypass(CommandSender sender) {
+        Settings.LimitSettings limits = plugin.settings().limits();
+        return sender.hasPermission(PERM_BYPASS_UNLIMITED) ? -1
+                : sender.hasPermission(PERM_BYPASS_STAFF) ? limits.staffBypass() : limits.supportBypass();
+    }
+
+    private long maxBan(CommandSender sender) {
+        Settings.LimitSettings limits = plugin.settings().limits();
+        return sender.hasPermission(PERM_BAN_UNLIMITED) ? -1
+                : sender.hasPermission(PERM_BAN_STAFF) ? limits.staffBan() : limits.supportBan();
+    }
+
+    // ------------------------------------------------------------------ bypass
+
     public void bypass(CommandSender admin, OfflinePlayer target, long duration) {
+        if (!admin.hasPermission(bypassPermission(duration))) {
+            messages().send(admin, "limit-bypass", tag("time", DurationUtil.format(maxBypass(admin))));
+            return;
+        }
         bypass(admin.getName(), admin, target, duration);
     }
 
@@ -130,6 +177,10 @@ public final class AdminActions {
 
     /** Excludes the target from /nosleep and lifts their active blocks. */
     public void ban(CommandSender admin, OfflinePlayer target, long duration, String reason) {
+        if (!admin.hasPermission(banPermission(duration))) {
+            messages().send(admin, "limit-ban", tag("time", DurationUtil.format(maxBan(admin))));
+            return;
+        }
         ban(admin.getName(), admin, target, duration, reason);
     }
 

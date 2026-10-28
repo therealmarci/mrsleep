@@ -73,7 +73,8 @@ public final class PlayerMenu extends Menu {
         for (int i = 0; i < bypasses.size(); i++) {
             long duration = bypasses.get(i);
             String time = DurationUtil.format(duration);
-            button(10 + i, Material.CLOCK, "gui-bypass-name", "gui-bypass-lore", PERM_BYPASS, false,
+            // Longer than the viewer's limit (limits in config.yml): shown as "no permission".
+            button(10 + i, Material.CLOCK, "gui-bypass-name", "gui-bypass-lore", actions.bypassPermission(duration), false,
                     click -> actions.bypass(viewer, target, duration), tag("time", time));
         }
         boolean hasBypass = plugin.noSleep().bypassRemaining(targetId) > 0;
@@ -81,7 +82,7 @@ public final class PlayerMenu extends Menu {
             button(13, Material.MILK_BUCKET, "gui-bypass-remove-name", null, PERM_BYPASS, false,
                     click -> actions.removeBypass(viewer, target));
         }
-        button(14, Material.FEATHER, "gui-cooldown-reset-name", null, PERM_BYPASS, false,
+        button(14, Material.FEATHER, "gui-cooldown-reset-name", null, AdminActions.PERM_RESET, false,
                 click -> actions.resetCooldown(viewer, target));
 
         // ---- ban
@@ -91,7 +92,7 @@ public final class PlayerMenu extends Menu {
             long duration = bans.get(i);
             boolean permanent = duration == Settings.PERMANENT;
             String time = permanent ? messages.plain("ban-duration-permanent") : DurationUtil.format(duration);
-            button(19 + i, permanent ? Material.OBSIDIAN : Material.TRIPWIRE_HOOK, "gui-ban-name", "gui-ban-lore", PERM_BAN, false,
+            button(19 + i, permanent ? Material.OBSIDIAN : Material.TRIPWIRE_HOOK, "gui-ban-name", "gui-ban-lore", actions.banPermission(duration), false,
                     click -> actions.ban(viewer, target, duration, messages.plain("gui-ban-reason")),
                     tag("time", time), tag("player", target.getName()));
         }

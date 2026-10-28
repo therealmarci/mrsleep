@@ -17,31 +17,63 @@ commands:
     usage: /mrsleep <gui|status|debug|clear|release|bypass|resetcooldown|ban|unban|bans|reload|version>
 
 permissions:
+  # ------------------------------------------------------------------ Groups
+  # The same in every MRtechnology plugin: <plugin>.player for players, <plugin>.groups.support / staff / admin for
+  # the team - each group contains the one below. The single permissions further down stay usable on their own;
+  # exempt and nocooldown are in no group on purpose. How long the team may bypass or ban: limits in config.yml.
+  mrsleep.player:
+    description: "Player: /nosleep and /nosleep info; /mrsleep version."
+    default: op
+    children:
+      mrsleep.version: true
+      mrsleep.nosleep: true
+      mrsleep.nosleep.info: true
+  mrsleep.groups.support:
+    description: "Group support: player + admin menu, status, teleport, cooldown bypass and /nosleep ban up to the support limit (limits.support)."
+    default: op
+    children:
+      mrsleep.player: true
+      mrsleep.admin.gui: true
+      mrsleep.admin.status: true
+      mrsleep.admin.teleport: true
+      mrsleep.admin.bypass: true
+      mrsleep.admin.ban: true
+  mrsleep.groups.staff:
+    description: "Group staff: support + bypass and ban up to the staff limit (limits.staff), lift /nosleep blocks, reset cooldowns."
+    default: op
+    children:
+      mrsleep.groups.support: true
+      mrsleep.admin.bypass.staff: true
+      mrsleep.admin.ban.staff: true
+      mrsleep.admin.clear: true
+      mrsleep.admin.resetcooldown: true
+  mrsleep.groups.admin:
+    description: "Group admin: everything of MRsleep - bypass and ban without limit (also permanent), reload, Discord, update notice."
+    default: op
+    children:
+      mrsleep.groups.staff: true
+      mrsleep.admin.bypass.unlimited: true
+      mrsleep.admin.ban.unlimited: true
+      mrsleep.admin.reload: true
+      mrsleep.admin.discord: true
+      mrsleep.admin.update: true
+
+  # ------------------------------------------------------------------ Single permissions
+  mrsleep.version:
+    description: /mrsleep version - version, update status and links.
+    default: op
   mrsleep.exempt:
     description: Player is not counted for the sleep quota (e.g. cam or bot accounts).
     default: false
   mrsleep.nosleep:
     description: Allows /nosleep.
-    default: true
+    default: op
   mrsleep.nosleep.info:
     description: /nosleep info - show your own sleep and /nosleep status.
-    default: true
+    default: op
   mrsleep.nosleep.nocooldown:
     description: Use /nosleep without cooldown (must be granted explicitly, OPs do not get it automatically either).
     default: false
-  mrsleep.admin:
-    description: All admin commands of MRsleep.
-    default: op
-    children:
-      mrsleep.admin.gui: true
-      mrsleep.admin.reload: true
-      mrsleep.admin.status: true
-      mrsleep.admin.clear: true
-      mrsleep.admin.bypass: true
-      mrsleep.admin.ban: true
-      mrsleep.admin.teleport: true
-      mrsleep.admin.update: true
-      mrsleep.admin.discord: true
   mrsleep.admin.discord:
     description: /mrsleep discord [test] - status of the Discord webhook and test message.
     default: op
@@ -58,11 +90,34 @@ permissions:
     description: /mrsleep clear and /mrsleep release - remove /nosleep blocks.
     default: op
   mrsleep.admin.bypass:
-    description: /mrsleep bypass and /mrsleep resetcooldown - manage players' cooldowns.
+    description: "/mrsleep bypass - cooldown bypass up to limits.support.bypass in config.yml, list and remove bypasses."
+    default: op
+  mrsleep.admin.bypass.staff:
+    description: Cooldown bypass up to limits.staff.bypass.
+    default: op
+    children:
+      mrsleep.admin.bypass: true
+  mrsleep.admin.bypass.unlimited:
+    description: Cooldown bypass of any length.
+    default: op
+    children:
+      mrsleep.admin.bypass.staff: true
+  mrsleep.admin.resetcooldown:
+    description: /mrsleep resetcooldown - reset a player's /nosleep cooldown.
     default: op
   mrsleep.admin.ban:
-    description: /mrsleep ban, unban and bans - exclude players from /nosleep.
+    description: "/mrsleep ban, unban and bans - exclude players from /nosleep, up to limits.support.ban in config.yml."
     default: op
+  mrsleep.admin.ban.staff:
+    description: /nosleep bans up to limits.staff.ban.
+    default: op
+    children:
+      mrsleep.admin.ban: true
+  mrsleep.admin.ban.unlimited:
+    description: /nosleep bans of any length, also permanent.
+    default: op
+    children:
+      mrsleep.admin.ban.staff: true
   mrsleep.admin.teleport:
     description: Teleport to players in the admin menu.
     default: op

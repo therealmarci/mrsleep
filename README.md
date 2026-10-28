@@ -22,7 +22,14 @@
 ## Schnellstart
 1. **[MRsleep herunterladen](https://mrtechnology.marcelr.at/download/mrsleep/)** und die JAR in den Ordner `plugins/` legen.
 2. Den Server starten. Dabei entstehen `plugins/MRsleep/config.yml` und die Sprachdateien in `plugins/MRsleep/lang/`.
-3. Fertig - die Standardquote ist 50 %. Wer etwas anpassen will: Config ändern und `/mrsleep reload` ausführen.
+3. **Rechte geben** - Spieler brauchen sie für `/nosleep`, das Team für das Admin-Menü:
+   ```text
+   /lp group default permission set mrsleep.player true
+   /lp group supporter permission set mrsleep.groups.support true
+   /lp group staff permission set mrsleep.groups.staff true
+   /lp group admin permission set mrsleep.groups.admin true
+   ```
+4. Fertig - die Standardquote ist 50 %. Wer etwas anpassen will: Config ändern und `/mrsleep reload` ausführen.
 
 > [!TIP]
 > Nutzt du LuckPerms mit `*`-Rechten für Admins? Dann lies kurz den Hinweis zu [Wildcards](#permissions), sonst zählen deine Admins nicht zur Quote.
@@ -84,6 +91,16 @@ Vanilla kann Spieler nicht wirklich aus der Rechnung nehmen - „ignorierte“ S
 
 Ein Klick auf einen Kopf öffnet das **Spieler-Menü**: Bypass für 30m / 2h / 1d, Cooldown zurücksetzen, Sperren für 1h / 1d / dauerhaft, Blockade aufheben, zum Spieler teleportieren. Jede Aktion braucht ihre eigene Permission - fehlt sie, steht „Keine Berechtigung“ am Button. Die Zeiten und Sounds stellst du unter `gui` in der Config ein.
 
+**Wie lange das Team darf** (`limits` in der Config - gilt für Befehle, Menü und die MRadmin-Weboberfläche):
+
+| | Bypass höchstens | Sperre höchstens |
+|---|---|---|
+| Support (`mrsleep.admin.bypass` / `.ban`) | `limits.support.bypass` (Standard 30 Min) | `limits.support.ban` (Standard 1 Tag) |
+| Staff (`.bypass.staff` / `.ban.staff`) | `limits.staff.bypass` (Standard 1 Tag) | `limits.staff.ban` (Standard 1 Tag) |
+| Admin (`.bypass.unlimited` / `.ban.unlimited`) | unbegrenzt | unbegrenzt, auch dauerhaft |
+
+Knöpfe mit einer längeren Dauer zeigen „Keine Berechtigung“, ein zu langer Befehl sagt, wie lange man höchstens darf.
+
 ---
 
 ## Befehle
@@ -97,14 +114,14 @@ Ein Klick auf einen Kopf öffnet das **Spieler-Menü**: Bypass für 30m / 2h / 1
 | `/mrsleep debug` | Details pro Welt und Spieler - **erste Anlaufstelle bei Problemen** | `mrsleep.admin.status` |
 | `/mrsleep clear [welt]` | Alle Blockaden einer Welt entfernen | `mrsleep.admin.clear` |
 | `/mrsleep release <spieler>` | Blockade eines Spielers aufheben | `mrsleep.admin.clear` |
-| `/mrsleep bypass <spieler> <dauer>` | Cooldown für eine Zeit aufheben (`30m`, `2h`, `1d12h`) | `mrsleep.admin.bypass` |
+| `/mrsleep bypass <spieler> <dauer>` | Cooldown für eine Zeit aufheben (`30m`, `2h`, `1d12h`) - höchstens so lange wie deine [Grenze](#admin-menü) | `mrsleep.admin.bypass` |
 | `/mrsleep bypass remove <spieler>` · `bypass list` | Bypass entfernen · alle anzeigen | `mrsleep.admin.bypass` |
-| `/mrsleep resetcooldown <spieler>` | Cooldown sofort zurücksetzen | `mrsleep.admin.bypass` |
-| `/mrsleep ban <spieler> [dauer\|permanent] [grund]` | Von `/nosleep` ausschließen (ohne Dauer: dauerhaft) | `mrsleep.admin.ban` |
+| `/mrsleep resetcooldown <spieler>` | Cooldown sofort zurücksetzen | `mrsleep.admin.resetcooldown` |
+| `/mrsleep ban <spieler> [dauer\|permanent] [grund]` | Von `/nosleep` ausschließen (ohne Dauer: dauerhaft, braucht `.ban.unlimited`) - höchstens so lange wie deine [Grenze](#admin-menü) | `mrsleep.admin.ban` |
 | `/mrsleep unban <spieler>` · `bans` | Sperre aufheben · alle Sperren anzeigen | `mrsleep.admin.ban` |
 | `/mrsleep discord [test]` | Discord-Status anzeigen, Testnachricht senden | `mrsleep.admin.discord` |
 | `/mrsleep reload` | Config und Sprachdatei neu laden | `mrsleep.admin.reload` |
-| `/mrsleep version` | Version und Update-Status | alle |
+| `/mrsleep version` | Version und Update-Status | `mrsleep.version` (in `mrsleep.player`) |
 
 Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset funktionieren auch bei Spielern, die gerade offline sind.
 
@@ -112,16 +129,24 @@ Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset fu
 
 | Permission | Standard | Wofür |
 |---|---|---|
-| `mrsleep.exempt` | niemand | Zählt **nicht** zur Schlafquote (Bots, Cam-Accounts) |
-| `mrsleep.nosleep` | alle | `/nosleep` benutzen |
-| `mrsleep.nosleep.info` | alle | `/nosleep info` benutzen |
-| `mrsleep.nosleep.nocooldown` | niemand | `/nosleep` ohne Cooldown (auch OPs haben das nicht automatisch) |
-| `mrsleep.admin` | OP | Alle folgenden Admin-Rechte |
+| **Gruppen** | | in allen MRtechnology-Plugins gleich aufgebaut, jede enthält die darunter |
+| `mrsleep.player` | OP | `/nosleep` und `/nosleep info` |
+| `mrsleep.groups.support` | OP | Spieler + Admin-Menü, Status, Teleport, Bypass und Sperre bis zur Support-Grenze |
+| `mrsleep.groups.staff` | OP | Support + Bypass und Sperre bis zur Staff-Grenze, Blockaden aufheben, Cooldown zurücksetzen |
+| `mrsleep.groups.admin` | OP | Alles: Staff + Bypass und Sperre ohne Grenze (auch dauerhaft), Reload, Discord, Update-Hinweis |
+| **Einzeln** | | |
+| `mrsleep.exempt` | niemand | Zählt **nicht** zur Schlafquote (Bots, Cam-Accounts) - in keiner Gruppe |
+| `mrsleep.nosleep` | OP | `/nosleep` benutzen |
+| `mrsleep.nosleep.info` | OP | `/nosleep info` benutzen |
+| `mrsleep.nosleep.nocooldown` | niemand | `/nosleep` ohne Cooldown (auch OPs haben das nicht automatisch) - in keiner Gruppe |
 | `mrsleep.admin.gui` | OP | Admin-Menü öffnen |
 | `mrsleep.admin.status` | OP | `status`, `debug` |
 | `mrsleep.admin.clear` | OP | `clear`, `release` (auch im Menü) |
-| `mrsleep.admin.bypass` | OP | `bypass`, `resetcooldown` (auch im Menü) |
-| `mrsleep.admin.ban` | OP | `ban`, `unban`, `bans` (auch im Menü) |
+| `mrsleep.admin.bypass` | OP | `bypass` bis `limits.support.bypass` (auch im Menü) |
+| `mrsleep.admin.bypass.staff` · `.bypass.unlimited` | OP | Bypass bis `limits.staff.bypass` · ohne Grenze |
+| `mrsleep.admin.resetcooldown` | OP | `resetcooldown` (auch im Menü) |
+| `mrsleep.admin.ban` | OP | `ban` bis `limits.support.ban`, `unban`, `bans` (auch im Menü) |
+| `mrsleep.admin.ban.staff` · `.ban.unlimited` | OP | Sperre bis `limits.staff.ban` · ohne Grenze und dauerhaft |
 | `mrsleep.admin.teleport` | OP | Teleport-Button im Menü |
 | `mrsleep.admin.reload` | OP | `reload` (auch im Menü) |
 | `mrsleep.admin.update` | OP | Update-Hinweis beim Betreten des Servers |
@@ -136,11 +161,10 @@ Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset fu
 
 ```text
 /lp user CamAccount permission set mrsleep.exempt true          # Bot aus der Quote nehmen
-/lp group mod permission set mrsleep.admin.gui true             # Mods: Menü …
-/lp group mod permission set mrsleep.admin.ban true             # … und Sperren
-/lp group mod permission set mrsleep.admin.clear true
+/lp group mod permission set mrsleep.groups.staff true          # Mods: wie Staff …
+/lp group mod permission set mrsleep.admin.ban.unlimited true   # … aber auch dauerhaft sperren
 /lp group vip permission set mrsleep.nosleep.nocooldown true    # VIPs ohne Cooldown
-/lp group default permission set mrsleep.nosleep false          # Gäste ohne /nosleep
+/lp group guest permission set mrsleep.nosleep false            # Gäste ohne /nosleep
 ```
 </details>
 
@@ -156,6 +180,7 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 | `discord` | Webhook-URL, welche Ereignisse gesendet werden, Farben |
 | `update-checker` | an/aus, Prüfintervall, Hinweis beim Betreten |
 | `gui` | Aktualisierung, Schnellauswahl-Zeiten, Sounds |
+| `limits` | Wie lange Support und Staff höchstens Bypass geben und sperren dürfen |
 
 - **Zeitangaben:** `d`, `h`, `m`, `s` kombinierbar (`15m`, `1h30m`, `2d`). Eine reine Zahl zählt als Minuten.
 - **Änderungen übernehmen:** `/mrsleep reload` - ein Neustart ist nicht nötig.

@@ -15,7 +15,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 9
+config-version: 10
 
 # Language of the texts (chat, menus, display). The texts are in plugins/MRsleep/lang/<language>.yml.
 #   auto = every player gets the language set in their Minecraft client:
@@ -208,3 +208,19 @@ gui:
   ban-durations: ["1h", "1d", "permanent"]
   # Click sounds in the menu.
   sounds: true
+
+
+# ------------------------------------------------------------------------------
+#   6) TEAM LIMITS
+# ------------------------------------------------------------------------------
+# Longest cooldown bypass and /nosleep ban the team may give - in commands, the menu and MRadmin's web interface.
+#   support: everyone with mrsleep.admin.bypass / mrsleep.admin.ban (in mrsleep.groups.support)
+#   staff:   with mrsleep.admin.bypass.staff / mrsleep.admin.ban.staff (in mrsleep.groups.staff)
+#   No limit and permanent bans: mrsleep.admin.bypass.unlimited / mrsleep.admin.ban.unlimited (in mrsleep.groups.admin)
+limits:
+  support:
+    bypass: "30m"
+    ban: "1d"
+  staff:
+    bypass: "1d"
+    ban: "1d"

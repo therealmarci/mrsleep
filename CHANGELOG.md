@@ -5,6 +5,25 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.3.0] - 2026-10-28
+
+> [!WARNING]
+> **Neue Permission-Gruppen:** Das Paket `mrsleep.admin` gibt es nicht mehr. Stattdessen gibt es in allen MRtechnology-Plugins dieselben Gruppen `<plugin>.player` und `<plugin>.groups.support|staff|admin`. Außerdem ist `/nosleep` nicht mehr automatisch für alle Spieler da: `/lp group default permission set mrsleep.player true`. Admin-Gruppen umstellen, z.B. `/lp group admin permission unset mrsleep.admin` und `/lp group admin permission set mrsleep.groups.admin true`.
+
+### Neu
+- **Permission-Gruppen:** `mrsleep.player` (`/nosleep`, `/nosleep info`), `mrsleep.groups.support` (Admin-Menü, Status, Teleport, Bypass und Sperre bis zur Support-Grenze), `mrsleep.groups.staff` (+ längere Grenze, Blockaden aufheben, Cooldown zurücksetzen) und `mrsleep.groups.admin` (alles, ohne Grenze). Jede Gruppe enthält die darunter.
+- **Höchstdauern fürs Team** (Abschnitt `limits`, config-version 10): Support darf standardmäßig höchstens 30 Minuten Bypass geben und 1 Tag sperren (`limits.support.bypass`, `limits.support.ban`), Staff je 1 Tag (`limits.staff.*`), Admins unbegrenzt und dauerhaft. Gilt für Befehle, das Admin-Menü (zu lange Zeiten zeigen „Keine Berechtigung“) und die MRadmin-Weboberfläche. Neue Permissions `mrsleep.admin.bypass.staff`, `.bypass.unlimited`, `.ban.staff`, `.ban.unlimited`.
+- **Eigenes Recht für Cooldown zurücksetzen:** `mrsleep.admin.resetcooldown` (bisher in `mrsleep.admin.bypass`).
+- **Knopf im MRadmin-Dashboard:** öffnet das Admin-Menü jetzt direkt über die Modul-API.
+
+### Entfernt
+- **Paket `mrsleep.admin`:** ersetzt durch `mrsleep.groups.admin`.
+
+### Behoben & geändert
+- **`/mrsleep version` nur noch mit Permission:** `mrsleep.version` (in `mrsleep.player`) - bisher durfte das jeder.
+- **`/nosleep` nur noch mit Permission:** `mrsleep.nosleep` und `mrsleep.nosleep.info` sind nicht mehr automatisch für alle - vergib `mrsleep.player` an deine Spieler-Gruppe.
+- **Dauerhaft sperren** geht nur noch mit `mrsleep.admin.ban.unlimited` (in `mrsleep.groups.admin`).
+
 ## [1.2.1] - 2026-10-27
 
 ### Neu
