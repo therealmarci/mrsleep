@@ -72,7 +72,14 @@ public final class MRSleepCommand implements TabExecutor {
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
-            case "version", "ver" -> version(sender);
+            case "version", "ver" -> {
+                // For players too (in mrsleep.player).
+                if (sender.hasPermission("mrsleep.version")) {
+                    version(sender);
+                } else {
+                    messages().send(sender, "no-permission");
+                }
+            }
             case "gui", "menu", "menü" -> {
                 if (!(sender instanceof Player player)) {
                     messages().send(sender, "players-only");
@@ -435,7 +442,9 @@ public final class MRSleepCommand implements TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] args) {
         List<String> options = new ArrayList<>();
         if (args.length == 1) {
-            options.add("version");
+            if (sender.hasPermission("mrsleep.version")) {
+                options.add("version");
+            }
             addIf(sender, PERM_GUI, options, "gui");
             addIf(sender, PERM_STATUS, options, "status", "debug");
             addIf(sender, PERM_CLEAR, options, "clear", "release");

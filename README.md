@@ -121,7 +121,7 @@ Knöpfe mit einer längeren Dauer zeigen „Keine Berechtigung“, ein zu langer
 | `/mrsleep unban <spieler>` · `bans` | Sperre aufheben · alle Sperren anzeigen | `mrsleep.admin.ban` |
 | `/mrsleep discord [test]` | Discord-Status anzeigen, Testnachricht senden | `mrsleep.admin.discord` |
 | `/mrsleep reload` | Config und Sprachdatei neu laden | `mrsleep.admin.reload` |
-| `/mrsleep version` | Version und Update-Status | alle |
+| `/mrsleep version` | Version und Update-Status | `mrsleep.version` (in `mrsleep.player`) |
 
 Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset funktionieren auch bei Spielern, die gerade offline sind.
 

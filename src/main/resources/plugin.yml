@@ -22,9 +22,10 @@ permissions:
   # the team - each group contains the one below. The single permissions further down stay usable on their own;
   # exempt and nocooldown are in no group on purpose. How long the team may bypass or ban: limits in config.yml.
   mrsleep.player:
-    description: "Player: /nosleep and /nosleep info."
+    description: "Player: /nosleep and /nosleep info; /mrsleep version."
     default: op
     children:
+      mrsleep.version: true
       mrsleep.nosleep: true
       mrsleep.nosleep.info: true
   mrsleep.groups.support:
@@ -58,6 +59,9 @@ permissions:
       mrsleep.admin.update: true
 
   # ------------------------------------------------------------------ Single permissions
+  mrsleep.version:
+    description: /mrsleep version - version, update status and links.
+    default: op
   mrsleep.exempt:
     description: Player is not counted for the sleep quota (e.g. cam or bot accounts).
     default: false

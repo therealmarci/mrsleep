@@ -18,6 +18,7 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 - **Paket `mrsleep.admin`:** ersetzt durch `mrsleep.groups.admin`.
 
 ### Behoben & geändert
+- **`/mrsleep version` nur noch mit Permission:** `mrsleep.version` (in `mrsleep.player`) - bisher durfte das jeder.
 - **`/nosleep` nur noch mit Permission:** `mrsleep.nosleep` und `mrsleep.nosleep.info` sind nicht mehr automatisch für alle - vergib `mrsleep.player` an deine Spieler-Gruppe.
 - **Dauerhaft sperren** geht nur noch mit `mrsleep.admin.ban.unlimited` (in `mrsleep.groups.admin`).
 
