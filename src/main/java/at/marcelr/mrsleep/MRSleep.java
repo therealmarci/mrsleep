@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/** Main class of MRsleep: loads config and texts and starts the sleep vote, /nosleep and the MRadmin link. */
 public final class MRSleep extends JavaPlugin {
 
     private FileConfiguration config;
