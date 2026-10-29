@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/** All values of config.yml, read once per (re)load. */
 public record Settings(
         int percentage,
         int minimumSleepers,

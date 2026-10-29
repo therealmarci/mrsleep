@@ -33,6 +33,7 @@ import java.util.UUID;
 
 import static at.marcelr.mrsleep.Messages.tag;
 
+/** /mrsleep - admin menu, status, blocked votes (clear, release), bypass, cooldowns, bans, reload, debug and version. */
 public final class MRSleepCommand implements TabExecutor {
 
     private static final String PERM_GUI = "mrsleep.admin.gui";

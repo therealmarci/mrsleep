@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import static at.marcelr.mrsleep.Messages.tag;
 
+/** Going to bed and getting up, world and game mode changes, joins, quits and skipped nights - all that changes a sleep vote. */
 public final class SleepListener implements Listener {
 
     private final MRSleep plugin;
