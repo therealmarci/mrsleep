@@ -5,6 +5,11 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.3.1] - 2026-10-29
+
+### Behoben & geändert
+- **Aufgeräumt:** Code-Kommentare ergänzt (Audit vor den 1.0.0-Releases der anderen MRtechnology-Plugins). Am Verhalten ändert sich nichts.
+
 ## [1.3.0] - 2026-10-28
 
 > [!WARNING]
