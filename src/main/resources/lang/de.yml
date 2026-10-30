@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Nicht ändern - damit erkennt das Plugin bei Updates, welche Texte erneuert werden müssen.
-lang-version: 3
+lang-version: 4
 
 # Texte der Discord-Logs (Markdown wie in Discord). Platzhalter: {player} {world} {nights} {players}
 # {admin} {time} {reason} {sleeping} {needed} {counted}. An/aus und Farbe stehen in der config.yml.
@@ -56,11 +56,11 @@ display-blocked: "<red>Schlafen blockiert von <white><players></white> <gray>(no
 # Empfänger laut sleep.sleep-message. Platzhalter: <player> <world> <sleeping> <needed>
 player-sleeping: "<prefix><gray><white><player></white> hat sich schlafen gelegt <dark_gray>(<yellow><sleeping></yellow>/<yellow><needed></yellow>)"
 night-skipped: "<prefix><yellow>Guten Morgen! Die Nacht wurde übersprungen."
-night-start-blocked: "<prefix><gray>Die Nacht bricht an - Schlafen ist blockiert von <gold><players></gold> <gray>(noch <nights>)."
-bed-prevented: "<prefix><gold><players></gold> <red>hat das Schlafen blockiert, du kannst nicht schlafen. Noch <white><nights></white>."
-bed-blocked-warning: "<prefix><gold><players></gold> <yellow>hat das Schlafen blockiert - die Nacht wird nicht übersprungen. Noch <white><nights></white>."
-bed-excluded: "<prefix><gray>Hinweis: Du zählst nicht zur Schlafquote <dark_gray>(<reason>)<gray>. Dein Schlafen überspringt die Nacht nicht."
-join-blocked-info: "<prefix><gray>Info: Schlafen ist gerade blockiert von <gold><players></gold> <gray>(noch <nights>)."
+night-start-blocked: "<prefix><hover:show_text:'<gray>Noch <nights>'><gray>Nacht - Schlafen blockiert von <gold><players></gold></hover>"
+bed-prevented: "<prefix><hover:show_text:'<gray>Noch <nights>'><red>Schlafen blockiert von <gold><players></gold></hover>"
+bed-blocked-warning: "<prefix><hover:show_text:'<gray>Die Nacht wird nicht übersprungen. Noch <nights>.'><yellow>Schlafen blockiert von <gold><players></gold></hover>"
+bed-excluded: "<prefix><hover:show_text:'<gray><reason><newline>Dein Schlafen überspringt die Nacht nicht.'><gray>Du zählst nicht zur Schlafquote.</hover>"
+join-blocked-info: "<prefix><hover:show_text:'<gray>Noch <nights>'><gray>Schlafen blockiert von <gold><players></gold></hover>"
 reason-exempt: "Permission mrsleep.exempt"
 reason-spectator: "Zuschauermodus"
 reason-sleeping-ignored: "von einem anderen Plugin ignoriert, z.B. AFK"
@@ -68,17 +68,17 @@ reason-admin-mode: "im Admin-Modus (MRadmin)"
 reason-pvp: "im Duell (MRpvp)"
 
 # --- /nosleep ----------------------------------------------------------------
-nosleep-activated: "<prefix><green>Du blockierst das Schlafen für <white><nights></white>. Nutze <white>/nosleep</white> erneut, um es aufzuheben."
+nosleep-activated: "<prefix><hover:show_text:'<gray>Aufheben: /nosleep'><green>Schlafen blockiert für <white><nights></white></hover>"
 nosleep-updated: "<prefix><green>Deine Schlafblockade gilt jetzt für <white><nights></white>."
 nosleep-deactivated: "<prefix><green>Du hast deine Schlafblockade aufgehoben."
-nosleep-deactivated-free: "<prefix><green>Du hast deine Schlafblockade aufgehoben. <gray>Die Nacht hatte noch nicht begonnen - es entsteht kein Cooldown."
-nosleep-deactivated-cooldown: "<prefix><green>Du hast deine Schlafblockade aufgehoben. <gray>Dein Cooldown läuft weiter (noch <white><time></white>)."
-nosleep-pending-info: "<prefix><gray>Der Cooldown (<white><time></white>) startet erst, wenn die Nacht anbricht. Hebst du die Blockade vorher auf, entsteht keiner."
-nosleep-cooldown-started: "<prefix><gray>Die Nacht bricht an - deine Blockade ist aktiv, dein <white>/nosleep</white>-Cooldown (<white><time></white>) läuft ab jetzt."
+nosleep-deactivated-free: "<prefix><hover:show_text:'<gray>Die Nacht hatte noch nicht begonnen.'><green>Blockade aufgehoben, kein Cooldown.</hover>"
+nosleep-deactivated-cooldown: "<prefix><green>Blockade aufgehoben <gray>(Cooldown noch <time>)"
+nosleep-pending-info: "<prefix><hover:show_text:'<gray>Hebst du die Blockade vorher auf, gibt es keinen.'><gray>Cooldown (<time>) startet mit der Nacht.</hover>"
+nosleep-cooldown-started: "<prefix><gray>Nacht - Blockade aktiv, Cooldown <white><time></white> läuft."
 nosleep-not-active: "<prefix><gray>Du hast gerade keine Schlafblockade aktiv."
-nosleep-invalid-nights: "<prefix><red>Bitte gib eine Anzahl zwischen <white>1</white> und <white><max></white> Nächten an: <white>/nosleep [anzahl]</white><red>, oder <white>/nosleep info</white><red> für deinen Status."
-nosleep-cooldown: "<prefix><red>Du kannst <white>/nosleep</white> erst wieder in <white><time></white> nutzen."
-nosleep-banned: "<prefix><red>Du bist von <white>/nosleep</white> ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)<red>."
+nosleep-invalid-nights: "<prefix><hover:show_text:'<gray>/nosleep [anzahl] oder /nosleep info'><red>1 bis <white><max></white> Nächte angeben.</hover>"
+nosleep-cooldown: "<prefix><red><white>/nosleep</white> wieder in <white><time></white>."
+nosleep-banned: "<prefix><hover:show_text:'<gray><duration>, Grund: <reason>'><red>Du bist von /nosleep ausgeschlossen.</hover>"
 # /nosleep info - Werte wie <counts>, <own>, <cooldown>, <ban> kommen aus den gui-value-* Texten weiter unten.
 nosleep-info: |-
   <prefix><gray>Dein Schlaf-Status:
@@ -92,9 +92,9 @@ nosleep-info: |-
 nosleep-info-blockers: "<gold><players>"
 nosleep-broadcast-activated: "<prefix><gold><player></gold> <gray>blockiert das Schlafen für <white><nights></white>."
 nosleep-broadcast-deactivated: "<prefix><gold><player></gold> <gray>hat die Schlafblockade aufgehoben."
-nosleep-broadcast-quit: "<prefix><gray>Die Schlafblockade von <gold><player></gold> wurde aufgehoben (Server verlassen)."
-nosleep-broadcast-released: "<prefix><gray>Die Schlafblockade von <gold><player></gold> wurde von <white><admin></white> aufgehoben."
-nosleep-expired: "<prefix><gray>Die Schlafblockade von <gold><player></gold> ist abgelaufen - ab jetzt kann wieder geschlafen werden."
+nosleep-broadcast-quit: "<prefix><gray>Blockade von <gold><player></gold> aufgehoben (offline)."
+nosleep-broadcast-released: "<prefix><gray><white><admin></white> hat die Blockade von <gold><player></gold> aufgehoben."
+nosleep-expired: "<prefix><gray>Blockade von <gold><player></gold> abgelaufen - Schlafen geht wieder."
 
 # --- Admin-Befehle -----------------------------------------------------------
 admin-usage: |-
@@ -114,28 +114,28 @@ admin-usage: |-
   <aqua>/mrsleep reload</aqua> <dark_gray>- <gray>Konfiguration neu laden
   <aqua>/mrsleep version</aqua> <dark_gray>- <gray>Version & Update-Status
 reloaded: "<prefix><green>Konfiguration neu geladen."
-status: "<prefix><gray>Welt <white><world></white>: <yellow><sleeping></yellow>/<yellow><needed></yellow> schlafen, <yellow><counted></yellow> zählen, <yellow><exempt></yellow> ausgenommen. Blockiert von: <white><players></white>"
+status: "<prefix><hover:show_text:'<gray><counted> zählen, <exempt> ausgenommen<newline>Blockiert von: <players>'><gray><white><world></white>: <yellow><sleeping></yellow>/<yellow><needed></yellow> schlafen</hover>"
 status-none: "-"
 world-not-found: "<prefix><red>Welt <white><world></white> nicht gefunden oder nicht verwaltet."
 cleared: "<prefix><green>Schlafblockade in <white><world></white> entfernt."
 clear-none: "<prefix><gray>In <white><world></white> ist keine Schlafblockade aktiv."
-cleared-broadcast: "<prefix><gray>Die Schlafblockade wurde von <white><admin></white> aufgehoben - ab jetzt kann wieder geschlafen werden."
+cleared-broadcast: "<prefix><gray><white><admin></white> hat die Blockade aufgehoben - Schlafen geht wieder."
 released: "<prefix><green>Blockade von <white><player></white> aufgehoben."
 release-none: "<prefix><gray><white><player></white> blockiert gerade keine Nacht."
-bypass-set: "<prefix><green><white><player></white> kann /nosleep für <white><time></white> ohne Cooldown nutzen."
-limit-bypass: "<prefix><red>So lange darfst du keinen Bypass geben - höchstens <white><time></white>."
+bypass-set: "<prefix><green><white><player></white>: /nosleep ohne Cooldown für <white><time></white>"
+limit-bypass: "<prefix><red>Höchstens <white><time></white> Bypass."
 bypass-removed: "<prefix><green>Bypass von <white><player></white> entfernt."
 bypass-none: "<prefix><gray><white><player></white> hat keinen aktiven Bypass."
 bypass-list-header: "<prefix><gray>Aktive Bypässe:"
 bypass-list-entry: "<dark_gray> - <white><player></white> <gray>(noch <time>)"
 bypass-list-empty: "<prefix><gray>Keine aktiven Bypässe."
-bypass-granted-notify: "<prefix><green>Du kannst <white>/nosleep</white> für <white><time></white> ohne Cooldown nutzen."
-bypass-removed-notify: "<prefix><gray>Dein Cooldown-Bypass für <white>/nosleep</white> wurde entfernt."
+bypass-granted-notify: "<prefix><green><white>/nosleep</white> ohne Cooldown für <white><time></white>"
+bypass-removed-notify: "<prefix><gray>Dein /nosleep-Bypass wurde entfernt."
 cooldown-reset: "<prefix><green>Cooldown von <white><player></white> zurückgesetzt."
 cooldown-reset-notify: "<prefix><green>Dein <white>/nosleep</white>-Cooldown wurde zurückgesetzt."
-ban-set: "<prefix><green><white><player></white> ist jetzt von /nosleep ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)."
-limit-ban: "<prefix><red>So lange darfst du nicht sperren - höchstens <white><time></white> (dauerhaft nur mit mrsleep.admin.ban.unlimited)."
-ban-notify: "<prefix><red>Du wurdest von <white>/nosleep</white> ausgeschlossen <dark_gray>(<duration>, Grund: <reason>)<red>."
+ban-set: "<prefix><hover:show_text:'<gray><duration>, Grund: <reason>'><green><white><player></white> von /nosleep ausgeschlossen</hover>"
+limit-ban: "<prefix><hover:show_text:'<gray>Dauerhaft nur mit mrsleep.admin.ban.unlimited'><red>Höchstens <white><time></white> sperren.</hover>"
+ban-notify: "<prefix><hover:show_text:'<gray><duration>, Grund: <reason>'><red>Du bist von /nosleep ausgeschlossen.</hover>"
 unban-set: "<prefix><green>Die /nosleep-Sperre von <white><player></white> wurde aufgehoben."
 unban-none: "<prefix><gray><white><player></white> ist nicht gesperrt."
 unban-notify: "<prefix><green>Du darfst <white>/nosleep</white> wieder nutzen."
@@ -147,7 +147,7 @@ ban-duration-temporary: "noch <time>"
 ban-no-reason: "kein Grund angegeben"
 
 # --- Debug -------------------------------------------------------------------
-debug-world: "<prefix><aqua><world></aqua> <gray>verwaltet: <white><managed></white>, Gamerule: <white><gamerule></white>, Zeit: <white><time></white>, Nacht: <white><night></white>, blockiert von: <white><players></white>"
+debug-world: "<prefix><hover:show_text:'<gray>Gamerule: <gamerule>, Zeit: <time>, Nacht: <night><newline>Blockiert von: <players>'><aqua><world></aqua> <gray>verwaltet: <white><managed></white></hover>"
 debug-quota: "<dark_gray>  » <gray>zählen: <yellow><counted></yellow>, ausgenommen: <yellow><exempt></yellow>, schlafen: <yellow><sleeping></yellow> (davon tief: <yellow><deep></yellow>), benötigt: <yellow><needed></yellow>"
 debug-player: "<dark_gray>  - <white><player></white> <gray>zählt: <counts>, schläft: <white><sleeping></white> (<ticks> Ticks), /nosleep-Cooldown: <white><cooldown></white>"
 debug-counts-yes: "ja"
@@ -159,11 +159,11 @@ debug-cooldown-remaining: "noch <time>"
 debug-cooldown-pending: "startet bei Nachtbeginn"
 
 # --- Discord ----------------------------------------------------------------
-discord-status-active: "<prefix><green>Discord-Webhook aktiv <gray>(<white><events></white>/<white><total></white> Events eingeschaltet)"
+discord-status-active: "<prefix><green>Discord aktiv <gray>(<events>/<total> Events)"
 discord-status-inactive: "<prefix><red>Discord-Webhook inaktiv: <white><reason>"
 discord-status-last: "<prefix><gray>Letzter Versand: <white><result>"
 discord-status-never: "seit dem Start noch nichts gesendet"
-discord-test-hint: "<prefix><gray>Mit <white>/mrsleep discord test</white> eine Testnachricht schicken."
+discord-test-hint: "<prefix><gray>Test: <white>/mrsleep discord test"
 discord-test-sending: "<prefix><gray>Sende Testnachricht an Discord ..."
 discord-test-ok: "<prefix><green>✔ Testnachricht ist in Discord angekommen."
 discord-test-failed: "<prefix><red>✘ Testnachricht fehlgeschlagen: <white><reason>"

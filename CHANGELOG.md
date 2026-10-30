@@ -5,6 +5,11 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.3.2] - 2026-10-30
+
+### Behoben & geändert
+- **Kurze Chatnachrichten:** Chatnachrichten sind jetzt eine knappe Zeile; Einzelheiten (wie lange noch, Grund, Befehle) erscheinen, wenn man mit der Maus darüberfährt, in der Konsole in Klammern dahinter (`lang-version` 4 - eigene Änderungen an diesen Texten in `lang/de.yml` und `lang/en.yml` werden dabei ersetzt).
+
 ## [1.3.1] - 2026-10-29
 
 ### Behoben & geändert

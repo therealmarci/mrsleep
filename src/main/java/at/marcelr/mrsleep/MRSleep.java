@@ -20,9 +20,17 @@ public final class MRSleep extends JavaPlugin {
     private FileConfiguration config;
     private Settings settings;
     // lang-version 2: the version display got the Minecraft version.
-    private final Messages messages = new Messages(3, Map.of(2, Set.of("version", "gui-info-name"),
+    private final Messages messages = new Messages(4, Map.of(2, Set.of("version", "gui-info-name"),
             // 3: "Website | GitHub" in /mrsleep version.
-            3, Set.of("version-links")));
+            3, Set.of("version-links"),
+            // 4: short chat messages, details on hover.
+            4, Set.of(
+                    "night-start-blocked", "bed-prevented", "bed-blocked-warning", "bed-excluded", "join-blocked-info",
+                    "nosleep-activated", "nosleep-deactivated-free", "nosleep-deactivated-cooldown",
+                    "nosleep-pending-info", "nosleep-cooldown-started", "nosleep-invalid-nights", "nosleep-cooldown",
+                    "nosleep-banned", "nosleep-broadcast-quit", "nosleep-broadcast-released", "nosleep-expired", "status",
+                    "cleared-broadcast", "bypass-set", "limit-bypass", "bypass-granted-notify", "bypass-removed-notify",
+                    "ban-set", "limit-ban", "ban-notify", "debug-world", "discord-status-active", "discord-test-hint")));
     private final DiscordWebhook discord = new DiscordWebhook(this);
     private final AdminActions adminActions = new AdminActions(this);
     private UpdateChecker updateChecker;
