@@ -11,7 +11,7 @@
 # ==============================================================================
 
 # Do not change - tells the plugin which texts need to be renewed on updates.
-lang-version: 3
+lang-version: 4
 
 # Discord log texts (Discord markdown). Placeholders: {player} {world} {nights} {players}
 # {admin} {time} {reason} {sleeping} {needed} {counted}. On/off and colour are set in config.yml.
@@ -56,11 +56,11 @@ display-blocked: "<red>Sleeping blocked by <white><players></white> <gray>(<nigh
 # Recipients as set in sleep.sleep-message. Placeholders: <player> <world> <sleeping> <needed>
 player-sleeping: "<prefix><gray><white><player></white> went to bed <dark_gray>(<yellow><sleeping></yellow>/<yellow><needed></yellow>)"
 night-skipped: "<prefix><yellow>Good morning! The night was skipped."
-night-start-blocked: "<prefix><gray>Night falls - sleeping is blocked by <gold><players></gold> <gray>(<nights> left)."
-bed-prevented: "<prefix><gold><players></gold> <red>blocked sleeping, you can't sleep. <white><nights></white> left."
-bed-blocked-warning: "<prefix><gold><players></gold> <yellow>blocked sleeping - the night will not be skipped. <white><nights></white> left."
-bed-excluded: "<prefix><gray>Note: you don't count towards the sleep quota <dark_gray>(<reason>)<gray>. Your sleeping does not skip the night."
-join-blocked-info: "<prefix><gray>Info: sleeping is currently blocked by <gold><players></gold> <gray>(<nights> left)."
+night-start-blocked: "<prefix><hover:show_text:'<gray><nights> left'><gray>Night - sleeping blocked by <gold><players></gold></hover>"
+bed-prevented: "<prefix><hover:show_text:'<gray><nights> left'><red>Sleeping blocked by <gold><players></gold></hover>"
+bed-blocked-warning: "<prefix><hover:show_text:'<gray>The night will not be skipped. <nights> left.'><yellow>Sleeping blocked by <gold><players></gold></hover>"
+bed-excluded: "<prefix><hover:show_text:'<gray><reason><newline>Your sleeping does not skip the night.'><gray>You do not count towards the sleep quota.</hover>"
+join-blocked-info: "<prefix><hover:show_text:'<gray><nights> left'><gray>Sleeping blocked by <gold><players></gold></hover>"
 reason-exempt: "permission mrsleep.exempt"
 reason-spectator: "spectator mode"
 reason-sleeping-ignored: "ignored by another plugin, e.g. AFK"
@@ -68,17 +68,17 @@ reason-admin-mode: "in admin mode (MRadmin)"
 reason-pvp: "in a duel (MRpvp)"
 
 # --- /nosleep ----------------------------------------------------------------
-nosleep-activated: "<prefix><green>You block sleeping for <white><nights></white>. Use <white>/nosleep</white> again to lift it."
+nosleep-activated: "<prefix><hover:show_text:'<gray>Lift it: /nosleep'><green>Sleeping blocked for <white><nights></white></hover>"
 nosleep-updated: "<prefix><green>Your sleep block now lasts <white><nights></white>."
 nosleep-deactivated: "<prefix><green>You lifted your sleep block."
-nosleep-deactivated-free: "<prefix><green>You lifted your sleep block. <gray>The night had not started yet - no cooldown."
-nosleep-deactivated-cooldown: "<prefix><green>You lifted your sleep block. <gray>Your cooldown keeps running (<white><time></white> left)."
-nosleep-pending-info: "<prefix><gray>The cooldown (<white><time></white>) only starts when night falls. If you lift the block before that, there is none."
-nosleep-cooldown-started: "<prefix><gray>Night falls - your block is active, your <white>/nosleep</white> cooldown (<white><time></white>) starts now."
+nosleep-deactivated-free: "<prefix><hover:show_text:'<gray>The night had not started yet.'><green>Block lifted, no cooldown.</hover>"
+nosleep-deactivated-cooldown: "<prefix><green>Block lifted <gray>(cooldown <time> left)"
+nosleep-pending-info: "<prefix><hover:show_text:'<gray>Lift the block before that and there is none.'><gray>Cooldown (<time>) starts with the night.</hover>"
+nosleep-cooldown-started: "<prefix><gray>Night - block active, cooldown <white><time></white> running."
 nosleep-not-active: "<prefix><gray>You have no active sleep block."
-nosleep-invalid-nights: "<prefix><red>Please enter a number between <white>1</white> and <white><max></white> nights: <white>/nosleep [nights]</white><red>, or <white>/nosleep info</white><red> for your status."
-nosleep-cooldown: "<prefix><red>You can use <white>/nosleep</white> again in <white><time></white>."
-nosleep-banned: "<prefix><red>You are banned from <white>/nosleep</white> <dark_gray>(<duration>, reason: <reason>)<red>."
+nosleep-invalid-nights: "<prefix><hover:show_text:'<gray>/nosleep [nights] or /nosleep info'><red>Enter 1 to <white><max></white> nights.</hover>"
+nosleep-cooldown: "<prefix><red><white>/nosleep</white> again in <white><time></white>."
+nosleep-banned: "<prefix><hover:show_text:'<gray><duration>, reason: <reason>'><red>You are banned from /nosleep.</hover>"
 # /nosleep info - values like <counts>, <own>, <cooldown>, <ban> come from the gui-value-* texts below.
 nosleep-info: |-
   <prefix><gray>Your sleep status:
@@ -92,9 +92,9 @@ nosleep-info: |-
 nosleep-info-blockers: "<gold><players>"
 nosleep-broadcast-activated: "<prefix><gold><player></gold> <gray>blocks sleeping for <white><nights></white>."
 nosleep-broadcast-deactivated: "<prefix><gold><player></gold> <gray>lifted the sleep block."
-nosleep-broadcast-quit: "<prefix><gray>The sleep block of <gold><player></gold> was lifted (left the server)."
-nosleep-broadcast-released: "<prefix><gray>The sleep block of <gold><player></gold> was lifted by <white><admin></white>."
-nosleep-expired: "<prefix><gray>The sleep block of <gold><player></gold> has expired - you can sleep again."
+nosleep-broadcast-quit: "<prefix><gray>Block of <gold><player></gold> lifted (offline)."
+nosleep-broadcast-released: "<prefix><gray><white><admin></white> lifted the block of <gold><player></gold>."
+nosleep-expired: "<prefix><gray>Block of <gold><player></gold> expired - you can sleep again."
 
 # --- Admin commands ----------------------------------------------------------
 admin-usage: |-
@@ -114,28 +114,28 @@ admin-usage: |-
   <aqua>/mrsleep reload</aqua> <dark_gray>- <gray>Reload the configuration
   <aqua>/mrsleep version</aqua> <dark_gray>- <gray>Version & update status
 reloaded: "<prefix><green>Configuration reloaded."
-status: "<prefix><gray>World <white><world></white>: <yellow><sleeping></yellow>/<yellow><needed></yellow> sleeping, <yellow><counted></yellow> counted, <yellow><exempt></yellow> exempt. Blocked by: <white><players></white>"
+status: "<prefix><hover:show_text:'<gray><counted> counted, <exempt> exempt<newline>Blocked by: <players>'><gray><white><world></white>: <yellow><sleeping></yellow>/<yellow><needed></yellow> sleeping</hover>"
 status-none: "-"
 world-not-found: "<prefix><red>World <white><world></white> not found or not managed."
 cleared: "<prefix><green>Sleep block in <white><world></white> removed."
 clear-none: "<prefix><gray>There is no sleep block in <white><world></white>."
-cleared-broadcast: "<prefix><gray>The sleep block was lifted by <white><admin></white> - you can sleep again."
+cleared-broadcast: "<prefix><gray><white><admin></white> lifted the block - you can sleep again."
 released: "<prefix><green>Block of <white><player></white> lifted."
 release-none: "<prefix><gray><white><player></white> is not blocking any night."
-bypass-set: "<prefix><green><white><player></white> can use /nosleep without cooldown for <white><time></white>."
-limit-bypass: "<prefix><red>You may not give a bypass that long - at most <white><time></white>."
+bypass-set: "<prefix><green><white><player></white>: /nosleep without cooldown for <white><time></white>"
+limit-bypass: "<prefix><red>At most <white><time></white> bypass."
 bypass-removed: "<prefix><green>Bypass of <white><player></white> removed."
 bypass-none: "<prefix><gray><white><player></white> has no active bypass."
 bypass-list-header: "<prefix><gray>Active bypasses:"
 bypass-list-entry: "<dark_gray> - <white><player></white> <gray>(<time> left)"
 bypass-list-empty: "<prefix><gray>No active bypasses."
-bypass-granted-notify: "<prefix><green>You can use <white>/nosleep</white> without cooldown for <white><time></white>."
-bypass-removed-notify: "<prefix><gray>Your cooldown bypass for <white>/nosleep</white> was removed."
+bypass-granted-notify: "<prefix><green><white>/nosleep</white> without cooldown for <white><time></white>"
+bypass-removed-notify: "<prefix><gray>Your /nosleep bypass was removed."
 cooldown-reset: "<prefix><green>Cooldown of <white><player></white> reset."
 cooldown-reset-notify: "<prefix><green>Your <white>/nosleep</white> cooldown was reset."
-ban-set: "<prefix><green><white><player></white> is now banned from /nosleep <dark_gray>(<duration>, reason: <reason>)."
-limit-ban: "<prefix><red>You may not ban that long - at most <white><time></white> (permanent only with mrsleep.admin.ban.unlimited)."
-ban-notify: "<prefix><red>You were banned from <white>/nosleep</white> <dark_gray>(<duration>, reason: <reason>)<red>."
+ban-set: "<prefix><hover:show_text:'<gray><duration>, reason: <reason>'><green><white><player></white> banned from /nosleep</hover>"
+limit-ban: "<prefix><hover:show_text:'<gray>Permanent only with mrsleep.admin.ban.unlimited'><red>Ban at most <white><time></white>.</hover>"
+ban-notify: "<prefix><hover:show_text:'<gray><duration>, reason: <reason>'><red>You are banned from /nosleep.</hover>"
 unban-set: "<prefix><green>The /nosleep ban of <white><player></white> was lifted."
 unban-none: "<prefix><gray><white><player></white> is not banned."
 unban-notify: "<prefix><green>You may use <white>/nosleep</white> again."
@@ -147,7 +147,7 @@ ban-duration-temporary: "<time> left"
 ban-no-reason: "no reason given"
 
 # --- Debug -------------------------------------------------------------------
-debug-world: "<prefix><aqua><world></aqua> <gray>managed: <white><managed></white>, gamerule: <white><gamerule></white>, time: <white><time></white>, night: <white><night></white>, blocked by: <white><players></white>"
+debug-world: "<prefix><hover:show_text:'<gray>Gamerule: <gamerule>, time: <time>, night: <night><newline>Blocked by: <players>'><aqua><world></aqua> <gray>managed: <white><managed></white></hover>"
 debug-quota: "<dark_gray>  » <gray>counted: <yellow><counted></yellow>, exempt: <yellow><exempt></yellow>, sleeping: <yellow><sleeping></yellow> (deep: <yellow><deep></yellow>), needed: <yellow><needed></yellow>"
 debug-player: "<dark_gray>  - <white><player></white> <gray>counts: <counts>, sleeping: <white><sleeping></white> (<ticks> ticks), /nosleep cooldown: <white><cooldown></white>"
 debug-counts-yes: "yes"
@@ -159,11 +159,11 @@ debug-cooldown-remaining: "<time> left"
 debug-cooldown-pending: "starts when night falls"
 
 # --- Discord -----------------------------------------------------------------
-discord-status-active: "<prefix><green>Discord webhook active <gray>(<white><events></white>/<white><total></white> events enabled)"
+discord-status-active: "<prefix><green>Discord active <gray>(<events>/<total> events)"
 discord-status-inactive: "<prefix><red>Discord webhook inactive: <white><reason>"
 discord-status-last: "<prefix><gray>Last delivery: <white><result>"
 discord-status-never: "nothing sent since startup"
-discord-test-hint: "<prefix><gray>Send a test message with <white>/mrsleep discord test</white>."
+discord-test-hint: "<prefix><gray>Test: <white>/mrsleep discord test"
 discord-test-sending: "<prefix><gray>Sending test message to Discord ..."
 discord-test-ok: "<prefix><green>✔ The test message arrived in Discord."
 discord-test-failed: "<prefix><red>✘ Test message failed: <white><reason>"
