@@ -56,6 +56,8 @@ Wer nicht zählt, bekommt beim Hinlegen einen Hinweis mit dem Grund. Wie in Vani
 
 Verwaltet werden alle normalen Oberwelten. Nether und End sind ausgenommen, weitere Welten schließt du über `sleep.disabled-worlds` aus.
 
+Jede Welt stimmt für sich ab, Zeit und Wetter ändern sich nur dort - das gilt auch für zusätzliche Welten von Multiverse.
+
 <details>
 <summary>Warum steht die Gamerule <code>playersSleepingPercentage</code> auf 100?</summary>
 
