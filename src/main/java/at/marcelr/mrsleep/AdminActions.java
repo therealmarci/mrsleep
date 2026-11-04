@@ -21,10 +21,10 @@ import static at.marcelr.mrsleep.Messages.tag;
  */
 public final class AdminActions {
 
-    /** Bypass up to limits.support.bypass, ban up to limits.support.ban (and lift both). */
+    /** Bypass up to team-limits.support.bypass, ban up to team-limits.support.ban (and lift both). */
     public static final String PERM_BYPASS = "mrsleep.admin.bypass";
     public static final String PERM_BAN = "mrsleep.admin.ban";
-    /** Up to limits.staff.*. */
+    /** Up to team-limits.staff.*. */
     public static final String PERM_BYPASS_STAFF = "mrsleep.admin.bypass.staff";
     public static final String PERM_BAN_STAFF = "mrsleep.admin.ban.staff";
     /** No limit, permanent bans. */

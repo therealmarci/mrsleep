@@ -77,17 +77,17 @@ public record Settings(
                 .map(s -> s.toLowerCase(Locale.ROOT))
                 .collect(Collectors.toUnmodifiableSet());
 
-        String source = c.getString("update-checker.source", "github").toLowerCase(Locale.ROOT);
+        String source = c.getString("updates.source", "github").toLowerCase(Locale.ROOT);
         if (!source.equals("modrinth") && !source.equals("github")) {
-            log.warning("Invalid update-checker.source '" + source + "', using github.");
+            log.warning("Invalid updates.source '" + source + "', using github.");
             source = "github";
         }
         UpdateSettings update = new UpdateSettings(
-                c.getBoolean("update-checker.enabled", true),
+                c.getBoolean("updates.enabled", true),
                 source,
-                c.getBoolean("update-checker.include-prereleases", false),
-                Math.max(1, c.getInt("update-checker.interval-hours", 6)),
-                c.getBoolean("update-checker.notify-on-join", true));
+                c.getBoolean("updates.include-prereleases", false),
+                Math.max(1, c.getInt("updates.interval-hours", 6)),
+                c.getBoolean("updates.notify-on-join", true));
 
         GuiSettings gui = new GuiSettings(
                 Math.max(5, c.getInt("gui.refresh-ticks", 20)),
@@ -98,18 +98,18 @@ public record Settings(
         return new Settings(
                 percentage,
                 Math.max(1, c.getInt("sleep.minimum-sleepers", 1)),
-                c.getBoolean("sleep.ignore-spectators", true),
-                c.getBoolean("sleep.respect-sleeping-ignored", true),
-                c.getBoolean("sleep.ignore-admin-mode", true),
-                c.getBoolean("sleep.ignore-pvp", true),
+                c.getBoolean("sleep.ignore.spectators", true),
+                c.getBoolean("sleep.ignore.sleeping-ignored", true),
+                c.getBoolean("sleep.ignore.admin-mode", true),
+                c.getBoolean("sleep.ignore.pvp", true),
                 c.getBoolean("sleep.clear-weather", true),
                 new DisplaySettings(
-                        parseEnum(c.getString("sleep.display"), SleepDisplay.Mode.BOSSBAR, "sleep.display", log),
-                        parseEnum(c.getString("sleep.bossbar-color"), BossBar.Color.YELLOW, "sleep.bossbar-color", log),
-                        parseEnum(c.getString("sleep.bossbar-blocked-color"), BossBar.Color.RED, "sleep.bossbar-blocked-color", log),
-                        c.getBoolean("sleep.hide-vanilla-message", true)),
-                parseEnum(c.getString("sleep.sleep-message"), SleepMessage.WORLD, "sleep.sleep-message", log),
-                c.getBoolean("sleep.announce-skip", true),
+                        parseEnum(c.getString("sleep.display.mode"), SleepDisplay.Mode.BOSSBAR, "sleep.display.mode", log),
+                        parseEnum(c.getString("sleep.display.bossbar-color"), BossBar.Color.YELLOW, "sleep.display.bossbar-color", log),
+                        parseEnum(c.getString("sleep.display.bossbar-blocked-color"), BossBar.Color.RED, "sleep.display.bossbar-blocked-color", log),
+                        c.getBoolean("sleep.display.hide-vanilla-message", true)),
+                parseEnum(c.getString("sleep.chat.sleep-message"), SleepMessage.WORLD, "sleep.chat.sleep-message", log),
+                c.getBoolean("sleep.chat.announce-skip", true),
                 disabled,
                 cooldown,
                 Math.max(1, c.getInt("nosleep.max-nights", 3)),
@@ -118,8 +118,8 @@ public record Settings(
                 c.getBoolean("nosleep.broadcast", true),
                 update,
                 gui,
-                new LimitSettings(limit(c, "limits.support.bypass", "30m", log), limit(c, "limits.support.ban", "1d", log),
-                        limit(c, "limits.staff.bypass", "1d", log), limit(c, "limits.staff.ban", "1d", log))
+                new LimitSettings(limit(c, "team-limits.support.bypass", "30m", log), limit(c, "team-limits.support.ban", "1d", log),
+                        limit(c, "team-limits.staff.bypass", "1d", log), limit(c, "team-limits.staff.ban", "1d", log))
         );
     }
 

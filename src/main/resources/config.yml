@@ -1,6 +1,8 @@
 ﻿# ==============================================================================
 #   MRsleep - Configuration
 # ==============================================================================
+#   Easiest way:     MRadmin web interface -> Plugins -> MRsleep -> Configuration
+#                    (saved and reloaded right away; this file stays editable by hand)
 #   After changes:   /mrsleep reload   (no restart needed)
 #   Admin menu:      /mrsleep gui
 #   Help & docs:     https://mrtechnology.marcelr.at/docs/mrsleep/
@@ -8,86 +10,87 @@
 #   Durations: d = days, h = hours, m = minutes, s = seconds
 #              e.g. "15m", "1h30m", "2d". A plain number counts as minutes.
 #
-#   Texts & messages: lang/de.yml or lang/en.yml (see "language" below).
+#   Texts & messages: lang/de.yml or lang/en.yml (see "general.language" below).
 #
 #   This file is UTF-8 encoded. If special characters (ä, ö, ü) look wrong,
 #   set the encoding in your editor to "UTF-8".
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 10
-
-# Language of the texts (chat, menus, display). The texts are in plugins/MRsleep/lang/<language>.yml.
-#   auto = every player gets the language set in their Minecraft client:
-#          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
-#   de / en / ... = fixed language for all players.
-# The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
-# French players then get it automatically.
-language: auto
-
-# Language for players whose Minecraft language has no file of its own.
-fallback-language: en
-
-# Language of texts that are not meant for a single player: Discord logs.
-server-language: en
+config-version: 11
 
 
 # ------------------------------------------------------------------------------
-#   1) SLEEP QUOTA
+#   1) GENERAL
+# ------------------------------------------------------------------------------
+general:
+  # Language of the texts (chat, menus, display). The texts are in plugins/MRsleep/lang/<language>.yml.
+  #   auto = every player gets the language set in their Minecraft client:
+  #          German (also Austria/Switzerland) -> de.yml, English -> en.yml, a language without a file -> fallback-language.
+  #   de / en / ... = fixed language for all players.
+  # The console is always English. Own language: copy a file (e.g. as fr.yml) and translate it - with "auto"
+  # French players then get it automatically.
+  language: auto
+  # Language for players whose Minecraft language has no file of its own.
+  fallback-language: en
+  # Language of texts that are not meant for a single player: Discord logs.
+  server-language: en
+
+
+# ------------------------------------------------------------------------------
+#   2) SLEEP QUOTA
 # ------------------------------------------------------------------------------
 sleep:
   # Percentage of the counted players in a world who have to sleep (0-100).
   # Players with the permission "mrsleep.exempt" are not counted (e.g. cam or bot accounts).
   percentage: 50
-
   # Minimum number of sleeping players (never more than the number of counted players).
   minimum-sleepers: 1
-
   # Worlds MRsleep leaves alone (the Nether and the End are always excluded).
   disabled-worlds: []
-
-  # Do not count players in spectator mode (like vanilla).
-  ignore-spectators: true
-
-  # Do not count players another plugin marks as "sleeping ignored" (e.g. AFK).
-  respect-sleeping-ignored: true
-
-  # Do not count players in MRadmin's admin mode (only when MRadmin is installed).
-  ignore-admin-mode: true
-
-  # Do not count players in an MRpvp duel (also in the arena editor). The arena world itself is never
-  # managed. Needs MRpvp AND MRadmin (the plugins talk to each other through MRadmin's module interface).
-  ignore-pvp: true
-
   # Clear the weather when the night is skipped (like vanilla).
   clear-weather: true
 
-  # Where the progress ("1/2 players sleeping") or a block is shown:
-  #   bossbar   = bar at the top of the screen with a progress bar (recommended - not hidden by
-  #               the chat window that opens in bed)
-  #   actionbar = above the hotbar (hidden by the chat window while in bed)
-  #   title     = subtitle in the middle of the screen
-  #   none      = nothing
-  display: bossbar
-  # Boss bar colours: pink, blue, red, green, yellow, purple, white
-  bossbar-color: yellow
-  bossbar-blocked-color: red
-  # Hide Minecraft's own "x/y players sleeping" in the action bar - it counts everyone and does not know the rules
-  # of MRsleep. It is replaced right away by MRsleep's progress (display: actionbar) or cleared.
-  hide-vanilla-message: true
+  # Players who are not counted.
+  ignore:
+    # In spectator mode (like vanilla).
+    spectators: true
+    # Marked as "sleeping ignored" by another plugin (e.g. AFK).
+    sleeping-ignored: true
+    # In MRadmin's admin mode (only when MRadmin is installed).
+    admin-mode: true
+    # In an MRpvp duel (also in the arena editor). The arena world itself is never managed.
+    # Needs MRpvp AND MRadmin (the plugins talk to each other through MRadmin's module interface).
+    pvp: true
 
-  # Chat message "<player> went to bed (1/2)":
-  #   world  = to all players in the same world
-  #   server = to all players on the server
-  #   none   = no message
-  sleep-message: world
+  # Where the progress ("1/2 players sleeping") or a block is shown.
+  display:
+    #   bossbar   = bar at the top of the screen with a progress bar (recommended - not hidden by
+    #               the chat window that opens in bed)
+    #   actionbar = above the hotbar (hidden by the chat window while in bed)
+    #   title     = subtitle in the middle of the screen
+    #   none      = nothing
+    mode: bossbar
+    # Boss bar colours: pink, blue, red, green, yellow, purple, white
+    bossbar-color: yellow
+    bossbar-blocked-color: red
+    # Hide Minecraft's own "x/y players sleeping" in the action bar - it counts everyone and does not know the rules
+    # of MRsleep. It is replaced right away by MRsleep's progress (mode: actionbar) or cleared.
+    hide-vanilla-message: true
 
-  # Chat message to the world when the night was skipped.
-  announce-skip: true
+  # Chat messages.
+  chat:
+    # "<player> went to bed (1/2)":
+    #   world  = to all players in the same world
+    #   server = to all players on the server
+    #   none   = no message
+    sleep-message: world
+    # Tell the world when the night was skipped.
+    announce-skip: true
 
 
 # ------------------------------------------------------------------------------
-#   2) /NOSLEEP
+#   3) /NOSLEEP
 # ------------------------------------------------------------------------------
 nosleep:
   # Cooldown between two blocks per player.
@@ -96,24 +99,36 @@ nosleep:
   # Cancelling during the night is always possible, but the cooldown keeps running.
   # Exempt: permission "mrsleep.nosleep.nocooldown" or an admin bypass.
   cooldown: 15m
-
   # How many nights a player may block at once with "/nosleep <number>".
   max-nights: 3
-
   # true  = In a blocked night you cannot get into bed at all
   #         (so no respawn point is set either).
   # false = You can get into bed, but the night is not skipped.
   prevent-bed-enter: false
-
   # Cancel a player's block when they leave the server.
   release-on-quit: true
-
   # Tell all players in the world when someone uses or cancels /nosleep.
   broadcast: true
 
 
 # ------------------------------------------------------------------------------
-#   3) DISCORD LOGS
+#   4) TEAM LIMITS
+# ------------------------------------------------------------------------------
+# Longest cooldown bypass and /nosleep ban the team may give - in commands, the menu and MRadmin's web interface.
+#   support: everyone with mrsleep.admin.bypass / mrsleep.admin.ban (in mrsleep.groups.support)
+#   staff:   with mrsleep.admin.bypass.staff / mrsleep.admin.ban.staff (in mrsleep.groups.staff)
+#   No limit and permanent bans: mrsleep.admin.bypass.unlimited / mrsleep.admin.ban.unlimited (in mrsleep.groups.admin)
+team-limits:
+  support:
+    bypass: "30m"
+    ban: "1d"
+  staff:
+    bypass: "1d"
+    ban: "1d"
+
+
+# ------------------------------------------------------------------------------
+#   5) DISCORD LOGS
 # ------------------------------------------------------------------------------
 # Create a webhook: Discord channel -> Edit Channel -> Integrations -> Webhooks
 #                   -> New Webhook -> Copy Webhook URL.
@@ -180,9 +195,9 @@ discord:
 
 
 # ------------------------------------------------------------------------------
-#   4) UPDATE CHECK
+#   6) UPDATES
 # ------------------------------------------------------------------------------
-update-checker:
+updates:
   # Look for new versions on startup and regularly afterwards.
   # If a newer version is available, a notice appears in the console.
   enabled: true
@@ -197,7 +212,7 @@ update-checker:
 
 
 # ------------------------------------------------------------------------------
-#   5) ADMIN MENU (/mrsleep gui)
+#   7) ADMIN MENU (/mrsleep gui)
 # ------------------------------------------------------------------------------
 gui:
   # How often the open menu is refreshed (in ticks, 20 = 1 second).
@@ -208,19 +223,3 @@ gui:
   ban-durations: ["1h", "1d", "permanent"]
   # Click sounds in the menu.
   sounds: true
-
-
-# ------------------------------------------------------------------------------
-#   6) TEAM LIMITS
-# ------------------------------------------------------------------------------
-# Longest cooldown bypass and /nosleep ban the team may give - in commands, the menu and MRadmin's web interface.
-#   support: everyone with mrsleep.admin.bypass / mrsleep.admin.ban (in mrsleep.groups.support)
-#   staff:   with mrsleep.admin.bypass.staff / mrsleep.admin.ban.staff (in mrsleep.groups.staff)
-#   No limit and permanent bans: mrsleep.admin.bypass.unlimited / mrsleep.admin.ban.unlimited (in mrsleep.groups.admin)
-limits:
-  support:
-    bypass: "30m"
-    ban: "1d"
-  staff:
-    bypass: "1d"
-    ban: "1d"
