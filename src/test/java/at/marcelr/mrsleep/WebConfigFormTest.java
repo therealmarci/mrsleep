@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class WebConfigFormTest {
 
     private static final Set<String> TYPES = Set.of("bool", "int", "decimal", "string", "text", "secret", "choice", "color",
-            "duration", "strings", "ints", "worlds", "table");
+            "duration", "strings", "ints", "choices", "worlds", "table");
 
     private static YamlConfiguration load(String name) throws Exception {
         try (InputStream in = WebConfigFormTest.class.getClassLoader().getResourceAsStream(name)) {
