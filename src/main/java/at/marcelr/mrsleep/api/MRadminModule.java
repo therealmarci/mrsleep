@@ -40,6 +40,14 @@ import static at.marcelr.mrsleep.Messages.tag;
  */
 final class MRadminModule implements AdminModule, WebModule {
 
+    /** Into MRadmin's log (only with API 13 or newer). */
+    static void log(String event, String text, int color) {
+        MRadminService service = MRadminService.get();
+        if (service != null && service.apiVersion() >= 13) {
+            service.log(ID, event, text, color);
+        }
+    }
+
     static final String ID = "mrsleep";
     private static final String PERM_GUI = "mrsleep.admin.gui";
     private static final int MAX_WORLDS = 3;
