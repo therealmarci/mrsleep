@@ -5,6 +5,16 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.4.0] - 2026-11-04
+
+### Neu
+- **Discord-Log über MRadmins Webhook:** Kein eigener Webhook nötig - mit `discord.enabled: true`, leerer `discord.webhook-url` und dem neuen Schalter **`discord.use-mradmin-webhook: true`** gehen die Ereignisse in das Discord-Log von MRadmin (Standard aus, `config-version` 12). `/mrsleep discord` zeigt dann „Discord über MRadmins Webhook“, `/mrsleep discord test` schickt die Testnachricht dorthin. Braucht MRadmin mit eingerichtetem Discord-Log.
+- **Ereignisse im MRadmin-Protokoll:** Jedes Ereignis des Discord-Logs landet zusätzlich im Protokoll der MRadmin-Weboberfläche (bis zu 14 Tage) - auch wenn das Discord-Log aus ist. Braucht MRadmin mit Modul-API 13.
+- **Einstellen im Browser:** Mit MRadmin (ab der Version mit „Konfiguration im Browser“) lässt sich die ganze `config.yml` unter **Plugins → MRsleep → Konfiguration** als Formular einstellen - jede Einstellung mit Erklärung auf Deutsch und Englisch, Speichern lädt MRsleep sofort neu (wie `/mrsleep reload`, inkl. Discord-Ereignis `admin-reload`). Die Datei bleibt von Hand bearbeitbar.
+
+### Behoben & geändert
+- **Config neu gegliedert** (gleicher Aufbau wie alle MRtechnology-Plugins: allgemein, Funktionen, Discord, Updates, Menü; `config-version` 11). Bestehende Einstellungen werden beim Update automatisch übernommen (Sicherung `config.v10.backup.yml`). Neue Schlüssel: `language` / `fallback-language` / `server-language` → `general.*`; `sleep.ignore-spectators`, `sleep.respect-sleeping-ignored`, `sleep.ignore-admin-mode`, `sleep.ignore-pvp` → `sleep.ignore.spectators`, `.sleeping-ignored`, `.admin-mode`, `.pvp`; `sleep.display` → `sleep.display.mode`, `sleep.bossbar-color`, `sleep.bossbar-blocked-color`, `sleep.hide-vanilla-message` → `sleep.display.*`; `sleep.sleep-message`, `sleep.announce-skip` → `sleep.chat.*`; `limits` → `team-limits`; `update-checker` → `updates`.
+
 ## [1.3.2] - 2026-10-30
 
 ### Behoben & geändert

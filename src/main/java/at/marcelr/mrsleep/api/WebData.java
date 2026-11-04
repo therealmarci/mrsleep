@@ -103,7 +103,7 @@ final class WebData {
         Map<String, Object> p = player(plugin, id);
         p.put("bypassDurations", plugin.settings().gui().bypassDurations());
         p.put("banDurations", plugin.settings().gui().banDurations());
-        // Which level (action) each quick choice needs: "" up to limits.support, "Staff", "Unlimited".
+        // Which level (action) each quick choice needs: "" up to team-limits.support, "Staff", "Unlimited".
         p.put("bypassLevels", plugin.settings().gui().bypassDurations().stream()
                 .map(d -> level(plugin.adminActions().bypassPermission(d))).toList());
         p.put("banLevels", plugin.settings().gui().banDurations().stream()

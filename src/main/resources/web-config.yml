@@ -1,0 +1,296 @@
+# Form of config.yml for MRadmin's web interface (Plugins -> MRsleep -> Configuration).
+# Every field names a key of config.yml, its type and limits, and a name and help text in German and English.
+# Format: MRadmin docs/MODULE-API.md, section "Config in the web interface".
+sections:
+  - id: general
+    name: {de: Allgemein, en: General}
+    help: {de: Sprache der Texte im Spiel und in Discord., en: Language of the texts in game and on Discord.}
+    fields:
+      - key: general.language
+        type: choice
+        name: {de: Sprache der Spieler, en: Language of the players}
+        help: {de: "Automatisch = jeder Spieler bekommt die Sprache seines Minecraft-Clients.", en: "Automatic = every player gets the language of their Minecraft client."}
+        options:
+          - {value: auto, de: Automatisch, en: Automatic}
+          - {value: de, de: Deutsch, en: German}
+          - {value: en, de: Englisch, en: English}
+      - key: general.fallback-language
+        type: choice
+        name: {de: Ersatzsprache, en: Fallback language}
+        help: {de: Für Spieler mit einer Sprache ohne eigene Datei., en: For players whose language has no file of its own.}
+        when: general.language=auto
+        options:
+          - {value: de, de: Deutsch, en: German}
+          - {value: en, de: Englisch, en: English}
+      - key: general.server-language
+        type: choice
+        name: {de: Sprache für Discord, en: Language for Discord}
+        help: {de: Texte ohne einzelnen Spieler (Discord-Logs)., en: Texts not meant for a single player (Discord logs).}
+        options:
+          - {value: de, de: Deutsch, en: German}
+          - {value: en, de: Englisch, en: English}
+
+  - id: sleep
+    name: {de: Schlafen, en: Sleeping}
+    help: {de: "Wie viele Spieler schlafen müssen, damit die Nacht übersprungen wird.", en: How many players have to sleep to skip the night.}
+    fields:
+      - key: sleep.percentage
+        type: int
+        min: 0
+        max: 100
+        unit: {de: "%", en: "%"}
+        name: {de: Anteil der Schläfer, en: Share of sleepers}
+        help: {de: "Prozent der gezählten Spieler einer Welt. Spieler mit mrsleep.exempt zählen nicht.", en: "Percent of the counted players in a world. Players with mrsleep.exempt are not counted."}
+      - key: sleep.minimum-sleepers
+        type: int
+        min: 1
+        max: 1000
+        name: {de: Mindestens schlafen, en: At least sleeping}
+        help: {de: Nie mehr als gezählte Spieler online sind., en: Never more than counted players are online.}
+      - key: sleep.disabled-worlds
+        type: worlds
+        name: {de: Ausgenommene Welten, en: Excluded worlds}
+        help: {de: In diesen Welten greift MRsleep nicht. Nether und End sind immer ausgenommen., en: MRsleep leaves these worlds alone. The Nether and the End are always excluded.}
+      - key: sleep.clear-weather
+        type: bool
+        name: {de: Wetter aufklaren, en: Clear the weather}
+        help: {de: Regen und Gewitter enden mit der Nacht (wie Vanilla)., en: Rain and thunder end with the night (like vanilla).}
+
+  - id: ignore
+    name: {de: Wer nicht zählt, en: Who is not counted}
+    help: {de: Diese Spieler zählen bei der Abstimmung nicht mit., en: These players are not counted in the vote.}
+    fields:
+      - key: sleep.ignore.spectators
+        type: bool
+        name: {de: Zuschauer, en: Spectators}
+        help: {de: Spieler im Zuschauermodus (wie Vanilla)., en: Players in spectator mode (like vanilla).}
+      - key: sleep.ignore.sleeping-ignored
+        type: bool
+        name: {de: Von anderen Plugins ausgenommene, en: Excluded by other plugins}
+        help: {de: "Z.B. AFK-Spieler, die ein AFK-Plugin markiert.", en: "E.g. AFK players marked by an AFK plugin."}
+      - key: sleep.ignore.admin-mode
+        type: bool
+        name: {de: Im Admin-Modus, en: In admin mode}
+        help: {de: Braucht MRadmin., en: Needs MRadmin.}
+      - key: sleep.ignore.pvp
+        type: bool
+        name: {de: Im Duell, en: In a duel}
+        help: {de: Spieler in einer MRpvp-Runde oder im Arena-Editor. Braucht MRpvp und MRadmin., en: Players in an MRpvp round or the arena editor. Needs MRpvp and MRadmin.}
+
+  - id: display
+    name: {de: Anzeige, en: Display}
+    help: {de: "Wo der Fortschritt („1/2 schlafen“) zu sehen ist.", en: "Where the progress (\"1/2 sleeping\") is shown."}
+    fields:
+      - key: sleep.display.mode
+        type: choice
+        name: {de: Anzeigen als, en: Show as}
+        help: {de: "Die Leiste oben verdeckt das Chatfenster im Bett nicht - empfohlen.", en: "The bar at the top is not hidden by the chat window in bed - recommended."}
+        options:
+          - {value: bossbar, de: Leiste oben, en: Bar at the top}
+          - {value: actionbar, de: Über der Hotbar, en: Above the hotbar}
+          - {value: title, de: Bildschirmmitte, en: Screen centre}
+          - {value: none, de: Nichts, en: Nothing}
+      - key: sleep.display.bossbar-color
+        type: choice
+        name: {de: Farbe der Leiste, en: Colour of the bar}
+        when: sleep.display.mode=bossbar
+        options: &colors
+          - {value: yellow, de: Gelb, en: Yellow}
+          - {value: green, de: Grün, en: Green}
+          - {value: blue, de: Blau, en: Blue}
+          - {value: pink, de: Rosa, en: Pink}
+          - {value: purple, de: Lila, en: Purple}
+          - {value: red, de: Rot, en: Red}
+          - {value: white, de: Weiß, en: White}
+      - key: sleep.display.bossbar-blocked-color
+        type: choice
+        name: {de: Farbe bei blockierter Nacht, en: Colour when the night is blocked}
+        when: sleep.display.mode=bossbar
+        options: *colors
+      - key: sleep.display.hide-vanilla-message
+        type: bool
+        name: {de: Minecraft-Anzeige ausblenden, en: Hide Minecraft's message}
+        help: {de: "Minecrafts eigenes „x/y schlafen“ zählt alle Spieler und kennt die Regeln von MRsleep nicht.", en: "Minecraft's own \"x/y sleeping\" counts everyone and does not know MRsleep's rules."}
+      - key: sleep.chat.sleep-message
+        type: choice
+        name: {de: "Chat „… ist schlafen gegangen“", en: "Chat \"… went to bed\""}
+        options:
+          - {value: world, de: Gleiche Welt, en: Same world}
+          - {value: server, de: Ganzer Server, en: Whole server}
+          - {value: none, de: Aus, en: Off}
+      - key: sleep.chat.announce-skip
+        type: bool
+        name: {de: Übersprungene Nacht melden, en: Announce the skipped night}
+        help: {de: "Nachricht an die Welt, wenn die Nacht übersprungen wurde.", en: Message to the world when the night was skipped.}
+
+  - id: nosleep
+    name: {de: /nosleep, en: /nosleep}
+    help: {de: Spieler können die nächste Nacht blockieren., en: Players can block the next night.}
+    fields:
+      - key: nosleep.cooldown
+        type: duration
+        name: {de: Abklingzeit, en: Cooldown}
+        help: {de: "Zwischen zwei Blockaden pro Spieler. Läuft erst ab Beginn der blockierten Nacht.", en: "Between two blocks per player. Only starts when the blocked night begins."}
+      - key: nosleep.max-nights
+        type: int
+        min: 1
+        max: 100
+        unit: {de: Nächte, en: nights}
+        name: {de: Höchstens auf einmal, en: At most at once}
+        help: {de: "So viele Nächte mit /nosleep <Anzahl>.", en: "That many nights with /nosleep <number>."}
+      - key: nosleep.prevent-bed-enter
+        type: bool
+        name: {de: Bett sperren, en: Lock the bed}
+        help: {de: "An: in einer blockierten Nacht kommt niemand ins Bett (kein Spawnpunkt). Aus: ins Bett ja, die Nacht bleibt.", en: "On: nobody gets into bed in a blocked night (no spawn point). Off: bed yes, the night stays."}
+      - key: nosleep.release-on-quit
+        type: bool
+        name: {de: Beim Verlassen aufheben, en: Cancel on leaving}
+        help: {de: "Die Blockade endet, wenn der Spieler den Server verlässt.", en: The block ends when the player leaves the server.}
+      - key: nosleep.broadcast
+        type: bool
+        name: {de: Allen melden, en: Tell everyone}
+        help: {de: "Alle in der Welt sehen, wer /nosleep nutzt oder aufhebt.", en: Everyone in the world sees who uses or cancels /nosleep.}
+
+  - id: team-limits
+    name: {de: Grenzen fürs Team, en: Team limits}
+    help: {de: "Längste Befreiung von der Abklingzeit und längste /nosleep-Sperre, die Support und Staff vergeben dürfen. Admins (…unlimited) haben keine Grenze.", en: "Longest cooldown bypass and /nosleep ban support and staff may give. Admins (…unlimited) have no limit."}
+    fields:
+      - key: team-limits.support.bypass
+        type: duration
+        name: {de: Support - Befreiung, en: Support - bypass}
+      - key: team-limits.support.ban
+        type: duration
+        name: {de: Support - Sperre, en: Support - ban}
+      - key: team-limits.staff.bypass
+        type: duration
+        name: {de: Staff - Befreiung, en: Staff - bypass}
+      - key: team-limits.staff.ban
+        type: duration
+        name: {de: Staff - Sperre, en: Staff - ban}
+
+  - id: discord
+    name: {de: Discord-Logs, en: Discord logs}
+    help: {de: "Ereignisse in einen Discord-Kanal schicken. Webhook: Kanal bearbeiten → Integrationen → Webhooks → Neuer Webhook → URL kopieren.", en: "Send events to a Discord channel. Webhook: Edit channel → Integrations → Webhooks → New webhook → copy URL."}
+    fields:
+      - key: discord.enabled
+        type: bool
+        name: {de: Discord-Logs senden, en: Send Discord logs}
+      - key: discord.webhook-url
+        type: secret
+        when: discord.enabled
+        max-length: 300
+        name: {de: Webhook-URL, en: Webhook URL}
+        help: {de: "Beginnt mit https://discord.com/api/webhooks/", en: "Starts with https://discord.com/api/webhooks/"}
+      - key: discord.use-mradmin-webhook
+        type: bool
+        when: discord.enabled
+        name: {de: MRadmins Webhook nutzen, en: Use MRadmin's webhook}
+        help: {de: "Ohne eigene Webhook-URL gehen die Ereignisse in MRadmins Discord-Log.", en: "Without a webhook URL of its own, the events go to MRadmin's Discord log."}
+      - key: discord.username
+        type: string
+        when: discord.enabled
+        max-length: 80
+        name: {de: Name im Kanal, en: Name in the channel}
+        help: {de: Leer = Einstellung aus Discord., en: Empty = setting from Discord.}
+      - key: discord.avatar-url
+        type: string
+        when: discord.enabled
+        max-length: 300
+        name: {de: Bild-URL, en: Avatar URL}
+        help: {de: Leer = Einstellung aus Discord., en: Empty = setting from Discord.}
+      - key: discord.use-embeds
+        type: bool
+        when: discord.enabled
+        name: {de: Farbige Karten, en: Coloured embeds}
+        help: {de: Aus = einfache Textnachrichten., en: Off = plain text messages.}
+      - key: discord.footer
+        type: string
+        when: discord.enabled
+        max-length: 120
+        name: {de: Fußzeile, en: Footer}
+        help: {de: "Z.B. der Servername (leer = keine).", en: "E.g. the server name (empty = none)."}
+      - key: discord.events
+        type: table
+        when: discord.enabled
+        name: {de: Ereignisse, en: Events}
+        help: {de: Welche Ereignisse gesendet werden und in welcher Farbe. Die Texte stehen in den Sprachdateien., en: Which events are sent and in which colour. The texts are in the language files.}
+        columns:
+          - {key: enabled, type: bool, name: {de: Senden, en: Send}}
+          - {key: color, type: color, name: {de: Farbe, en: Colour}}
+        rows:
+          nosleep-activated: {de: /nosleep benutzt, en: /nosleep used}
+          nosleep-deactivated: {de: /nosleep aufgehoben, en: /nosleep cancelled}
+          nosleep-quit: {de: Aufgehoben beim Verlassen, en: Cancelled on leaving}
+          nosleep-expired: {de: Blockade abgelaufen, en: Block expired}
+          night-start-blocked: {de: Nacht beginnt blockiert, en: Night starts blocked}
+          bed-blocked: {de: Bett gesperrt, en: Bed locked}
+          night-skipped: {de: Nacht übersprungen, en: Night skipped}
+          admin-clear: {de: "Team: Blockaden aufgehoben", en: "Team: blocks lifted"}
+          admin-release: {de: "Team: Spieler freigegeben", en: "Team: player released"}
+          admin-bypass: {de: "Team: Befreiung vergeben", en: "Team: bypass given"}
+          admin-bypass-remove: {de: "Team: Befreiung entfernt", en: "Team: bypass removed"}
+          admin-cooldown-reset: {de: "Team: Abklingzeit zurückgesetzt", en: "Team: cooldown reset"}
+          admin-ban: {de: "Team: /nosleep gesperrt", en: "Team: /nosleep banned"}
+          admin-unban: {de: "Team: Sperre aufgehoben", en: "Team: ban lifted"}
+          admin-reload: {de: "Team: neu geladen", en: "Team: reloaded"}
+
+  - id: updates
+    name: {de: Updates, en: Updates}
+    help: {de: Nach neuen Versionen von MRsleep suchen., en: Look for new versions of MRsleep.}
+    fields:
+      - key: updates.enabled
+        type: bool
+        name: {de: Nach Updates suchen, en: Look for updates}
+        help: {de: Beim Start und danach regelmäßig. Ein Hinweis erscheint in der Konsole., en: On start and regularly afterwards. A notice appears in the console.}
+      - key: updates.source
+        type: choice
+        when: updates.enabled
+        name: {de: Quelle, en: Source}
+        options:
+          - {value: github, de: GitHub, en: GitHub}
+          - {value: modrinth, de: Modrinth, en: Modrinth}
+      - key: updates.include-prereleases
+        type: bool
+        when: updates.enabled
+        name: {de: Auch Vorabversionen, en: Pre-releases too}
+        help: {de: "Läuft eine Vorabversion (0.x), werden sie immer gemeldet.", en: When a pre-release (0.x) runs they are always reported.}
+      - key: updates.interval-hours
+        type: int
+        when: updates.enabled
+        min: 1
+        max: 168
+        unit: {de: Stunden, en: hours}
+        name: {de: Prüfen alle, en: Check every}
+      - key: updates.notify-on-join
+        type: bool
+        when: updates.enabled
+        name: {de: Team beim Betreten informieren, en: Tell the team on join}
+        help: {de: Spieler mit mrsleep.admin.update bekommen einen Hinweis., en: Players with mrsleep.admin.update get a notice.}
+
+  - id: gui
+    name: {de: Admin-Menü, en: Admin menu}
+    help: {de: Das Menü /mrsleep gui., en: The menu /mrsleep gui.}
+    fields:
+      - key: gui.refresh-ticks
+        type: int
+        min: 5
+        max: 200
+        unit: {de: Ticks, en: ticks}
+        name: {de: Aktualisieren alle, en: Refresh every}
+        help: {de: 20 Ticks = 1 Sekunde., en: 20 ticks = 1 second.}
+      - key: gui.bypass-durations
+        type: strings
+        count: 3
+        item: duration
+        name: {de: Schnellwahl Befreiung, en: Quick choices bypass}
+        help: {de: Genau drei Dauern im Spieler-Menü., en: Exactly three durations in the player menu.}
+      - key: gui.ban-durations
+        type: strings
+        count: 3
+        item: duration
+        permanent: true
+        name: {de: Schnellwahl Sperre, en: Quick choices ban}
+        help: {de: "Genau drei Dauern, „permanent“ = für immer.", en: "Exactly three durations, \"permanent\" = forever."}
+      - key: gui.sounds
+        type: bool
+        name: {de: Klickgeräusche, en: Click sounds}

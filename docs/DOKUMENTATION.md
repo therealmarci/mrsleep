@@ -137,9 +137,9 @@ checkSleep(world)
 ### Berechnung
 ```text
 excluded  = hasPermission("mrsleep.exempt")
-          ∨ (ignore-spectators ∧ Zuschauermodus)
-          ∨ (respect-sleeping-ignored ∧ isSleepingIgnored())
-          ∨ (ignore-admin-mode ∧ im Admin-Modus von MRadmin)
+          ∨ (ignore.spectators ∧ Zuschauermodus)
+          ∨ (ignore.sleeping-ignored ∧ isSleepingIgnored())
+          ∨ (ignore.admin-mode ∧ im Admin-Modus von MRadmin)
 counted   = Spieler der Welt, die nicht ausgeschlossen sind
 needed    = clamp( max(minimum-sleepers, ceil(counted × percentage / 100)), 1, counted )
 deep      = schlafende gezählte Spieler mit getSleepTicks() ≥ 100   (wie Vanilla)
@@ -221,6 +221,8 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
   2. Jeder Wert der alten Datei, dessen Schlüssel es in der Vorlage noch gibt, wird übernommen. Ausnahme sind die `REPLACED_KEYS`, also Texte, deren Inhalt sich mit neuen Funktionen geändert hat.
   3. Die alte Datei wird als `config.v<N>.backup.yml` gesichert, die neue mit BOM geschrieben.
 - **v6 (Sprachdateien):** `migrateTexts` überträgt vor der Migration `messages.*`, `discord.events.*.message`, `discord.test-message` und `gui.ban-reason` aus der alten Config nach `lang/de.yml` (die alten Texte waren deutsch). `REPLACED_KEYS` und `RENAMED_KEYS` gelten dabei weiter.
+- **v11 (einheitlicher Aufbau):** Viele Schlüssel sind umgezogen (`general.*`, `sleep.ignore.*`, `sleep.display.*`, `sleep.chat.*`, `team-limits`, `updates`) - die alten Pfade stehen in `RENAMED_KEYS`. `sleep.display` war vorher ein Wert und ist jetzt ein Abschnitt; der Wert wandert nach `sleep.display.mode`.
+- **Konfiguration im Browser (MRadmin, Modul-API 12):** `src/main/resources/web-config.yml` beschreibt jedes Feld der `config.yml` (Typ, Grenzen, Name und Hilfe DE/EN), `MRadminModule#webConfig()` gibt Datei, Formular, mitgelieferte Config und den Reload (`plugin.reload()` + Discord `admin-reload`) an MRadmin. MRadmin prüft, schreibt und ruft den Reload auf. **Neue oder umbenannte Config-Schlüssel immer auch in `web-config.yml` eintragen** - `WebConfigFormTest` schlägt sonst fehl (prüft auch, dass Texte mit Komma in Anführungszeichen stehen).
 - **Wenn sich die Config-Struktur ändert:** `CURRENT_VERSION` und `config-version` in der Vorlage erhöhen. Bei umbenannten Schlüsseln die Werte vor dem Übernehmen umschreiben, bei geänderten Standardtexten den Schlüssel in `REPLACED_KEYS` aufnehmen.
 
 ## 7. Admin-Menü (`gui/*`)
@@ -263,7 +265,7 @@ Wo welche Nachricht ausgelöst wird:
 | `night-start-blocked`, `nosleep-expired` | `SleepManager#housekeeping` |
 | `display-*` | `SleepDisplay` (über `SleepManager#checkSleep`) |
 | `night-skipped` | `SleepManager#skipNight` |
-| `player-sleeping` (Empfänger) | `SleepListener#onBedEntered`, je nach `sleep.sleep-message` |
+| `player-sleeping` (Empfänger) | `SleepListener#onBedEntered`, je nach `sleep.chat.sleep-message` |
 | `nosleep-*` | `NoSleepCommand` |
 | `bypass-*`, `cooldown-reset*`, `cleared*`, `released`, `ban-*`, `unban-*`, `reloaded` | `AdminActions` (Befehle und Menü) |
 | `status`, `debug-*`, `bans-*`, `version*` | `MRSleepCommand` |
@@ -280,6 +282,8 @@ Wo welche Nachricht ausgelöst wird:
 - `shutdown()` wartet in `onDisable` bis zu 5 Sekunden, damit letzte Logs noch rausgehen.
 - **Diagnose:** `send()` gibt `null` (Erfolg) oder eine Fehlerbeschreibung zurück und merkt sich das Ergebnis in `lastResult`. Bekannte Statuscodes werden erklärt (400 abgelehnt, 401/403 Token ungültig, 404 Webhook gelöscht). `/mrsleep discord test` nutzt `test()`, das mit `?wait=true` sendet, damit Discord die Zustellung bestätigt.
 - `bed-blocked` wird über `SleepListener#loggedBedAttempts` pro Welt, Spieler und Nacht nur einmal gesendet. Das Set wird bei jedem `TimeSkipEvent` geleert.
+- **Protokoll von MRadmin:** `log()` schreibt jedes Ereignis mit Text aus der Sprachdatei **vor** dem Discord-Teil über `MRadminLink#log` ins Protokoll der Weboberfläche (nur ab MRadmin-API 13, Platzhalter unescaped) - auch wenn Discord aus ist. Deshalb werden `discord.events` (an/aus, Farbe) immer geladen, nicht nur bei eingeschaltetem Discord.
+- **Rückfall auf MRadmins Webhook:** `enabled: true`, leere `webhook-url` und `use-mradmin-webhook: true` → `Config.viaMradmin`. Dann geht der Text statt an Discord an `MRadminLink#adminLog` (MRadmin-Ereignis „plugin-alert“, das MRadmin nicht noch einmal ins Protokoll schreibt). `test()` meldet einen Fehler, wenn MRadmin nicht läuft.
 
 ## 11. Permissions-Design
 - `mrsleep.exempt` hat `default: false`, damit OPs nicht automatisch aus der Quote fallen.
@@ -350,10 +354,10 @@ Ausführlich in **[RELEASES.md](RELEASES.md)** (Versionsschema, Branches, mehrer
 | 15 | `/mrsleep gui` | Köpfe aktualisieren sich live (Schlafsekunden zählen hoch), Filter und Seiten funktionieren, Items lassen sich nicht herausnehmen |
 | 16 | Spieler-Menü ohne `mrsleep.admin.ban` | Sperr-Buttons zeigen „Keine Berechtigung“, ein Klick wird abgelehnt |
 | 17 | `/mrsleep version` | `MRsleep v<version> (MC 26.3)`, Links und Update-Status |
-| 18 | `language: en`, `/mrsleep reload` | Chat, Bossbar, Menü und Discord-Texte auf Englisch |
-| 19 | `language: eng` bzw. `language: xx` | `eng` wird zu `en`; bei `xx` Warnung in der Konsole und Englisch |
+| 18 | `general.language: en`, `/mrsleep reload` | Chat, Bossbar, Menü und Discord-Texte auf Englisch |
+| 19 | `general.language: eng` bzw. `general.language: xx` | `eng` wird zu `en`; bei `xx` Warnung in der Konsole und Englisch |
 | 20 | Text in `lang/de.yml` ändern, `/mrsleep reload` | geänderter Text erscheint; nach Neustart bleibt er erhalten |
-| 21 | Befehle von der Konsole bei `language: de` | Antworten und Logs auf Englisch |
+| 21 | Befehle von der Konsole bei `general.language: de` | Antworten und Logs auf Englisch |
 
 ## 13. Erweiterungsideen
 - Eine Permission pro Nächtezahl (z.B. `mrsleep.nosleep.nights.5`), um `max-nights` je Gruppe zu staffeln

@@ -22,7 +22,7 @@ import java.util.logging.Level;
  */
 public final class ConfigUpdater {
 
-    public static final int CURRENT_VERSION = 10;
+    public static final int CURRENT_VERSION = 12;
     public static final String BOM = "﻿";
     /**
      * Texts whose content changed with new features; the new default replaces the old value.
@@ -40,9 +40,32 @@ public final class ConfigUpdater {
             // v4
             "messages.nosleep-invalid-nights");
     /** Keys that were renamed: old path -> new path (the value is carried over). */
-    private static final Map<String, String> RENAMED_KEYS = Map.of(
-            "messages.actionbar-sleeping", "messages.display-sleeping",
-            "messages.actionbar-blocked", "messages.display-blocked");
+    private static final Map<String, String> RENAMED_KEYS = Map.ofEntries(
+            Map.entry("messages.actionbar-sleeping", "messages.display-sleeping"),
+            Map.entry("messages.actionbar-blocked", "messages.display-blocked"),
+            // v11: same layout as all MRtechnology plugins (general, features, discord, updates, gui)
+            Map.entry("language", "general.language"),
+            Map.entry("fallback-language", "general.fallback-language"),
+            Map.entry("server-language", "general.server-language"),
+            Map.entry("sleep.ignore-spectators", "sleep.ignore.spectators"),
+            Map.entry("sleep.respect-sleeping-ignored", "sleep.ignore.sleeping-ignored"),
+            Map.entry("sleep.ignore-admin-mode", "sleep.ignore.admin-mode"),
+            Map.entry("sleep.ignore-pvp", "sleep.ignore.pvp"),
+            Map.entry("sleep.display", "sleep.display.mode"),
+            Map.entry("sleep.bossbar-color", "sleep.display.bossbar-color"),
+            Map.entry("sleep.bossbar-blocked-color", "sleep.display.bossbar-blocked-color"),
+            Map.entry("sleep.hide-vanilla-message", "sleep.display.hide-vanilla-message"),
+            Map.entry("sleep.sleep-message", "sleep.chat.sleep-message"),
+            Map.entry("sleep.announce-skip", "sleep.chat.announce-skip"),
+            Map.entry("limits.support.bypass", "team-limits.support.bypass"),
+            Map.entry("limits.support.ban", "team-limits.support.ban"),
+            Map.entry("limits.staff.bypass", "team-limits.staff.bypass"),
+            Map.entry("limits.staff.ban", "team-limits.staff.ban"),
+            Map.entry("update-checker.enabled", "updates.enabled"),
+            Map.entry("update-checker.source", "updates.source"),
+            Map.entry("update-checker.include-prereleases", "updates.include-prereleases"),
+            Map.entry("update-checker.interval-hours", "updates.interval-hours"),
+            Map.entry("update-checker.notify-on-join", "updates.notify-on-join"));
 
     private ConfigUpdater() {
     }
@@ -88,17 +111,17 @@ public final class ConfigUpdater {
                 template.set(key, existing.get(oldKey));
                 carried++;
             }
-            // v3: "sleep.action-bar: false" became "sleep.display: none".
+            // v3: "sleep.action-bar: false" became "sleep.display: none" (since v11 sleep.display.mode).
             if (existing.contains("sleep.action-bar") && !existing.getBoolean("sleep.action-bar")) {
-                template.set("sleep.display", "none");
+                template.set("sleep.display.mode", "none");
             }
             // v8: every player gets the language of their game; a fixed language so far stays for Discord & co.
             if (version < 8) {
                 String old = existing.getString("language", "auto").trim();
                 if (!old.isEmpty() && !old.equalsIgnoreCase("auto")) {
-                    template.set("server-language", old);
+                    template.set("general.server-language", old);
                 }
-                template.set("language", "auto");
+                template.set("general.language", "auto");
             }
             template.set("config-version", CURRENT_VERSION);
             // Keep long messages on one line instead of folding them.

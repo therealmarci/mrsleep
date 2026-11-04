@@ -47,14 +47,16 @@ Spieler, die nicht zählen, werden **komplett aus der Rechnung genommen**:
 
 Nicht mitgezählt werden:
 - Spieler mit der Permission `mrsleep.exempt` (z.B. Bots und Cam-Accounts)
-- Zuschauer (`sleep.ignore-spectators`)
-- Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert (`sleep.respect-sleeping-ignored`)
+- Zuschauer (`sleep.ignore.spectators`)
+- Spieler, die ein AFK-Plugin als „sleeping ignored“ markiert (`sleep.ignore.sleeping-ignored`)
 - Spieler im Admin-Modus von MRadmin und Spieler im Duell bei MRpvp - siehe [Zusammenarbeit mit anderen Plugins](#zusammenarbeit-mit-anderen-plugins)
 - Dummy-Spieler von MRchunks
 
 Wer nicht zählt, bekommt beim Hinlegen einen Hinweis mit dem Grund. Wie in Vanilla wird die Nacht übersprungen, wenn die nötigen Spieler etwa 5 Sekunden im Bett liegen.
 
 Verwaltet werden alle normalen Oberwelten. Nether und End sind ausgenommen, weitere Welten schließt du über `sleep.disabled-worlds` aus.
+
+Jede Welt stimmt für sich ab, Zeit und Wetter ändern sich nur dort - das gilt auch für zusätzliche Welten von Multiverse.
 
 <details>
 <summary>Warum steht die Gamerule <code>playersSleepingPercentage</code> auf 100?</summary>
@@ -77,9 +79,9 @@ Vanilla kann Spieler nicht wirklich aus der Rechnung nehmen - „ignorierte“ S
 - Blockaden, Cooldowns, Bypässe und Sperren überstehen einen Neustart.
 
 ### Anzeige & Chat-Hinweise
-- **Fortschritt** als Bossbar (Standard), Actionbar, Titel oder gar nicht (`sleep.display`). Die Bossbar wird vom Chat im Bett nicht verdeckt.
-- Die eingebaute Minecraft-Anzeige „x/y Spieler schlafen“ in der Actionbar zählt alle Spieler und kennt die Regeln von MRsleep nicht. MRsleep ersetzt sie deshalb sofort durch den eigenen Fortschritt (bei `display: actionbar`) bzw. blendet sie aus (`sleep.hide-vanilla-message`, Standard an).
-- **Schlaf-Nachricht** „Alex hat sich schlafen gelegt (1/2)“ an die Welt, den ganzen Server oder niemanden (`sleep.sleep-message`).
+- **Fortschritt** als Bossbar (Standard), Actionbar, Titel oder gar nicht (`sleep.display.mode`). Die Bossbar wird vom Chat im Bett nicht verdeckt.
+- Die eingebaute Minecraft-Anzeige „x/y Spieler schlafen“ in der Actionbar zählt alle Spieler und kennt die Regeln von MRsleep nicht. MRsleep ersetzt sie deshalb sofort durch den eigenen Fortschritt (bei `sleep.display.mode: actionbar`) bzw. blendet sie aus (`sleep.display.hide-vanilla-message`, Standard an).
+- **Schlaf-Nachricht** „Alex hat sich schlafen gelegt (1/2)“ an die Welt, den ganzen Server oder niemanden (`sleep.chat.sleep-message`).
 - Hinweise, wenn die Nacht blockiert ist, wenn sie übersprungen wurde („Guten Morgen!“), wenn eine Blockade abläuft und wenn ein Admin etwas ändert.
 - Jeder Text steht in der Sprachdatei und lässt sich ändern oder mit `""` abschalten.
 
@@ -95,8 +97,8 @@ Ein Klick auf einen Kopf öffnet das **Spieler-Menü**: Bypass für 30m / 2h / 1
 
 | | Bypass höchstens | Sperre höchstens |
 |---|---|---|
-| Support (`mrsleep.admin.bypass` / `.ban`) | `limits.support.bypass` (Standard 30 Min) | `limits.support.ban` (Standard 1 Tag) |
-| Staff (`.bypass.staff` / `.ban.staff`) | `limits.staff.bypass` (Standard 1 Tag) | `limits.staff.ban` (Standard 1 Tag) |
+| Support (`mrsleep.admin.bypass` / `.ban`) | `team-limits.support.bypass` (Standard 30 Min) | `team-limits.support.ban` (Standard 1 Tag) |
+| Staff (`.bypass.staff` / `.ban.staff`) | `team-limits.staff.bypass` (Standard 1 Tag) | `team-limits.staff.ban` (Standard 1 Tag) |
 | Admin (`.bypass.unlimited` / `.ban.unlimited`) | unbegrenzt | unbegrenzt, auch dauerhaft |
 
 Knöpfe mit einer längeren Dauer zeigen „Keine Berechtigung“, ein zu langer Befehl sagt, wie lange man höchstens darf.
@@ -142,11 +144,11 @@ Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset fu
 | `mrsleep.admin.gui` | OP | Admin-Menü öffnen |
 | `mrsleep.admin.status` | OP | `status`, `debug` |
 | `mrsleep.admin.clear` | OP | `clear`, `release` (auch im Menü) |
-| `mrsleep.admin.bypass` | OP | `bypass` bis `limits.support.bypass` (auch im Menü) |
-| `mrsleep.admin.bypass.staff` · `.bypass.unlimited` | OP | Bypass bis `limits.staff.bypass` · ohne Grenze |
+| `mrsleep.admin.bypass` | OP | `bypass` bis `team-limits.support.bypass` (auch im Menü) |
+| `mrsleep.admin.bypass.staff` · `.bypass.unlimited` | OP | Bypass bis `team-limits.staff.bypass` · ohne Grenze |
 | `mrsleep.admin.resetcooldown` | OP | `resetcooldown` (auch im Menü) |
-| `mrsleep.admin.ban` | OP | `ban` bis `limits.support.ban`, `unban`, `bans` (auch im Menü) |
-| `mrsleep.admin.ban.staff` · `.ban.unlimited` | OP | Sperre bis `limits.staff.ban` · ohne Grenze und dauerhaft |
+| `mrsleep.admin.ban` | OP | `ban` bis `team-limits.support.ban`, `unban`, `bans` (auch im Menü) |
+| `mrsleep.admin.ban.staff` · `.ban.unlimited` | OP | Sperre bis `team-limits.staff.ban` · ohne Grenze und dauerhaft |
 | `mrsleep.admin.teleport` | OP | Teleport-Button im Menü |
 | `mrsleep.admin.reload` | OP | `reload` (auch im Menü) |
 | `mrsleep.admin.update` | OP | Update-Hinweis beim Betreten des Servers |
@@ -171,16 +173,17 @@ Alle Befehle haben Tab-Vervollständigung. Bypass, Sperren und Cooldown-Reset fu
 ---
 
 ## Konfiguration
-Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz oben. Jede Option ist in der Datei kommentiert.
+Am einfachsten im Browser: Mit **MRadmin** (ab der Version mit „Konfiguration im Browser“) unter **Plugins → MRsleep → Konfiguration** - jede Einstellung mit Erklärung, Speichern lädt MRsleep sofort neu (Permission `mradmin.config`). Ohne MRadmin steht alles in `plugins/MRsleep/config.yml`, jede Option ist dort kommentiert.
 
 | Abschnitt | Die wichtigsten Einstellungen |
 |---|---|
-| `sleep` | `percentage` (Quote, Standard 50), `minimum-sleepers`, `disabled-worlds`, `display` (bossbar/actionbar/title/none), `hide-vanilla-message`, `sleep-message`, wer nicht zählt |
+| `general` | `language` (Standard `auto`), `fallback-language`, `server-language` |
+| `sleep` | `percentage` (Quote, Standard 50), `minimum-sleepers`, `disabled-worlds`, `clear-weather`; `ignore` (wer nicht zählt: `spectators`, `sleeping-ignored`, `admin-mode`, `pvp`); `display` (`mode` bossbar/actionbar/title/none, Bossbar-Farben, `hide-vanilla-message`); `chat` (`sleep-message`, `announce-skip`) |
 | `nosleep` | `cooldown` (15m), `max-nights` (3), `prevent-bed-enter`, `release-on-quit`, `broadcast` |
+| `team-limits` | Wie lange Support und Staff höchstens Bypass geben und sperren dürfen |
 | `discord` | Webhook-URL, welche Ereignisse gesendet werden, Farben |
-| `update-checker` | an/aus, Prüfintervall, Hinweis beim Betreten |
+| `updates` | an/aus, Quelle, Prüfintervall, Hinweis beim Betreten |
 | `gui` | Aktualisierung, Schnellauswahl-Zeiten, Sounds |
-| `limits` | Wie lange Support und Staff höchstens Bypass geben und sperren dürfen |
 
 - **Zeitangaben:** `d`, `h`, `m`, `s` kombinierbar (`15m`, `1h30m`, `2d`). Eine reine Zahl zählt als Minuten.
 - **Änderungen übernehmen:** `/mrsleep reload` - ein Neustart ist nicht nötig.
@@ -188,11 +191,11 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 - **Umlaute kaputt** („Ã¤“ statt „ä“)? Stell die Kodierung im Editor auf **UTF-8**.
 
 ### Sprache & Texte
-- **Jeder Spieler bekommt seine Sprache:** Mit `language: auto` (Standard) richtet sich MRsleep nach der Sprache, die der Spieler in Minecraft eingestellt hat - Deutsch (auch Österreich und Schweiz) bekommt Deutsch, Englisch bekommt Englisch. Für Sprachen ohne eigene Datei gilt `fallback-language` (Standard Englisch). Mit `language: de` oder `en` bekommen alle dieselbe Sprache.
-- **Server-Sprache:** Discord-Logs haben keinen einzelnen Empfänger - sie kommen in `server-language` (Standard `en`). Auf einem deutschen Server also `server-language: de` setzen.
+- **Jeder Spieler bekommt seine Sprache:** Mit `general.language: auto` (Standard) richtet sich MRsleep nach der Sprache, die der Spieler in Minecraft eingestellt hat - Deutsch (auch Österreich und Schweiz) bekommt Deutsch, Englisch bekommt Englisch. Für Sprachen ohne eigene Datei gilt `general.fallback-language` (Standard Englisch). Mit `general.language: de` oder `en` bekommen alle dieselbe Sprache.
+- **Server-Sprache:** Discord-Logs haben keinen einzelnen Empfänger - sie kommen in `general.server-language` (Standard `en`). Auf einem deutschen Server also `general.server-language: de` setzen.
 - Die Konsole ist immer Englisch.
 - Alle Texte (Chat, Anzeige, Menüs, Discord) stehen in `plugins/MRsleep/lang/<sprache>.yml` im [MiniMessage-Format](https://docs.advntr.dev/minimessage/format.html). Ein leerer Text (`""`) schaltet die Nachricht ab.
-- **Eigene Sprache:** `lang/en.yml` kopieren (z.B. als `lang/fr.yml`) und übersetzen - mit `language: auto` bekommen französische Spieler sie dann automatisch.
+- **Eigene Sprache:** `lang/en.yml` kopieren (z.B. als `lang/fr.yml`) und übersetzen - mit `general.language: auto` bekommen französische Spieler sie dann automatisch.
 - Neue Texte aus Updates ergänzt MRsleep automatisch - deine Änderungen bleiben erhalten.
 
 ### Discord-Webhook
@@ -202,8 +205,13 @@ Alles steht in `plugins/MRsleep/config.yml`, die wichtigsten Einstellungen ganz 
 
 Unter `discord.events` legst du pro Ereignis fest, ob es gesendet wird und in welcher Farbe (z.B. `nosleep-activated`, `night-skipped`, `admin-ban`). Die Texte stehen in der Sprachdatei unter `discord`. `@everyone` löst nie einen Ping aus.
 
+> [!TIP]
+> **Kein eigener Webhook?** Mit MRadmin geht es auch über dessen Discord-Log: `discord.enabled: true`, `webhook-url` leer lassen und `discord.use-mradmin-webhook: true` setzen.
+>
+> Mit MRadmin steht jedes Ereignis außerdem im **Protokoll** der Weboberfläche (bis zu 14 Tage) - auch wenn Discord aus ist.
+
 ### Update-Prüfung
-MRsleep prüft beim Start und danach alle paar Stunden (`update-checker.interval-hours`), ob es eine neue Version gibt:
+MRsleep prüft beim Start und danach alle paar Stunden (`updates.interval-hours`), ob es eine neue Version gibt:
 - in der **Konsole** mit Download-Link,
 - **im Spiel** für Spieler mit `mrsleep.admin.update` als anklickbarer Hinweis beim Betreten,
 - jederzeit mit `/mrsleep version`.
@@ -218,9 +226,10 @@ MRsleep läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es meh
 | Funktion | Braucht |
 |---|---|
 | MRsleep im Dashboard und Spieler-Menü von MRadmin, Seite **Schlaf** in der Weboberfläche | MRadmin |
-| Spieler im Admin-Modus zählen nicht zur Quote (`sleep.ignore-admin-mode`) | MRadmin |
-| Spieler im Duell zählen nicht, die Arena-Welt wird nie verwaltet (`sleep.ignore-pvp`) | MRadmin + MRpvp |
+| Spieler im Admin-Modus zählen nicht zur Quote (`sleep.ignore.admin-mode`) | MRadmin |
+| Spieler im Duell zählen nicht, die Arena-Welt wird nie verwaltet (`sleep.ignore.pvp`) | MRadmin + MRpvp |
 | Dummy-Spieler von MRchunks zählen nie | nichts (erkennt MRsleep selbst) |
+| Ereignisse im **Protokoll** der MRadmin-Weboberfläche, Discord-Log über MRadmins Webhook (`discord.use-mradmin-webhook`) | MRadmin |
 
 ## Häufige Fragen
 **Ich liege im Bett, aber die Nacht wird nicht übersprungen.**
