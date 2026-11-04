@@ -40,14 +40,6 @@ import static at.marcelr.mrsleep.Messages.tag;
  */
 final class MRadminModule implements AdminModule, WebModule {
 
-    /** Into MRadmin's log (only with API 13 or newer). */
-    static void log(String event, String text, int color) {
-        MRadminService service = MRadminService.get();
-        if (service != null && service.apiVersion() >= 13) {
-            service.log(ID, event, text, color);
-        }
-    }
-
     static final String ID = "mrsleep";
     private static final String PERM_GUI = "mrsleep.admin.gui";
     private static final int MAX_WORLDS = 3;
@@ -278,6 +270,22 @@ final class MRadminModule implements AdminModule, WebModule {
             return in == null ? null : new String(in.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             return null;
+        }
+    }
+
+    /** Into MRadmin's log (only with API 13 or newer). */
+    static void log(String event, String text, int color) {
+        MRadminService service = MRadminService.get();
+        if (service != null && service.apiVersion() >= 13) {
+            service.log(ID, event, text, color);
+        }
+    }
+
+    /** A line in MRadmin's Discord admin log (fallback when the plugin has no webhook of its own). */
+    static void adminLog(String text) {
+        MRadminService service = MRadminService.get();
+        if (service != null) {
+            service.adminLog(ID, text);
         }
     }
 }

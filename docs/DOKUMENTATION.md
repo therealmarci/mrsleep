@@ -282,6 +282,8 @@ Wo welche Nachricht ausgelöst wird:
 - `shutdown()` wartet in `onDisable` bis zu 5 Sekunden, damit letzte Logs noch rausgehen.
 - **Diagnose:** `send()` gibt `null` (Erfolg) oder eine Fehlerbeschreibung zurück und merkt sich das Ergebnis in `lastResult`. Bekannte Statuscodes werden erklärt (400 abgelehnt, 401/403 Token ungültig, 404 Webhook gelöscht). `/mrsleep discord test` nutzt `test()`, das mit `?wait=true` sendet, damit Discord die Zustellung bestätigt.
 - `bed-blocked` wird über `SleepListener#loggedBedAttempts` pro Welt, Spieler und Nacht nur einmal gesendet. Das Set wird bei jedem `TimeSkipEvent` geleert.
+- **Protokoll von MRadmin:** `log()` schreibt jedes Ereignis mit Text aus der Sprachdatei **vor** dem Discord-Teil über `MRadminLink#log` ins Protokoll der Weboberfläche (nur ab MRadmin-API 13, Platzhalter unescaped) - auch wenn Discord aus ist. Deshalb werden `discord.events` (an/aus, Farbe) immer geladen, nicht nur bei eingeschaltetem Discord.
+- **Rückfall auf MRadmins Webhook:** `enabled: true`, leere `webhook-url` und `use-mradmin-webhook: true` → `Config.viaMradmin`. Dann geht der Text statt an Discord an `MRadminLink#adminLog` (MRadmin-Ereignis „plugin-alert“, das MRadmin nicht noch einmal ins Protokoll schreibt). `test()` meldet einen Fehler, wenn MRadmin nicht läuft.
 
 ## 11. Permissions-Design
 - `mrsleep.exempt` hat `default: false`, damit OPs nicht automatisch aus der Quote fallen.

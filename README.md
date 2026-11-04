@@ -205,6 +205,11 @@ Am einfachsten im Browser: Mit **MRadmin** (ab der Version mit „Konfiguration 
 
 Unter `discord.events` legst du pro Ereignis fest, ob es gesendet wird und in welcher Farbe (z.B. `nosleep-activated`, `night-skipped`, `admin-ban`). Die Texte stehen in der Sprachdatei unter `discord`. `@everyone` löst nie einen Ping aus.
 
+> [!TIP]
+> **Kein eigener Webhook?** Mit MRadmin geht es auch über dessen Discord-Log: `discord.enabled: true`, `webhook-url` leer lassen und `discord.use-mradmin-webhook: true` setzen.
+>
+> Mit MRadmin steht jedes Ereignis außerdem im **Protokoll** der Weboberfläche (bis zu 14 Tage) - auch wenn Discord aus ist.
+
 ### Update-Prüfung
 MRsleep prüft beim Start und danach alle paar Stunden (`updates.interval-hours`), ob es eine neue Version gibt:
 - in der **Konsole** mit Download-Link,
@@ -224,6 +229,7 @@ MRsleep läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es meh
 | Spieler im Admin-Modus zählen nicht zur Quote (`sleep.ignore.admin-mode`) | MRadmin |
 | Spieler im Duell zählen nicht, die Arena-Welt wird nie verwaltet (`sleep.ignore.pvp`) | MRadmin + MRpvp |
 | Dummy-Spieler von MRchunks zählen nie | nichts (erkennt MRsleep selbst) |
+| Ereignisse im **Protokoll** der MRadmin-Weboberfläche, Discord-Log über MRadmins Webhook (`discord.use-mradmin-webhook`) | MRadmin |
 
 ## Häufige Fragen
 **Ich liege im Bett, aber die Nacht wird nicht übersprungen.**
