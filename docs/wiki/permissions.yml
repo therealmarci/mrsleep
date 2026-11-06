@@ -1,0 +1,49 @@
+# Texte der Permission-Tabellen im Wiki (Platzhalter <!-- auto:permissions --> und <!-- auto:permission-groups -->).
+# Die Tabelle selbst (Permissions, Standard, Gruppe) erzeugt die Website aus plugin.yml - hier steht nur, wofür eine
+# Permission ist, auf Deutsch (de) und optional Englisch (en). Ohne Eintrag gilt die description aus plugin.yml.
+mrsleep.player:
+  de: "`/nosleep`, `/nosleep info`, `/mrsleep version`"
+mrsleep.groups.support:
+  de: "Spieler + Admin-Menü, Status, Teleport, Bypass und Sperre bis zur Support-Grenze"
+mrsleep.groups.staff:
+  de: "Support + Bypass und Sperre bis zur Staff-Grenze, Blockaden aufheben, Cooldown zurücksetzen"
+mrsleep.groups.admin:
+  de: "Alles: Staff + Bypass und Sperre ohne Grenze (auch dauerhaft), Reload, Discord, Update-Hinweis"
+mrsleep.version:
+  de: "`/mrsleep version`"
+mrsleep.exempt:
+  de: "Zählt **nicht** zur Schlafquote (Bots, Cam-Accounts) - in keiner Gruppe"
+mrsleep.nosleep:
+  de: "`/nosleep` benutzen"
+mrsleep.nosleep.info:
+  de: "`/nosleep info` benutzen"
+mrsleep.nosleep.nocooldown:
+  de: "`/nosleep` ohne Cooldown (auch OPs haben das nicht automatisch) - in keiner Gruppe"
+mrsleep.admin.discord:
+  de: "`/mrsleep discord`"
+mrsleep.admin.gui:
+  de: "Admin-Menü öffnen"
+mrsleep.admin.reload:
+  de: "`reload` (auch im Menü)"
+mrsleep.admin.status:
+  de: "`status`, `debug`"
+mrsleep.admin.clear:
+  de: "`clear`, `release` (auch im Menü)"
+mrsleep.admin.bypass:
+  de: "`bypass` bis `team-limits.support.bypass` (auch im Menü)"
+mrsleep.admin.bypass.staff:
+  de: "Cooldown-Bypass bis `team-limits.staff.bypass`"
+mrsleep.admin.bypass.unlimited:
+  de: "Cooldown-Bypass ohne Grenze"
+mrsleep.admin.resetcooldown:
+  de: "`resetcooldown` (auch im Menü)"
+mrsleep.admin.ban:
+  de: "`ban` bis `team-limits.support.ban`, `unban`, `bans` (auch im Menü)"
+mrsleep.admin.ban.staff:
+  de: "`/nosleep`-Sperren bis `team-limits.staff.ban`"
+mrsleep.admin.ban.unlimited:
+  de: "`/nosleep`-Sperren ohne Grenze, auch dauerhaft"
+mrsleep.admin.teleport:
+  de: "Teleport-Knopf im Menü"
+mrsleep.admin.update:
+  de: "Update-Hinweis beim Betreten des Servers"
