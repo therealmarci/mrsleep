@@ -5,6 +5,11 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [1.4.1] - 2026-11-06
+
+### Behoben & geändert
+- **Anleitung als Wiki:** Die Anleitung steht jetzt im Wiki auf der Website (https://mrtechnology.marcelr.at/wiki/mrsleep/) - aufgeteilt in Seiten für Spieler (Schlafen, `/nosleep`) und für Admins (Schlafquote, Anzeige, Admin-Menü, Befehle, Permissions, Konfiguration, Discord, Häufige Fragen), mit Suche über alle Plugins. Die README ist nur noch eine kurze Übersicht. Alte Links auf `/docs/mrsleep/` führen automatisch ins Wiki. Die Seiten **Permissions** und **Konfiguration** listen jede Permission bzw. Einstellung mit Standardwert automatisch aus dem Plugin - sie sind also immer auf dem Stand der Version.
+
 ## [1.4.0] - 2026-11-04
 
 ### Neu

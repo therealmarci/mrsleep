@@ -29,7 +29,7 @@ permissions:
       mrsleep.nosleep: true
       mrsleep.nosleep.info: true
   mrsleep.groups.support:
-    description: "Group support: player + admin menu, status, teleport, cooldown bypass and /nosleep ban up to the support limit (limits.support)."
+    description: "Group support: player + admin menu, status, teleport, cooldown bypass and /nosleep ban up to the support limit (team-limits.support)."
     default: op
     children:
       mrsleep.player: true
@@ -39,7 +39,7 @@ permissions:
       mrsleep.admin.bypass: true
       mrsleep.admin.ban: true
   mrsleep.groups.staff:
-    description: "Group staff: support + bypass and ban up to the staff limit (limits.staff), lift /nosleep blocks, reset cooldowns."
+    description: "Group staff: support + bypass and ban up to the staff limit (team-limits.staff), lift /nosleep blocks, reset cooldowns."
     default: op
     children:
       mrsleep.groups.support: true
@@ -90,10 +90,10 @@ permissions:
     description: /mrsleep clear and /mrsleep release - remove /nosleep blocks.
     default: op
   mrsleep.admin.bypass:
-    description: "/mrsleep bypass - cooldown bypass up to limits.support.bypass in config.yml, list and remove bypasses."
+    description: "/mrsleep bypass - cooldown bypass up to team-limits.support.bypass in config.yml, list and remove bypasses."
     default: op
   mrsleep.admin.bypass.staff:
-    description: Cooldown bypass up to limits.staff.bypass.
+    description: Cooldown bypass up to team-limits.staff.bypass.
     default: op
     children:
       mrsleep.admin.bypass: true
@@ -106,10 +106,10 @@ permissions:
     description: /mrsleep resetcooldown - reset a player's /nosleep cooldown.
     default: op
   mrsleep.admin.ban:
-    description: "/mrsleep ban, unban and bans - exclude players from /nosleep, up to limits.support.ban in config.yml."
+    description: "/mrsleep ban, unban and bans - exclude players from /nosleep, up to team-limits.support.ban in config.yml."
     default: op
   mrsleep.admin.ban.staff:
-    description: /nosleep bans up to limits.staff.ban.
+    description: /nosleep bans up to team-limits.staff.ban.
     default: op
     children:
       mrsleep.admin.ban: true
