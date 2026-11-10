@@ -17,7 +17,7 @@
 # ==============================================================================
 
 # Do not change - used for automatic config updates.
-config-version: 12
+config-version: 13
 
 
 # ------------------------------------------------------------------------------
@@ -206,8 +206,8 @@ updates:
   enabled: true
   # Source: "github" (GitHub Releases, default) or "modrinth"
   source: github
-  # Also report beta/alpha versions. If a pre-release (0.x) is running, they are always reported.
-  include-prereleases: false
+  # Also report beta versions (BET-...); while a 0.x beta runs they are always reported.
+  beta: false
   # How often to check again (in hours).
   interval-hours: 6
   # Notify players with "mrsleep.admin.update" when they join the server.

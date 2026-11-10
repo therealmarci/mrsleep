@@ -22,7 +22,7 @@ import java.util.logging.Level;
  */
 public final class ConfigUpdater {
 
-    public static final int CURRENT_VERSION = 12;
+    public static final int CURRENT_VERSION = 13;
     public static final String BOM = "﻿";
     /**
      * Texts whose content changed with new features; the new default replaces the old value.
@@ -63,7 +63,8 @@ public final class ConfigUpdater {
             Map.entry("limits.staff.ban", "team-limits.staff.ban"),
             Map.entry("update-checker.enabled", "updates.enabled"),
             Map.entry("update-checker.source", "updates.source"),
-            Map.entry("update-checker.include-prereleases", "updates.include-prereleases"),
+            Map.entry("update-checker.include-prereleases", "updates.beta"),
+            Map.entry("updates.include-prereleases", "updates.beta"),
             Map.entry("update-checker.interval-hours", "updates.interval-hours"),
             Map.entry("update-checker.notify-on-join", "updates.notify-on-join"));
 

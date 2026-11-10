@@ -234,7 +234,7 @@ Die Datei wird nach jeder Änderung synchron geschrieben (sie ist sehr klein) un
 
 ## 8. Update-Checker (`UpdateChecker`)
 - Die Projekt-IDs stehen in `gradle.properties` und landen beim Build in `build-info.properties`.
-- **Modrinth:** `GET /v2/project/{id}/version?loaders=["paper"]&include_changelog=false`. **GitHub:** `GET /repos/{repo}/releases`. Entwürfe werden ignoriert. Vorabversionen werden berücksichtigt, wenn `include-prereleases` an ist oder die installierte Version selbst eine Vorabversion ist (`Versions.isPrerelease`: 0.x oder Suffix).
+- **Modrinth:** `GET /v2/project/{id}/version?loaders=["paper"]&include_changelog=false`. **GitHub:** `GET /repos/{repo}/releases`. Entwürfe werden ignoriert. Vorabversionen werden berücksichtigt, wenn `updates.beta` an ist oder die installierte Version selbst eine Vorabversion ist (`Versions.isPrerelease`: 0.x oder Suffix).
 - Die höchste Version wird mit `Versions.compare` bestimmt (SemVer): Zahlen werden numerisch verglichen (`0.10.0 > 0.9.2`), ein führendes `v` und Build-Metadaten (`+…`) werden ignoriert, eine Release-Version gilt als neuer als ihre Vorabversion (`1.0.0 > 1.0.0-rc.1`), und Vorabversionen werden je Teil verglichen (`rc.10 > rc.2`).
 - Der Check läuft beim Start (nach 5 s) und danach alle `interval-hours` Stunden als Async-Task, außerdem bei `/mrsleep version`. Ist eine neuere Version verfügbar, erscheint einmal pro Version ein Hinweisblock in der Konsole, und online-Admins (`mrsleep.admin.update`) bekommen eine Nachricht. Beim Join kommt der Hinweis nach 3 s.
 - Fehler wie 404 (Projekt noch nicht veröffentlicht) werden einmal als INFO geloggt, danach erst wieder, wenn sich der Grund ändert.
