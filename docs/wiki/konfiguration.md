@@ -30,7 +30,7 @@ MRsleep prüft beim Start und danach alle paar Stunden (`updates.interval-hours`
 - **im Spiel** für Spieler mit `mrsleep.admin.update` als anklickbarer Hinweis beim Betreten (`updates.notify-on-join`),
 - jederzeit mit `/mrsleep version`.
 
-Angeboten werden nur Versionen für **deine Minecraft-Version**. Wer eine Vorabversion nutzt, bekommt auch neuere Vorabversionen angezeigt (sonst nur mit `updates.include-prereleases`).
+Angeboten werden nur Versionen für **deine Minecraft-Version**. Wer eine Vorabversion nutzt, bekommt auch neuere Vorabversionen angezeigt (sonst nur mit `updates.beta`).
 
 ## Alle Einstellungen
 Jede Einstellung der `config.yml` mit Standardwert - dieselben Felder wie im Browser-Formular von MRadmin. Die Liste entsteht automatisch aus dem Plugin und ist damit immer auf dem Stand dieser Version.
