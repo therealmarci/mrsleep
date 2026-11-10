@@ -90,6 +90,21 @@ public final class MRadminLink implements Listener {
         }
     }
 
+    /**
+     * Whether this team member wants messages of this kind in the game - their choice in MRadmin (account ->
+     * notifications) and not muted with /mradmin mute. Always true without MRadmin (API 15).
+     */
+    public boolean teamInGame(org.bukkit.entity.Player player, String kind) {
+        if (connected) {
+            try {
+                return MRadminModule.teamInGame(player.getUniqueId(), kind);
+            } catch (LinkageError | RuntimeException e) {
+                return true;
+            }
+        }
+        return true;
+    }
+
     /** Into MRadmin's Discord admin log. @return false without MRadmin */
     public boolean adminLog(String text) {
         if (connected) {

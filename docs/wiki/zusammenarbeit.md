@@ -10,3 +10,4 @@ MRsleep läuft **allein**. Zusammen mit anderen MRtechnology-Plugins kann es meh
 | Spieler im Duell zählen nicht, die Arena-Welt wird nie verwaltet (`sleep.ignore.pvp`) | MRadmin + MRpvp |
 | Dummy-Spieler von MRchunks zählen nie | nichts (erkennt MRsleep selbst) |
 | Ereignisse im **Protokoll** der MRadmin-Weboberfläche, Discord-Log über MRadmins Webhook (`discord.use-mradmin-webhook`) | MRadmin |
+| Hinweise ans Team im Spiel (z.B. Update verfügbar) lassen sich unter Konto → Benachrichtigungen ein- und ausschalten und mit `/mradmin mute` stummschalten | MRadmin |

@@ -288,4 +288,10 @@ final class MRadminModule implements AdminModule, WebModule {
             service.adminLog(ID, text);
         }
     }
+
+    /** Whether the member wants this kind in the game (choice in MRadmin, not muted); true before API 15. */
+    static boolean teamInGame(java.util.UUID player, String kind) {
+        MRadminService service = MRadminService.get();
+        return service == null || service.apiVersion() < 15 || service.teamNoticeInGame(player, kind);
+    }
 }
