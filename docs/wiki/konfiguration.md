@@ -1,6 +1,6 @@
 # Konfiguration
 
-Am einfachsten im Browser: Mit **MRadmin** unter **Einstellungen → Konfiguration → MRsleep** - jede Einstellung mit Erklärung, Speichern lädt MRsleep sofort neu (Permission `mradmin.config`). Ohne MRadmin steht alles in `plugins/MRsleep/config.yml`, jede Option ist dort kommentiert.
+Am einfachsten im Browser: Mit **MRadmin** unter **Server → Hauptserver → Konfiguration → MRsleep** - jede Einstellung mit Erklärung, Speichern lädt MRsleep sofort neu (Permission `mradmin.config`). Ohne MRadmin steht alles in `plugins/MRsleep/config.yml`, jede Option ist dort kommentiert.
 
 | Abschnitt | Die wichtigsten Einstellungen | Mehr dazu |
 |---|---|---|
