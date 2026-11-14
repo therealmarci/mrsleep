@@ -47,3 +47,5 @@ mrsleep.admin.teleport:
   de: "Teleport-Knopf im Menü"
 mrsleep.admin.update:
   de: "Update-Hinweis beim Betreten des Servers"
+mrsleep.groups.bots:
+  de: "Gruppe Bots (Zweitaccounts): zählen beim Schlafen nicht mit (`mrsleep.exempt`), sonst keine Rechte."

@@ -28,6 +28,11 @@ permissions:
       mrsleep.version: true
       mrsleep.nosleep: true
       mrsleep.nosleep.info: true
+  mrsleep.groups.bots:
+    description: "Group bots (second accounts): not counted for sleeping (mrsleep.exempt), no other rights."
+    default: false
+    children:
+      mrsleep.exempt: true
   mrsleep.groups.support:
     description: "Group support: player + admin menu, status, teleport, cooldown bypass and /nosleep ban up to the support limit (team-limits.support)."
     default: op
