@@ -5,6 +5,8 @@ Versionierung nach [Semantic Versioning](https://semver.org/lang/de/).
 
 ## [Unveröffentlicht]
 
+## [STA-1.4.5-bu001] - 2026-11-15
+
 ### Neu
 - **Gruppe Bots für Zweitaccounts:** `mrsleep.groups.bots` (nicht für OPs, in keiner Team-Gruppe) - zählt beim Schlafen nicht mit (`mrsleep.exempt`), sonst keine Rechte. Fertige LuckPerms-Gruppe „bots“ im MRadmin-Wiki unter Permissions.
 
