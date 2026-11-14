@@ -1,6 +1,6 @@
 # Configuration
 
-Easiest in the browser: with **MRadmin** under **Plugins → MRsleep → Configuration** - every setting with an explanation, saving reloads MRsleep right away (permission `mradmin.config`). Without MRadmin everything is in `plugins/MRsleep/config.yml`, every option is commented there.
+Easiest in the browser: with **MRadmin** under **Settings → Configuration → MRsleep** - every setting with an explanation, saving reloads MRsleep right away (permission `mradmin.config`). Without MRadmin everything is in `plugins/MRsleep/config.yml`, every option is commented there.
 
 | Section | The most important settings | More |
 |---|---|---|
